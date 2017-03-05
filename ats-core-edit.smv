@@ -5,47 +5,67 @@
 --===================================main
 MODULE main
 	VAR
-		enviroment:Simulate(car.out);
+		si:Simulate(car.out);
 		car:Car(ats.actuator);
-		ats:ATS(enviroment.ev);
+		-- ?
+		ats:ATS(si.carport,si.carport_car,si.carport_type,si.barrier,si.cross,car.out);
 
 --===================================main-end
 
 
 --===================================enviroment
-MODULE Simulate()
+MODULE Simulate(car)
 	VAR
 
 	DEFINE
 		road:=[[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[4,2],[4,1],[4,0],[3,0],[2,0],[1,0]];//a circle in x,y cordinary
 		carport:=[[1,1],[2,1],[3,1]];
 		carport_car:[1,1,0];
-		carport_type:{isLine};//TODO how to represent?
+		carport_type:{isLine};
+		barrier:=[[-1,-1]];
+		cross:=[[0,0],[0,2],[4,2],[4,0]];
+		--TODO how to represent?
+		
 		
 MODULE Car(actuator)
 	VAR
+		x:{0,1,2,3,4};
+		y:{0,1,2};
 		tar_x:{0,1,2,3,4};
 		tar_y:{0,1,2};
 		car_speed:{-1,0,1};
 		car_wheelAngle:{-1,0,1};
+		car_angle:{1,2,3,4,5,6,7,8};
+	DEFINE
+		out:=[position,car_statu];
+		position:=[x,y];
+		car_statu:=[car_speed,car_wheelAngle];
+		
+MODULE CarIner(car)
+	DEFINE
+		speed:=car[0];
+		wheelAngle:=car[1];
+		out:=[speed,wheelAngle];
 
 --===================================ats
-MODULE ATS(ev)
+MODULE ATS(carport,carport_car,carport_type,barrier,cross,car)
 	VAR
-		sensor_ultrasonic:Ultrasonic(ev);
-		sensor_around:AroundCamera(ev);
-		sensor_eye:DoubleEyeCamera(ev);
-		sensor_speed:WheelSpeed(ev);
+		sensor_ultrasonic:Ultrasonic(barrier,car[0]);
+		sensor_around:AroundCamera(carport,carport_car,carport_type,car[0]);
+		sensor_eye:DoubleEyeCamera(cross,car[0]);
 
+		can:CanBus(cpt_sys.can_out,car_info.out);
+		cpt_sys:ComputeSystem(sensor_ultrasonic.out,sensor_around.out,sensor_eye.out,can.get);
+		ctl_sys:ControlSystem(can.out);
+		car_info:CarIner(car[1]);
+		--can.get=speed_signal
+		
 		actuator_steerWheel:SteerWheel(ctl_sys.steerWheel);
 		actuator_engine:Engine(ctl_sys.engine);
 		actuator_brake:Brake(ctl_sys.brake);
 		actuator_gear:Gear(ctl_sys.gear);
 
-		can:CanBus(cpt_sys.can_out,sensor_speed.out);
-		cpt_sys:ComputeSystem(sensor_ultrasonic.out,sensor_around.out,sensor_eye.out,can.get);
-		ctl_sys:ControlSystem(can.out);
-		--can.get=speed_signal
+
 	DEFINE
 		actuator:=[actuator_steerWheel.out[0],actuator_steerWheel.out[1],actuator_engine.out,actuator_brake.out,actuator_gear.out];
 
@@ -69,6 +89,18 @@ MODULE ControlSystem(input)
 		engine:=input[2];
 		brake:=input[3];
 		gear:=input[4];
+
+--===================================
+--bus
+--===================================
+MODULE I2C(input)
+	DEFINE
+		out:=input;
+
+MODULE CanBus(input,car_info)
+	DEFINE
+		out:=input;
+		get:=car_info;
 
 --===================================
 --===================================
@@ -240,18 +272,7 @@ MODULE cross()
 
 
 --===================================
---bus
---===================================
-MODULE I2C(input)
-	DEFINE
-		out:=input;
 
-MODULE CanBus(input,speed)
-	DEFINE
-		out:=input;
-		get:=[speed,1];
-
---===================================
 --sensor
 --===================================
 MODULE Ultrasonic(ev)
@@ -298,5 +319,10 @@ MODULE Gear(input)
 --/
 
 /-- TODO
-line:20 represent state in define
+line:20 represent state in 
+line:10 if module can be param
+--/
+
+/--Do to
+sensor get info but not deal with
 --/

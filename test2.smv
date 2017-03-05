@@ -1,0 +1,178 @@
+--current work: select target,network,sender to test a new perfect way,as test3
+MODULE target(init_state)
+  VAR
+    state : {warning,error,emerging,inactive,running};
+    log : {none,null,warning,error,emerging,message};
+  IVAR
+    fault_event_failed_open:boolean;
+  DEFINE
+    output_log := log;
+    dead := (state=inactive);
+    send_null := (log=null);
+  ASSIGN
+    init(state) := init_state;
+    next(state) :=
+      case
+        state = running : {warning,error,emerging};
+        TRUE : state;
+      esac;
+
+    init(log) := none;
+    next(log) :=
+      case
+        state = warning : warning;
+        state = error : error;
+        state = emerging : emerging;
+        state = inactive : null;
+        TRUE : log;
+      esac;
+
+MODULE network()
+  VAR
+    state : {inactive,active};
+  DEFINE
+    dead := (state=inactive);
+  IVAR
+    fault_event_failed_open:boolean;
+    fault_event_configure_error:boolean;
+    nominal_event:boolean;
+  ASSIGN
+    init(state) := active;
+    next(state) := state;
+
+    MODULE sender(network,firewall,input_log,filter)
+      VAR
+        state : {inactive,active};
+        output_log : {none,null,warning,error,emerging,message};
+      DEFINE
+        dead := (state=inactive);
+        get_null := (input_log = null);
+        send_null := dead | firewall.dead | network.dead;
+      IVAR
+        fault_event_failed_open:boolean;
+        fault_event_configure_error:boolean;
+        nominal_event:boolean;
+      ASSIGN
+        init(state) := active;
+        next(state) := state;
+        init(output_log) := none;
+        next(output_log) :=
+          case
+            input_log = none : none;
+            get_null | send_null: null;
+            !get_null & state = active & input_log != filter.block_log & firewall.state = active & network.state = active : input_log;
+            TRUE : output_log;
+          esac;
+
+
+MODULE firewall()
+  VAR
+    state : {block,allow};
+  DEFINE
+    dead := (state=block);
+  IVAR
+    fault_event_failed_open:boolean;
+    fault_event_configure_error:boolean;
+    nominal_event:boolean;
+  ASSIGN
+    init(state) := allow;
+    next(state) := state;
+
+MODULE filter(input_log)
+  VAR
+    state : {inactive,active};
+  DEFINE
+    block_log := input_log;
+    dead := (state=inactive);
+    get_null := (input_log = null);
+  IVAR
+    fault_event_failed_open:boolean;
+    fault_event_configure_error:boolean;
+    nominal_event:boolean;
+  ASSIGN
+    init(state) := active;
+    next(state) := state;
+
+MODULE database(input_log)
+  VAR
+    state : {inactive,active};
+    output_log : {none,null,warning,error,emerging,message};
+  DEFINE
+    dead := (state=inactive);
+    get_null := (input_log = null);
+  IVAR
+    fault_event_failed_open:boolean;
+    fault_event_configure_error:boolean;
+    nominal_event:boolean;
+  ASSIGN
+    init(state) := active;
+    next(state) := state;
+    init(output_log) := none;
+    next(output_log) :=
+      case
+        input_log = none : none;
+        get_null : null;
+        !get_null & state = active : input_log;
+        TRUE : output_log;
+      esac;
+
+
+
+MODULE receiver(network,firewall,input_log,filter)
+  VAR
+    state : {inactive,active};
+    output_log : {none,null,warning,error,emerging,message};
+  DEFINE
+    dead := (state=inactive);
+    get_null := (input_log = null);
+    send_null := dead | firewall.dead | network.dead;
+  IVAR
+    fault_event_failed_open:boolean;
+    fault_event_configure_error:boolean;
+    nominal_event:boolean;
+  ASSIGN
+    init(state) := active;
+    next(state) := state;
+    init(output_log) := none;
+    next(output_log) :=
+      case
+        input_log = none : none;
+        get_null | send_null: null;
+        !get_null & state = active & input_log != filter.block_log & firewall.state = active & network.state = active : input_log;
+        TRUE : output_log;
+      esac;
+
+
+MODULE main
+	VAR
+		target : target(running);
+    target_firewall:firewall();
+    target_network:network();
+    target_filter:filter(message);
+    host_firewall:firewall();
+    host_network:network();
+    host_filter:filter(warning);
+    sender : sender(target_firewall,target_network,target.log,target_filter);
+    receiver : receiver(host_firewall,host_network,sender.output_log,host_filter);
+    database:database(receiver.output_log);
+    --database,tcp....
+
+  INVARSPEC
+    NAME log_null :=
+      (target.dead | target_firewall.dead | target_network.dead | host_firewall.dead | host_network.dead | database.dead) -> (database.output_log=null);
+
+  DEFINE
+    nonresponse:=(target.dead | target_firewall.dead | target_network.dead | host_firewall.dead | host_network.dead | database.dead);
+  CTLSPEC
+    --sender, network, receiver should be active
+    NAME essential_part_active :=
+      AG( sender.state = active & receiver.state = active & target_network.state = active & host_network.state=active )
+
+    --emerging log can't be filtered
+  CTLSPEC
+    NAME filter_special :=
+      AG( target_filter.block_log != emerging & host_filter.block_log != emerging )
+    --firewall should allow the ip and port to connect
+  CTLSPEC
+    NAME can_null :=
+      EX( database.output_log=null )

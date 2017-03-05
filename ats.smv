@@ -1,0 +1,271 @@
+--===================================main
+MODULE main
+	VAR
+		enviroment:Enviroment(ats.actuator);
+		ats:ATS(enviroment.ev);
+
+--===================================main-end
+
+--===================================
+MODULE Enviroment(actuator)
+	VAR
+		barrier:{0,1};
+		light:{dark,bright};
+		around:{garage,line,no_sign};
+		tar_angle:{0,1};
+		tar_dis:{0,1};
+		car_speed:{-1,0,1};
+		car_wheelAngle:{-1,0,1};
+		i:{0,1,2,3};
+	DEFINE
+		barrier_seq:=[1,1,1];
+		ev:=[barrier,light,around,tar_angle,tar_dis,car_wheelAngle,car_speed];
+		complete:=(tar_angle=0&tar_dis=0);
+	ASSIGN
+		init(barrier):=barrier_seq[0];
+		init(light):=bright;
+		init(scene):=line;
+		init(tar_angle):=1;
+		init(tar_dis):=1;
+		init(i):=0;
+		init(car_speed):=0;
+		init(car_wheelAngle):=0;
+
+		next(barrier):=
+		case
+			i!=3:barrier_seq[i];
+			--can eventually success
+			i=3:0;
+			TRUE:barrier;
+		esac;
+
+		next(i):=
+		case
+			i=0:1;
+			i=1:2;
+			i=2:3;
+			TRUE:i;
+		esac;
+
+		next(tar_angle):=
+		case
+			car_wheelAngle=0:tar_angle;
+			car_wheelAngle=-1:1;
+			(tar_angle=1)&(car_wheelAngle=1)&(i=2|i=3):0;
+			TRUE:tar_angle;
+		esac;
+
+		next(tar_dis):=
+		case
+			car_speed=-1:1;
+			car_speed=0:tar_dis;
+			(tar_dis=1)&(car_speed=1)&(i=2|i=3):0;
+			TRUE:tar_dis;
+		esac;
+
+		next(car_speed):=
+		case
+			actuator[1]=-1&(car_speed=0|actuator[2]=1):-1;
+			actuator[1]=0:car_speed;
+			actuator[1]=1:1;
+			actuator[2]=1:0;
+			TRUE:car_speed;
+		esac;
+
+		next(car_wheelAngle):=
+		case
+			actuator[0]=-1:-1;
+			actuator[0]=0:car_wheelAngle;
+			actuator[0]=1:1;
+			TRUE:car_wheelAngle;
+		esac;
+
+--===================================
+
+--===================================ats
+MODULE ATS(ev)
+	VAR
+		sensor_ultrasonic:Ultrasonic(ev);
+		sensor_around:AroundCamera(ev);
+		sensor_eye:DoubleEyeCamera(ev);
+		sensor_speed:WheelSpeed(ev);
+
+		actuator_steerWheel:SteerWheel(ctl_sys.steerWheel);
+		actuator_engine:Engine(ctl_sys.engine);
+		actuator_brake:Brake(ctl_sys.brake);
+
+		cpt_sys:ComputeSystem(sensor_ultrasonic.out,sensor_around.out,sensor_eye.out,sensor_speed.out,can.in);
+		can:CanBus(cpt_sys.can_out,ev);
+		ctl_sys:ControlSystem(can.out);
+
+	DEFINE
+		actuator:=[actuator_steerWheel.out,actuator_engine.out,actuator_brake.out];
+
+--===================================ats-end
+
+--===================================
+MODULE ComputeSystem(ultrasonic_signal,around_signal,eye_signal,speed_signal,can_in)
+	VAR
+		board_TX1:TX1(eye_signal);
+		board_I2C:I2C(board_TX1.I2C_out);
+		board_Rcar:Rcar(ultrasonic_signal,around_signal,board_I2C.out,speed_signal,can_in);
+	DEFINE
+		can_out:=board_Rcar.can_out;
+--===================================
+
+--===================================
+MODULE ControlSystem(input)
+	DEFINE
+		out:=input;
+	DEFINE
+		engine:=input[0];
+		steerWheel:=input[1];
+		brake:=input[2];
+
+--===================================
+
+--===================================
+MODULE TX1(input_signal)
+	VAR
+		target:comp_double(input_signal);
+
+	DEFINE
+		I2C_out:=target.out;
+
+--===================================
+
+--===================================
+MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,speed_signal,can_in)
+	VAR
+		barrier:comp_ultrasonic(ultrasonic_signal);
+		around:comp_around(around_signal);
+		plan:comp_plan(I2C_input,around.out,speed_signal);
+
+		cmd_brake:{1,0};
+		cmd_speed:{-1,0,1};
+		cmd_angle:{-1,0,1};
+	DEFINE
+		can_out:=[cmd_speed,cmd_angle,cmd_brake];
+	ASSIGN
+		init(cmd_brake):=0;
+		init(cmd_speed):=0;
+		init(cmd_angle):=0;
+
+		next(cmd_brake):=
+		case
+			(barrier.out=1):1;
+			(I2C_input[0]=0):1;
+			(I2C_input[1]=0):1;
+			TRUE:cmd_brake;
+		esac;
+
+		next(cmd_speed):=
+		case
+			barrier.out=1:-1;
+			barrier.out=0:plan.speed;
+			TRUE:cmd_speed;
+		esac;
+
+		next(cmd_angle):=
+		case
+			barrier.out=1:-1;
+			barrier.out=0:plan.angle;
+			TRUE:cmd_angle;
+		esac;
+
+--===================================
+--compute
+--===================================
+MODULE comp_plan(tar_pos,car_pos)
+	VAR
+		--next_point:{1,2,3,4,5};
+		speed:{0,1};
+		angle:{0,1};
+
+		plan_point:{0,1};
+
+	ASSIGN
+		--init(next_point):=1;
+		init(speed):=0;
+		init(angle):=0;
+
+		next(angle):=
+		case
+			tar_pos[0]=1:1;
+			tar_pos[0]=0:0;
+			TRUE:angle;
+		esac;
+
+		next(speed):=
+		case
+			tar_pos[1]=1:1;
+			tar_pos[1]=0:0;
+			TRUE:speed;
+		esac;
+
+
+MODULE comp_ultrasonic(input)
+	DEFINE
+		out:=input;
+
+MODULE comp_double(input)
+	DEFINE
+		out:=input;
+
+MODULE comp_around(input)
+	DEFINE
+		--light:input[0];
+		--scene:input[1];
+		out:=input;
+
+--===================================
+--bus
+--===================================
+MODULE I2C(input)
+	DEFINE
+		out:=input;
+
+MODULE CanBus(input,ev)
+	DEFINE
+		out:=input;
+		in:=ev;
+
+--===================================
+--sensor
+--===================================
+MODULE Ultrasonic(ev)
+	DEFINE
+		out:=ev[0];
+
+MODULE AroundCamera(ev)
+	DEFINE
+		out:=[ev[1],ev[2]];
+
+MODULE DoubleEyeCamera(ev)
+	DEFINE
+		out:=[ev[3],ev[4]];
+
+MODULE WheelSpeed(ev)
+	DEFINE
+		out:=ev[6];
+
+--===================================
+--actuator
+--===================================
+MODULE SteerWheel(input)
+	DEFINE
+		out:=input;
+
+MODULE Engine(input)
+	DEFINE
+		out:=input;
+
+MODULE Brake(input)
+	DEFINE
+		out:=input;
+
+--===================================
+
+/--
+目前所用的tar_pos和car_pos都是环境中的dis和angle，为1时表示彼此有距离
+--/

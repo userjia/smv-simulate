@@ -8,7 +8,7 @@ MODULE main
 		si:Simulate(car.out);
 		car:Car(ats.actuator);
 		-- ?
-		ats:ATS(si.carport,si.carport_car,si.carport_type,si.barrier,si.cross,car.out);
+		ats:ATS(si,car.out);
 
 --===================================main-end
 
@@ -21,10 +21,12 @@ MODULE Simulate(car)
 		road:=[[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[4,2],[4,1],[4,0],[3,0],[2,0],[1,0]];//a circle in x,y cordinary
 		carport:=[[1,1],[2,1],[3,1]];
 		carport_car:[1,1,0];
+		--[1] how to represent?
 		carport_type:{isLine};
-		barrier:=[[-1,-1]];
+		--barrier:=[[-1,-1]];
+		barrier:=0;
 		cross:=[[0,0],[0,2],[4,2],[4,0]];
-		--TODO how to represent?
+		
 		
 		
 MODULE Car(actuator)
@@ -39,7 +41,7 @@ MODULE Car(actuator)
 	DEFINE
 		out:=[position,car_statu];
 		position:=[x,y];
-		car_statu:=[car_speed,car_wheelAngle];
+		car_statu:=[car_speed,car_angle];
 		
 	ASSIGN
 		init(car_angle):=2;
@@ -55,14 +57,15 @@ MODULE CarIner(car)
 		out:=[sensor_speed.out,wheelAngle];
 
 --===================================ats
-MODULE ATS(carport,carport_car,carport_type,barrier,cross,car)
+MODULE ATS(simulate,car)
 	VAR
-		sensor_ultrasonic:Ultrasonic(barrier,car[0]);
+		--car[0]position car[1]statu
+		sensor_ultrasonic:Ultrasonic(simulate.barrier,car[0]);
 		sensor_around:AroundCamera(car[0],car[1]);
-		sensor_eye:DoubleEyeCamera(cross,car[0]);
+		sensor_eye:DoubleEyeCamera(car[0],car[1]);
 
 		can:CanBus(cpt_sys.can_out,car_info.out);
-		cpt_sys:ComputeSystem(sensor_ultrasonic.out,sensor_around.out,sensor_eye.out,can.get,carport,carport_car,carport_type);
+		cpt_sys:ComputeSystem(sensor_ultrasonic.out,sensor_around.out,sensor_eye.out,can.get,simulate);
 		ctl_sys:ControlSystem(can.out);
 		car_info:CarIner(car[1]);
 		--can.get=speed_signal
@@ -79,20 +82,50 @@ MODULE ATS(carport,carport_car,carport_type,barrier,cross,car)
 --===================================ats-end
 --sensor
 --===================================
-MODULE Ultrasonic(barrier,car)
+MODULE Ultrasonic(barrier,car_position)
 	DEFINE
+		out:=barrier;
 
-MODULE AroundCamera(car_position,car_statu)
+MODULE AroundCamera(car_position,car_statu)	
+	DEFINE
+		x:=car_position[0];
+		y:=car_position[1];
+		--around_port
+		out:=[[x+1,y],[x+1,y+1],[x,y+1],[x-1,y+1],[x-1,y],[x-1,y-1],[x,y-1],[x+1,y-1]];
+
+MODULE DoubleEyeCamera(car_position,car_statu)
 	VAR
-		
+		--front point
+		x0:{0,1,2,3,4};
+		y0:{0,1,2};
 	DEFINE
-		around_port:=[]
+		x:=car_position[0];
+		y:=car_position[1];
+		car_angle:=car_statu[1];
+		out:=[x0,y0];
 	ASSIGN
-
-MODULE DoubleEyeCamera(cross,car)
-	DEFINE
-		out:=;
-
+		init(x0):=x;
+		init(y0):=y+1;
+		
+		next(x0):=
+		case
+			car_statu=0:x+1;
+			car_statu=2:x;
+			car_statu=4:x-1;
+			car_statu=6:x;
+			TRUE:x0;
+		esac;
+		
+		next(y0):=
+		case
+			car_statu=0:y;
+			car_statu=2:y+1;
+			car_statu=4:y;
+			car_statu=6:y-1;
+			TRUE:y0;
+		esac;
+		
+		
 MODULE WheelSpeed(input)
 	DEFINE
 		out:=input;
@@ -100,11 +133,11 @@ MODULE WheelSpeed(input)
 --===================================
 
 --===================================
-MODULE ComputeSystem(ultrasonic_signal,around_signal,eye_signal,can_in,carport,carport_car,carport_type)
+MODULE ComputeSystem(ultrasonic_signal,around_signal,eye_signal,can_in,simulate)
 	VAR
 		board_TX1:TX1(eye_signal);
 		board_I2C:I2C(board_TX1.I2C_out);
-		board_Rcar:Rcar(ultrasonic_signal,around_signal,board_I2C.out,can_in,carport,carport_car,carport_type);
+		board_Rcar:Rcar(ultrasonic_signal,around_signal,board_I2C.out,can_in,simulate);
 	DEFINE
 		can_out:=board_Rcar.can_out;
 --===================================
@@ -132,13 +165,15 @@ MODULE CanBus(input,car_info)
 
 --===================================
 --===================================
-MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,carport,carport_car,carport_type)
+MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,simulate)
 	VAR
 		ultrasonic:comp_ultrasonic(ultrasonic_signal);
-		around:comp_around(around_signal,carport,carport_car,carport_type);
-		stop:comp_stop(ultrasonic.out,can_in);
-		plan:comp_plan(ultrasonic.out,around.out,I2C_input,can_in);
-
+		--around detect algorithm
+		around:comp_around(around_signal,simulate);
+		stop:comp_stop(ultrasonic.out,can_in,plan.flag[1]);
+		
+		action:comp_action(ultrasonic.out,around.out,I2C_input,can_in);
+		
 		--I2C_input=eye_signal
 
 		cmd_brake:{1,0};
@@ -168,30 +203,35 @@ MODULE TX1(input_signal)
 --===================================
 --compute
 --===================================
-MODULE comp_plan(ultrasonic_info,around_info,eye_info,can_in)
+MODULE comp_action(ultrasonic_info,around_valuePort,eye_info,can_in)
 	VAR
 		--stop enviroment
 		garage:{0,1};
 		line:{0,1};
-
 		gear:{-1,0,1};
+		
 		--if stop when reach end point
 		plan_stop:{0,1};
+		
 		--if follow the road line
 		followLine:{0,1};
 		tinyAdjust:{-1,0,1};
 
-		plan_ctl:comp_ctl(plan_point,can_in);
+		plan_road:comp_road(around_valuePort,can_in);
+		plan_ctl:comp_ctl(plan_road.plan_point,can_in);
+		
 	DEFINE
+		--the enviroment value form last version around_info
+		around_info:=[1,isLine];
 		Ve:=can_in[0];
 		tar_pos:=eye_info;
 		Xe:=tar_pos[0];
 		Ye:=tar_pos[1];
-		plan_point:=[Xe,Ye];
+		--plan_point:=[Xe,Ye];
 		parallel:=around_info[0];
 		flag:=[gear,plan_stop,followLine,parallel,tinyAdjust];
+		
 		--compute the cmd to ctl;
-
 	ASSIGN
 		init(gear):=0;
 		init(plan_stop):=0;
@@ -256,8 +296,17 @@ MODULE comp_ctl(plan_point,can_in)
 		speed:=can_in[0];
 		control:=[steerWheel[0],steerWheel[1],speed,gear];
 
+MODULE comp_road(around_valuePort,can_in)
+	DEFINE
+		plan_point:=
+		case
+			around_valuePort[0]!=-1:around_valuePort[0];
+			around_valuePort[1]!=-1:around_valuePort[1];
+			around_valuePort[2]!=-1:around_valuePort[2];
+			TRUE:[-1,-1];
+		esac;
 
-MODULE comp_stop(ultrasonic_info,can_in)
+MODULE comp_stop(ultrasonic_info,can_in,plan_stop)
 	VAR
 		-- state flag, 0 normal, 1 speed down, 2 stop
 		isStop:{0,1,2};
@@ -284,11 +333,60 @@ MODULE comp_double(input)
 	DEFINE
 		out:=input;
 
-MODULE comp_around(input)
+MODULE comp_around(around_signal,simulate)
+	VAR
+		i:{0,1,2,3,4,5,6,7};
+		j:{0,1,2};
+
 	DEFINE
 		--light:input[0];
 		--scene:input[1];
-		out:=input;
+		ports:=around_signal;
+		carport:=simulate.carport;
+		carport_car:=simulate.carport_car;
+		out:=[valuePort1,valuePort2,valuePort3];
+		
+		valuePort1:=
+		case
+			ports[0]=carport[0]&carport_car[0]=0:0;
+			ports[1]=carport[0]&carport_car[0]=0:1;
+			ports[2]=carport[0]&carport_car[0]=0:2;
+			ports[3]=carport[0]&carport_car[0]=0:3;
+			ports[4]=carport[0]&carport_car[0]=0:4;
+			ports[5]=carport[0]&carport_car[0]=0:5;
+			ports[6]=carport[0]&carport_car[0]=0:6;
+			ports[7]=carport[0]&carport_car[0]=0:7;
+			TRUE:-1;
+		esac;
+		
+		valuePort2:=
+		case
+			ports[0]=carport[1]&carport_car[1]=0:0;
+			ports[1]=carport[1]&carport_car[1]=0:1;
+			ports[2]=carport[1]&carport_car[1]=0:2;
+			ports[3]=carport[1]&carport_car[1]=0:3;
+			ports[4]=carport[1]&carport_car[1]=0:4;
+			ports[5]=carport[1]&carport_car[1]=0:5;
+			ports[6]=carport[1]&carport_car[1]=0:6;
+			ports[7]=carport[1]&carport_car[1]=0:7;
+			TRUE:-1;
+		esac;
+		
+		valuePort3:=
+		case
+			ports[0]=carport[2]&carport_car[2]=0:0;
+			ports[1]=carport[2]&carport_car[2]=0:1;
+			ports[2]=carport[2]&carport_car[2]=0:2;
+			ports[3]=carport[2]&carport_car[2]=0:3;
+			ports[4]=carport[2]&carport_car[2]=0:4;
+			ports[5]=carport[2]&carport_car[2]=0:5;
+			ports[6]=carport[2]&carport_car[2]=0:6;
+			ports[7]=carport[2]&carport_car[2]=0:7;
+			TRUE:-1;
+		esac;
+		
+		
+		
 
 MODULE runDis()
 
@@ -329,11 +427,11 @@ MODULE Gear(input)
 --/
 
 /-- TODO
-line:20 represent state in 
-line:10 if module can be param
+Simulate[1] represent state in define 
+			if module can be param?yes
 --/
 
 /--Do to
-sensor get info but not deal with
-around
+sensor around deal with enviroment?
+
 --/

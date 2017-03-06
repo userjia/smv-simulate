@@ -1,6 +1,7 @@
 --status:=[car_speed,car_angle,car_wheelAngle];
 --ev:=[barrier,parallel,around,tar_x,tar_y,car_wheelAngle,car_speed];
 --actuator:=[actuator_steerWheel.out[0],actuator_steerWheel.out[1],actuator_engine.out,actuator_brake.out,actuator_gear.out];
+--can_in:=[sensor_speed.out,sensor_wheelAngle.out,sensor_GPS.out];
 --1 represent yes,have,is,right
 
 --===================================main
@@ -57,7 +58,8 @@ MODULE CarIner(car)
 		sensor_speed:=WheelSpeed(car.car_speed);
 		sensor_wheelAngle:=WheelAngle(car.wheelAngle);
 		sensor_GPS:=GPS(car.position);
-		out:=[sensor_speed.out,sensor_wheelAngle.out,sensor_GPS.out];
+		sensor_campass:=Campass(car.car_angle);
+		out:=[sensor_speed.out,sensor_wheelAngle.out,sensor_GPS.out,sensor_campass.out];
 
 --===================================ats
 MODULE ATS(simulate,car)
@@ -224,15 +226,14 @@ MODULE comp_action(ultrasonic_info,around_valuePort,eye_info,can_in)
 
 		plan_road:comp_road(around_valuePort,can_in);
 		plan_ctl:comp_ctl(plan_road.plan_point,can_in);
-
 	DEFINE
-		--the enviroment value form last version around_info
+		--[3]the enviroment value form last version around_info
 		around_info:=[1,isLine];
-		Ve:=can_in[0];
+		--Ve:=can_in[0];
 		tar_pos:=eye_info;
 		Xe:=tar_pos[0];
 		Ye:=tar_pos[1];
-		plan_point:=plan_road.plan_point;
+		
 		parallel:=around_info[0];
 		flag:=[gear,plan_stop,followLine,parallel,tinyAdjust];
 
@@ -289,17 +290,60 @@ MODULE comp_ctl(plan_point,can_in)
 		angle:runAngle();
 		curve:getCurve();
 		PID2:cross();
-		--[3]
 
+		cmd_angle:{-1,0,1};
+		cmd_gear:{-1,0,1};
+		cmd_speed:{-1,0,1};
+		cmd_stop:{0,1};
 	DEFINE
-		--??
-		forecase_dis:=1;
+		--forecase_dis:=1;
 		--PID:=[PID1,PID2];
-		--??
-		steerWheel:=plan_point;
-		gear:=1;
-		speed:=can_in[0];
-		control:=[steerWheel[0],steerWheel[1],speed,gear];
+		
+		car_position=can_in[2];
+		car_angle=can_in[3];
+		
+		dx:=car_position[0]+(-plan_point[0]);
+		dy:=car_position[1]+(-plan_point[1]);
+		control:=[cmd_speed,cmd_angle,cmd_gear];
+		
+	ASSIGN
+		init(cmd_angle):=0;
+		init(cmd_speed):=0
+		init(cmd_gear):=0;
+		init(cmd_stop):=0;
+		next(cmd_gear):=
+		case
+			(car_angle=0)&(dx=1&dy=1):-1;
+			(car_angle=4)&(dx=-1&dy=-1):-1;
+			(car_angle=0)&(dx>1):1;
+			(car_angle=4)&(dx<1):1;
+			(car_angle=2|6):1;
+			TRUE:cmd_gear;
+		esac;
+		
+		next(cmd_angle):=
+		case
+			(car_angle=0)&(dx=1&dy=1):1;
+			TRUE:cmd_angle;
+		esac;
+				
+		next(cmd_stop):=
+		case
+			(car_angle=0)&(dx=1):1;
+			(car_angle=4)&(dx=-1):1;
+			TRUE:cmd_stop;
+		esac;
+		
+		--[4]can?
+		next(cmd_speed):=next(cmd_gear);
+				
+MODULE runDis()
+
+MODULE runAngle()
+
+MODULE getCurve()
+
+MODULE cross()
 
 MODULE comp_road(around_valuePort,can_in)
 	DEFINE
@@ -355,58 +399,43 @@ MODULE comp_around(around_signal,simulate)
 		--[2] integer can't be case, replace port itself?
 		valuePort1:=
 		case
-			ports[0]=carport[0]&carport_car[0]=0:ports[0];
-			ports[1]=carport[0]&carport_car[0]=0:ports[1];
-			ports[2]=carport[0]&carport_car[0]=0:ports[2];
-			ports[3]=carport[0]&carport_car[0]=0:ports[3];
-			ports[4]=carport[0]&carport_car[0]=0:ports[4];
-			ports[5]=carport[0]&carport_car[0]=0:ports[5];
-			ports[6]=carport[0]&carport_car[0]=0:ports[6];
-			ports[7]=carport[0]&carport_car[0]=0:ports[7];
+			(ports[0]=carport[0])&(carport_car[0]=0):ports[0];
+			(ports[1]=carport[0])&(carport_car[0]=0):ports[1];
+			(ports[2]=carport[0])&(carport_car[0]=0):ports[2];
+			(ports[3]=carport[0])&(carport_car[0]=0):ports[3];
+			(ports[4]=carport[0])&(carport_car[0]=0):ports[4];
+			(ports[5]=carport[0])&(carport_car[0]=0):ports[5];
+			(ports[6]=carport[0])&(carport_car[0]=0):ports[6];
+			(ports[7]=carport[0])&(carport_car[0]=0):ports[7];
 			TRUE:-1;
 		esac;
 
 		valuePort2:=
 		case
-			ports[0]=carport[1]&carport_car[1]=0:ports[0];
-			ports[1]=carport[1]&carport_car[1]=0:ports[1];
-			ports[2]=carport[1]&carport_car[1]=0:ports[2];
-			ports[3]=carport[1]&carport_car[1]=0:ports[3];
-			ports[4]=carport[1]&carport_car[1]=0:ports[4];
-			ports[5]=carport[1]&carport_car[1]=0:ports[5];
-			ports[6]=carport[1]&carport_car[1]=0:ports[6];
-			ports[7]=carport[1]&carport_car[1]=0:ports[7];
+			(ports[0]=carport[1])&(carport_car[1]=0):ports[0];
+			(ports[1]=carport[1])&(carport_car[1]=0):ports[1];
+			(ports[2]=carport[1])&(carport_car[1]=0):ports[2];
+			(ports[3]=carport[1])&(carport_car[1]=0):ports[3];
+			(ports[4]=carport[1])&(carport_car[1]=0):ports[4];
+			(ports[5]=carport[1])&(carport_car[1]=0):ports[5];
+			(ports[6]=carport[1])&(carport_car[1]=0):ports[6];
+			(ports[7]=carport[1])&(carport_car[1]=0):ports[7];
 			TRUE:-1;
 		esac;
 
 		valuePort3:=
 		case
-			ports[0]=carport[2]&carport_car[2]=0:ports[0];
-			ports[1]=carport[2]&carport_car[2]=0:ports[1];
-			ports[2]=carport[2]&carport_car[2]=0:ports[2];
-			ports[3]=carport[2]&carport_car[2]=0:ports[3];
-			ports[4]=carport[2]&carport_car[2]=0:ports[4];
-			ports[5]=carport[2]&carport_car[2]=0:ports[5];
-			ports[6]=carport[2]&carport_car[2]=0:ports[6];
-			ports[7]=carport[2]&carport_car[2]=0:ports[7];
+			(ports[0]=carport[2])&(carport_car[2]=0):ports[0];
+			(ports[1]=carport[2])&(carport_car[2]=0):ports[1];
+			(ports[2]=carport[2])&(carport_car[2]=0):ports[2];
+			(ports[3]=carport[2])&(carport_car[2]=0):ports[3];
+			(ports[4]=carport[2])&(carport_car[2]=0):ports[4];
+			(ports[5]=carport[2])&(carport_car[2]=0):ports[5];
+			(ports[6]=carport[2])&(carport_car[2]=0):ports[6];
+			(ports[7]=carport[2])&(carport_car[2]=0):ports[7];
 			TRUE:-1;
 		esac;
-
-
-
-
-MODULE runDis()
-
-MODULE runAngle()
-
-MODULE getCurve()
-
-MODULE cross()
-
-
 --===================================
-
-
 --actuator
 --===================================
 MODULE SteerWheel(input)
@@ -428,20 +457,24 @@ MODULE Gear(input)
 --===================================
 
 /--
-1.目前所用的tar_pos和car_pos都是环境中的dis和angle，为1时表示彼此有距离
+1.位置信息暂时由GPS单独处理
 2.stop模块中的减速尚未使用
-3.新使用的x,y式角度未具体分析测试
+3.
 --/
 
 /-- TODO
-Simulate[1]
-			represent state in define
-			if module can be param?yes
-comp_around[2]
-			ports
+[1]Simulate
+	represent state in define
+	if module can be param?yes
+[2]comp_around
+	ports
+[3]plan_action:around
+	sensor around deal with enviroment?
+[4]next=next?
 --/
 
 /--Do to
-sensor around deal with enviroment?
+
 speed or wheel speed
+
 --/

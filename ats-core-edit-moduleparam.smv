@@ -1,13 +1,13 @@
 --status:=[car_speed,car_angle,car_wheelAngle];
 --ev:=[barrier,parallel,around,tar_x,tar_y,car_wheelAngle,car_speed];
---actuator:=[actuator_steerWheel.out[0],actuator_steerWheel.out[1],actuator_engine.out,actuator_brake.out,actuator_gear.out];
+--actuator:=[actuator_steerWheel.out,actuator_engine.out,actuator_brake.out,actuator_gear.out];
 --can_in:=[sensor_speed.out,sensor_wheelAngle.out,sensor_GPS.out,sensor_campass.out];
 --1 represent yes,have,is,right
 
 --===================================main
 MODULE main
 	VAR
-		si:Simulate(car.out);
+		si:Simulate(car);
 		car:Car(ats.actuator);
 		-- ?
 		ats:ATS(si,car);
@@ -18,7 +18,11 @@ MODULE main
 --===================================enviroment
 MODULE Simulate(car)
 	VAR
-
+		x:{0,1,2,3,4};
+		y:{0,1,2};
+		tar_x:{0,1,2,3,4};
+		tar_y:{0,1,2};
+		car_angle:{0,1,2,3,4,5,6,7};
 	DEFINE
 		--a circle in x,y cordinary
 		road:=[[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[4,2],[4,1],[4,0],[3,0],[2,0],[1,0]];
@@ -29,36 +33,67 @@ MODULE Simulate(car)
 		--barrier:=[[-1,-1]];
 		barrier:=0;
 		cross:=[[0,0],[0,2],[4,2],[4,0]];
-
-
+		
+		position:=[x,y];
+		tar_pos:=[tar_x,tar_y];
+		
+	ASSIGN
+		init(x):=0;
+		init(y):=0;
+		init(car_angle):=2;
+		
+		next(x):=
+		case
+			(car.car_speed=1)&(car.car_angle=0):x+1;
+			(car.car_speed=1)&(car.car_angle=4):x+(-1);
+			TRUE:x;
+		esac;
+		
+		next(y):=
+		case
+			(car.car_speed=1)&(car.car_angle=2):y+1;
+			(car.car_speed=1)&(car.car_angle=6):y+(-1);
+		esac;
+		
+		next(car_angle):=
+		case
+			(car.car_speed=1)&(car.car_angle=2)&(car.car_wheelAngle=1):0;
+			(car.car_speed=1)&(car.car_angle=0)&(car.car_wheelAngle=1):6;
+			(car.car_speed=1)&(car.car_angle=6)&(car.car_wheelAngle=1):4;
+			(car.car_speed=1)&(car.car_angle=4)&(car.car_wheelAngle=1):2;
+			TRUE:car_angle;
+		esac;
+		
 
 MODULE Car(actuator)
 	VAR
-		x:{0,1,2,3,4};
-		y:{0,1,2};
-		tar_x:{0,1,2,3,4};
-		tar_y:{0,1,2};
 		car_speed:{-1,0,1};
 		car_wheelAngle:{-1,0,1};
-		car_angle:{0,1,2,3,4,5,6,7};
 	DEFINE
-		position:=[x,y];
-		status:=[car_speed,car_angle,car_wheelAngle];
+		
+		status:=[car_speed,car_wheelAngle];
 
 	ASSIGN
-		init(car_angle):=2;
 		init(car_speed):=0;
-		init(x):=0;
-		init(y):=0;
 		init(car_wheelAngle):=0;
+		
+		next(car_wheelAngle):=actuator[0];
+		next(car_speed):=
+		case
+			car_brake=1:0;
+			actuator[2]=1:0;
+			TRUE:actuator[1];
+			
+		next(car_brake):=actuator[2];
+		next(car_gear):=actuator[3];
 
-MODULE CarIner(car)
+MODULE CarIner(car,simulate)
 	VAR
 		--front or back
 		sensor_speed:WheelSpeed(car.car_speed);
 		sensor_wheelAngle:WheelAngle(car.car_wheelAngle);
-		sensor_GPS:GPS(car.position);
-		sensor_campass:Campass(car.car_angle);
+		sensor_GPS:GPS(simulate.position);
+		sensor_campass:Campass(simulate.car_angle);
 	DEFINE
 		car_speed:=sensor_speed.out;
 		car_wheelAngle:=sensor_wheelAngle.out;
@@ -68,9 +103,9 @@ MODULE CarIner(car)
 --===================================ats
 MODULE ATS(simulate,car)
 	VAR
-		sensor_ultrasonic:Ultrasonic(simulate.barrier,car.position);
-		sensor_around:AroundCamera(car.position,car.status);
-		sensor_eye:DoubleEyeCamera(car.position,car.status);
+		sensor_ultrasonic:Ultrasonic(car.position,simulate);
+		sensor_around:AroundCamera(car.position,simulate);
+		sensor_eye:DoubleEyeCamera(car.position,simulate);
 
 		can:CanBus(cpt_sys.can_out,car_info);
 		cpt_sys:ComputeSystem(sensor_ultrasonic.out,sensor_around.around_ports,sensor_eye.out,can.get,simulate);
@@ -84,23 +119,23 @@ MODULE ATS(simulate,car)
 
 
 	DEFINE
-		actuator:=[actuator_steerWheel.out[0],actuator_steerWheel.out[1],actuator_engine.out,actuator_brake.out,actuator_gear.out];
+		actuator:=[actuator_steerWheel.out,actuator_engine.out,actuator_brake.out,actuator_gear.out];
 
 --===================================ats-end
 --sensor
 --===================================
-MODULE Ultrasonic(barrier,car_position)
+MODULE Ultrasonic(car_position,simulate)
 	DEFINE
-		out:=barrier;
+		out:=simulate.barrier;
 
-MODULE AroundCamera(car_position,car_status)
+MODULE AroundCamera(car_position,simulate)
 	DEFINE
 		x:=car_position[0];
 		y:=car_position[1];
 		around_port:=[[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)]];
 		position:=car_position;
 
-MODULE DoubleEyeCamera(car_position,car_statu)
+MODULE DoubleEyeCamera(car_position,simulate)
 	VAR
 		--front point
 		x0:{0,1,2,3,4};
@@ -108,7 +143,7 @@ MODULE DoubleEyeCamera(car_position,car_statu)
 	DEFINE
 		x:=car_position[0];
 		y:=car_position[1];
-		car_angle:=car_statu[1];
+		car_angle:=simulate.car_angle;
 		out:=[x0,y0];
 	ASSIGN
 		init(x0):=x;
@@ -116,19 +151,19 @@ MODULE DoubleEyeCamera(car_position,car_statu)
 
 		next(x0):=
 		case
-			car_statu=0:x+1;
-			car_statu=2:x;
-			car_statu=4:x+(-1);
-			car_statu=6:x;
+			car_angle=0:x+1;
+			car_angle=2:x;
+			car_angle=4:x+(-1);
+			car_angle=6:x;
 			TRUE:x0;
 		esac;
 
 		next(y0):=
 		case
-			car_statu=0:y;
-			car_statu=2:y+1;
-			car_statu=4:y;
-			car_statu=6:y+(-1);
+			car_angle=0:y;
+			car_angle=2:y+1;
+			car_angle=4:y;
+			car_angle=6:y+(-1);
 			TRUE:y0;
 		esac;
 
@@ -164,10 +199,10 @@ MODULE ComputeSystem(ultrasonic_signal,around_signal,eye_signal,can_in,simulate)
 MODULE ControlSystem(input)
 	DEFINE
 		out:=input;
-		steerWheel:=[input[0],input[1]];
-		engine:=input[2];
-		brake:=input[3];
-		gear:=input[4];
+		steerWheel:=input[0];
+		engine:=input[1];
+		brake:=input[2];
+		gear:=input[3];
 
 --===================================
 --bus
@@ -189,19 +224,19 @@ MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,simulate)
 		--around detect algorithm
 		around:comp_around(around_signal,simulate);
 		stop:comp_stop(ultrasonic.out,can_in,plan.flag[1]);
-		plan:comp_action(ultrasonic.out,around.out,I2C_input,can_in);
-
+		plan:comp_plan(ultrasonic.out,around.out,I2C_input,can_in);
+		plan_ctl:comp_ctl(back_path.trace,can_in);
 		--I2C_input=eye_signal
 
 		cmd_brake:{1,0};
 
 	DEFINE
-		can_out:=[cmd_angle[0],cmd_angle[1],cmd_speed,cmd_brake,cmd_gear];
+		can_out:=[cmd_angle,cmd_speed,cmd_brake,cmd_gear];
 		flag:=plan.flag;
-		cmd_speed:=plan.Ve;
+		cmd_speed:=plan_ctl.cmd_speed;
 		--[3]
-		cmd_angle:=plan.plan_point;
-		cmd_gear:=flag[0];
+		cmd_angle:=plan_ctl.cmd_angle;
+		cmd_gear:=(flag[0]=0)?0:plan_ctl.cmd_gear;
 	ASSIGN
 		init(cmd_brake):=0;
 
@@ -220,7 +255,7 @@ MODULE TX1(input_signal)
 --===================================
 --compute
 --===================================
-MODULE comp_action(ultrasonic_info,around_valuePort,eye_info,can_in)
+MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 	VAR
 		--stop enviroment
 		garage:{0,1};
@@ -235,16 +270,19 @@ MODULE comp_action(ultrasonic_info,around_valuePort,eye_info,can_in)
 		tinyAdjust:{-1,0,1};
 		garage_type:{isLine,isGarage};
 
-		plan_road:comp_road(around_valuePort,can_in);
-		plan_ctl:comp_ctl(plan_road.plan_point,can_in);
+		back_path:comp_road(around_valuePort,can_in);
+		
 	DEFINE
 		--[3]the enviroment value form last version around_info
 		around_info:=[1,isLine];
 		--Ve:=can_in[0];
-		tar_pos:=eye_info;
+		trace:=back_path.trace;
+		tar_pos:=back_path.plan_point;
 		Xe:=tar_pos[0];
 		Ye:=tar_pos[1];
-
+		car_position:=can_in.car_position;
+		X:=car_position[0];
+		Y:=car_position[1];
 		parallel:=around_info[0];
 		flag:=[gear,plan_stop,followLine,parallel,tinyAdjust];
 
@@ -271,16 +309,16 @@ MODULE comp_action(ultrasonic_info,around_valuePort,eye_info,can_in)
 
 		next(gear):=
 		case
-			ultrasonic_info=1:-1;
-			(Xe!=0)&(Ye!=0):1;
-			(Xe=0)&(Ye=0):0;
+			ultrasonic_info=1:0;
+			(Xe=X)&(Ye=Y):0;
 			TRUE:gear;
 		esac;
 
 		next(plan_stop):=
 		case
-			(Xe=0)&(Ye=0):1;
-			TRUE:0;
+			ultrasonic_info=1:1;
+			(Xe=X)&(Ye=Y):1;
+			TRUE:plan_stop;
 		esac;
 
 		next(followLine):=
@@ -295,7 +333,7 @@ MODULE comp_action(ultrasonic_info,around_valuePort,eye_info,can_in)
 			TRUE:tinyAdjust;
 		esac;
 
-MODULE comp_ctl(plan_point,can_in)
+MODULE comp_ctl(trace,can_in)
 	VAR
 		PID1:runDis();
 		angle:runAngle();
@@ -310,8 +348,9 @@ MODULE comp_ctl(plan_point,can_in)
 		--forecase_dis:=1;
 		--PID:=[PID1,PID2];
 
-		car_position:=can_in[2];
-		car_angle:=can_in[3];
+		car_position:=can_in.car_position;
+		car_angle:=can_in.car_angle;
+		plan_point:=trace[1];
 
 		dx:=car_position[0]+(-plan_point[0]);
 		dy:=car_position[1]+(-plan_point[1]);
@@ -366,6 +405,8 @@ MODULE comp_road(around_valuePort,can_in)
 			around_valuePort[2]!=-1:around_valuePort[2];
 			TRUE:no_port;
 		esac;
+		
+		trace:=[can_in.car_position,plan_point];
 
 MODULE comp_stop(ultrasonic_info,can_in,plan_stop)
 	VAR
@@ -373,7 +414,7 @@ MODULE comp_stop(ultrasonic_info,can_in,plan_stop)
 		isStop:{0,1,2};
 	DEFINE
 		--the target speed;
-		velo:=can_in[0];
+		velo:=can_in.car_speed;
 		packetStop:=[velo,isStop];
 
 	ASSIGN
@@ -470,7 +511,9 @@ MODULE Gear(input)
 /--
 1.位置信息暂时由GPS单独处理
 2.stop模块中的减速尚未使用
-3.
+
+黑盒部分
+3.trace暂时以车与目标坐标构成
 --/
 
 /-- TODO

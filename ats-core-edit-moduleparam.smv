@@ -17,8 +17,10 @@ MODULE main
 --===================================enviroment
 MODULE Simulate(car)
 	VAR
-		x:{0,1,2,3,4};
-		y:{0,1,2};
+		x:{-1,0,1,2,3,4,5,6,7,8,9,10};
+		y:{-1,0,1,2,3};
+		--x:integer;
+		--y:integer;
 		tar_x:{0,1,2,3,4};
 		tar_y:{0,1,2};
 		car_angle:{0,1,2,3,4,5,6,7};
@@ -114,7 +116,7 @@ MODULE ATS(simulate,car)
 		can:CanBus(cpt_sys.can_out);
 		cpt_sys:ComputeSystem(sensor_ultrasonic.out,sensor_around.around_ports,sensor_eye.out,car_info,simulate);
 		ctl_sys:ControlSystem(can.out);
-		actuator:ActuatorSystem(ctl_sys)
+		actuator:ActuatorSystem(ctl_sys);
 
 MODULE ActuatorSystem(ctl_sys)
 	VAR
@@ -146,8 +148,10 @@ MODULE AroundCamera(simulate)
 MODULE DoubleEyeCamera(simulate)
 	VAR
 		--front point
-		x0:{0,1,2,3,4};
-		y0:{0,1,2};
+		x0:{-1,0,1,2,3,4,5,6,7};
+		y0:{-1,0,1,2,3};
+		--x0:integer;
+		--y0:integer;
 	DEFINE
 		car_position:=simulate.car_position;
 		x:=car_position[0];
@@ -156,7 +160,7 @@ MODULE DoubleEyeCamera(simulate)
 		out:=[x0,y0];
 	ASSIGN
 		init(x0):=x;
-		init(y0):=y+1;
+		init(y0):=y;
 
 		next(x0):=
 		case
@@ -208,10 +212,10 @@ MODULE ComputeSystem(ultrasonic_signal,around_signal,eye_signal,can_in,simulate)
 MODULE ControlSystem(input)
 	DEFINE
 		out:=input;
-		steerWheel:=input[0];
-		engine:=input[1];
-		brake:=input[2];
-		gear:=input[3];
+		steerWheel:=input[1];
+		engine:=input[0];
+		brake:=input[3];
+		gear:=input[2];
 
 --===================================
 --bus
@@ -237,13 +241,13 @@ MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,simulate)
 		--I2C_input=eye_signal
 
 	DEFINE
-		can_out:=[cmd_angle,cmd_speed,cmd_brake,cmd_gear];
+		can_out:=plan_ctl.control;
+		/--can_out:=[cmd_angle,cmd_speed,cmd_brake,cmd_gear];
 		cmd_speed:=plan_ctl.cmd_speed;
 		--[3]
 		cmd_angle:=plan_ctl.cmd_angle;
 		cmd_gear:=plan_ctl.cmd_gear;
-		cmd_brake:=plan.cmd_stop;
-	ASSIGN
+		cmd_brake:=plan_ctl.cmd_isStop;--/
 
 
 MODULE TX1(input_signal)
@@ -268,7 +272,7 @@ MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 		garage_type:{isLine,isGarage};
 
 		--if stop when reach end point
-		stop:comp_stop(trace,ultrasonic.out,can_in);
+		stop:comp_stop(trace,ultrasonic_info,can_in);
 		back_path:comp_road(around_valuePort,can_in);
 		
 	DEFINE
@@ -326,7 +330,7 @@ MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 			TRUE:tinyAdjust;
 		esac;
 
-MODULE comp_ctl(trace,can_in,plan_stop)
+MODULE comp_ctl(trace,plan_stop,can_in)
 	VAR
 		PID1:runDis();
 		angle:runAngle();
@@ -336,24 +340,25 @@ MODULE comp_ctl(trace,can_in,plan_stop)
 		cmd_angle:{-1,0,1};
 		cmd_gear:{-1,0,1};
 		cmd_speed:{-1,0,1};
-		cmd_stop:{0,1};
+		cmd_isStop:{0,1};
 	DEFINE
 		--forecase_dis:=1;
 		--PID:=[PID1,PID2];
 
+		--cmd_isStop:=0;
 		car_position:=can_in.car_position;
 		car_angle:=can_in.car_angle;
 		plan_point:=trace[1];
 
 		dx:=car_position[0]+(-plan_point[0]);
 		dy:=car_position[1]+(-plan_point[1]);
-		control:=[cmd_speed,cmd_angle,cmd_gear];
+		control:=[cmd_speed,cmd_angle,cmd_gear,cmd_isStop];
 
 	ASSIGN
 		init(cmd_angle):=0;
 		init(cmd_speed):=0;
 		init(cmd_gear):=0;
-		init(cmd_stop):=0;
+		init(cmd_isStop):=0;
 		next(cmd_gear):=
 		case
 			(car_angle=0)&(dx=1&dy=1):-1;
@@ -370,10 +375,10 @@ MODULE comp_ctl(trace,can_in,plan_stop)
 			TRUE:cmd_angle;
 		esac;
 
-		next(cmd_stop):=
+		next(cmd_isStop):=
 		case
-			(plan_stop=2):1;
-			TRUE:cmd_stop;
+			plan_stop=2:1;
+			TRUE:cmd_isStop;
 		esac;
 
 		--[4]can?
@@ -428,10 +433,6 @@ MODULE comp_double(input)
 		out:=input;
 
 MODULE comp_around(around_signal,simulate)
-	VAR
-		i:{0,1,2,3,4,5,6,7};
-		j:{0,1,2};
-
 	DEFINE
 		--light:input[0];
 		--scene:input[1];
@@ -524,5 +525,9 @@ MODULE Gear(input)
 
 speed or wheel speed
 can_in change to module not array anymore,but later undone;
+
+--/
+/--Problem
+unknown crash, seems like infinate state change over limits
 
 --/

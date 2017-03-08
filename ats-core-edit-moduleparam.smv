@@ -13,17 +13,18 @@ MODULE main
 
 --===================================main-end
 
-
 --===================================enviroment
 MODULE Simulate(car)
 	VAR
-		x:{-1,0,1,2,3,4,5,6,7,8,9,10};
+		x:{-1,0,1,2,3,4,5,6,7,8};
 		y:{-1,0,1,2,3};
 		--x:integer;
 		--y:integer;
 		tar_x:{0,1,2,3,4};
 		tar_y:{0,1,2};
 		car_angle:{0,1,2,3,4,5,6,7};
+	INVARSPEC
+		NAME ground_limit (x<=7)&(x>=0)&(y<=2)&(y>=0);
 	DEFINE
 		--a circle in x,y cordinary
 		road:=[[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[4,2],[4,1],[4,0],[3,0],[2,0],[1,0]];
@@ -48,6 +49,12 @@ MODULE Simulate(car)
 		case
 			(car.car_speed=1)&(car_angle=0):x+1;
 			(car.car_speed=1)&(car_angle=4):x+(-1);
+			(car.car_speed=-1)&(car_angle=0):x+(-1);
+			(car.car_speed=-1)&(car_angle=4):x+1;
+			(car.car_speed!=0)&(car_angle=2)&(car.car_wheelAngle=1):x+1;
+			(car.car_speed!=0)&(car_angle=6)&(car.car_wheelAngle=1):x+(-1);
+			(car.car_speed!=0)&(car_angle=2)&(car.car_wheelAngle=-1):x+(-1);
+			(car.car_speed!=0)&(car_angle=6)&(car.car_wheelAngle=-1):x+1;
 			TRUE:x;
 		esac;
 		
@@ -55,6 +62,13 @@ MODULE Simulate(car)
 		case
 			(car.car_speed=1)&(car_angle=2):y+1;
 			(car.car_speed=1)&(car_angle=6):y+(-1);
+			(car.car_speed=-1)&(car_angle=2):y+(-1);
+			(car.car_speed=-1)&(car_angle=6):y+1;
+			(car.car_speed!=0)&(car_angle=4)&(car.car_wheelAngle=1):y+1;
+			(car.car_speed!=0)&(car_angle=0)&(car.car_wheelAngle=1):y+(-1);
+			(car.car_speed!=0)&(car_angle=4)&(car.car_wheelAngle=-1):y+(-1);
+			(car.car_speed!=0)&(car_angle=0)&(car.car_wheelAngle=-1):y+1;
+			TRUE:y;
 		esac;
 		
 		next(car_angle):=
@@ -63,6 +77,10 @@ MODULE Simulate(car)
 			(car.car_speed=1)&(car_angle=0)&(car.car_wheelAngle=1):6;
 			(car.car_speed=1)&(car_angle=6)&(car.car_wheelAngle=1):4;
 			(car.car_speed=1)&(car_angle=4)&(car.car_wheelAngle=1):2;
+			(car.car_speed=1)&(car_angle=2)&(car.car_wheelAngle=-1):4;
+			(car.car_speed=1)&(car_angle=0)&(car.car_wheelAngle=-1):2;
+			(car.car_speed=1)&(car_angle=6)&(car.car_wheelAngle=-1):0;
+			(car.car_speed=1)&(car_angle=4)&(car.car_wheelAngle=-1):6;
 			TRUE:car_angle;
 		esac;
 		
@@ -146,40 +164,24 @@ MODULE AroundCamera(simulate)
 		--around_ports:=[[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1]];
 
 MODULE DoubleEyeCamera(simulate)
-	VAR
-		--front point
-		x0:{-1,0,1,2,3,4,5,6,7};
-		y0:{-1,0,1,2,3};
-		--x0:integer;
-		--y0:integer;
 	DEFINE
 		car_position:=simulate.car_position;
 		x:=car_position[0];
 		y:=car_position[1];
 		car_angle:=simulate.car_angle;
-		out:=[x0,y0];
-	ASSIGN
-		init(x0):=x;
-		init(y0):=y;
-
-		next(x0):=
+		out:=
 		case
-			car_angle=0:x+1;
-			car_angle=2:x;
-			car_angle=4:x+(-1);
-			car_angle=6:x;
-			TRUE:x0;
+			car_angle=0:out0;
+			car_angle=2:out2;
+			car_angle=4:out4;
+			car_angle=6:out6;
+			TRUE:out;
 		esac;
-
-		next(y0):=
-		case
-			car_angle=0:y;
-			car_angle=2:y+1;
-			car_angle=4:y;
-			car_angle=6:y+(-1);
-			TRUE:y0;
-		esac;
-
+		
+		out0:=[[x+1,y+1],[x+1,y],[x+1,y+(-1)]];
+		out2:=[[x+(-1),y+1],[x,y+1],[x+1,y+1]];
+		out4:=[[x+(-1),y+(-1)],[x+(-1),y],[x+(-1),y+1]];
+		out6:=[[x+1,y+(-1)],[x,y+(-1)],[x+(-1),y+(-1)]];
 
 MODULE WheelSpeed(input)
 	DEFINE
@@ -201,7 +203,7 @@ MODULE Campass(input)
 --===================================
 MODULE ComputeSystem(ultrasonic_signal,around_signal,eye_signal,can_in,simulate)
 	VAR
-		board_TX1:TX1(eye_signal);
+		board_TX1:TX1(eye_signal,simulate);
 		board_I2C:I2C(board_TX1.I2C_out);
 		board_Rcar:Rcar(ultrasonic_signal,around_signal,board_I2C.out,can_in,simulate);
 	DEFINE
@@ -237,7 +239,7 @@ MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,simulate)
 		around:comp_around(around_signal,simulate);
 		
 		plan:comp_plan(ultrasonic.out,around.out,I2C_input,can_in);
-		plan_ctl:comp_ctl(plan.back_path.trace,plan.plan_stop,can_in);
+		plan_ctl:comp_ctl(plan.trace,plan.plan_stop,can_in);
 		--I2C_input=eye_signal
 
 	DEFINE
@@ -250,9 +252,9 @@ MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,simulate)
 		cmd_brake:=plan_ctl.cmd_isStop;--/
 
 
-MODULE TX1(input_signal)
+MODULE TX1(input_signal,simulate)
 	VAR
-		target:comp_double(input_signal);
+		target:comp_double(input_signal,simulate);
 
 	DEFINE
 		I2C_out:=target.out;
@@ -271,15 +273,22 @@ MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 		tinyAdjust:{-1,0,1};
 		garage_type:{isLine,isGarage};
 
-		--if stop when reach end point
+		--reckon
 		stop:comp_stop(trace,ultrasonic_info,can_in);
-		back_path:comp_road(around_valuePort,can_in);
+		back_path:comp_back(around_valuePort,can_in);
+		foward_path:comp_foward(eye_info,can_in);
 		
 	DEFINE
 		--[3]the enviroment value form last version around_info
 		around_info:=[1,isLine];
 		--Ve:=can_in[0];
-		trace:=back_path.trace;
+		trace:=
+		case
+			back_path.trace[1][0]!=-1:back_path.trace;
+			foward_path.trace[1][0]!=-1:foward_path.trace;
+			TRUE:foward_path.trace;
+		esac;
+		
 		tar_pos:=back_path.plan_point;
 		Xe:=tar_pos[0];
 		Ye:=tar_pos[1];
@@ -350,10 +359,10 @@ MODULE comp_ctl(trace,plan_stop,can_in)
 		car_angle:=can_in.car_angle;
 		plan_point:=trace[1];
 
-		dx:=car_position[0]+(-plan_point[0]);
-		dy:=car_position[1]+(-plan_point[1]);
+		dx:=(-car_position[0])+(plan_point[0]);
+		dy:=(-car_position[1])+(plan_point[1]);
 		control:=[cmd_speed,cmd_angle,cmd_gear,cmd_isStop];
-
+		
 	ASSIGN
 		init(cmd_angle):=0;
 		init(cmd_speed):=0;
@@ -361,18 +370,20 @@ MODULE comp_ctl(trace,plan_stop,can_in)
 		init(cmd_isStop):=0;
 		next(cmd_gear):=
 		case
-			(car_angle=0)&(dx=1&dy=1):-1;
-			(car_angle=4)&(dx=-1&dy=-1):-1;
-			(car_angle=0)&(dx>1):1;
-			(car_angle=4)&(dx<1):1;
-			(car_angle=2)|(car_angle=6):1;
-			TRUE:cmd_gear;
+			(car_angle=0)&(dx=1):1;
+			(car_angle=0)&(dx=-1):-1;
+			(car_angle=4)&(dx=1):-1;
+			(car_angle=4)&(dx=-1);1;
+			TRUE:0;
 		esac;
 
 		next(cmd_angle):=
 		case
-			(car_angle=0)&(dx=1&dy=1):1;
-			TRUE:cmd_angle;
+			(car_angle=0)&(dy=1):-1;
+			(car_angle=0)&(dy=-1):1;
+			(car_angle=4)&(dy=1):-1;
+			(car_angle=4)&(dy=-1);1;
+			TRUE:0;
 		esac;
 
 		next(cmd_isStop):=
@@ -411,7 +422,15 @@ MODULE getCurve()
 
 MODULE cross()
 
-MODULE comp_road(around_valuePort,can_in)
+MODULE comp_foward(eye_info,can_in)
+	DEFINE
+		first_point:=eye_info[0];
+		second_point:=eye_info[1];
+		trace:=[can_in.car_position,second_point];
+		--[5]barrier
+		--[6]cross point
+
+MODULE comp_back(around_valuePort,can_in)
 	DEFINE
 		no_port:=[-1,-1];
 		plan_point:=
@@ -428,11 +447,52 @@ MODULE comp_ultrasonic(input)
 	DEFINE
 		out:=input;
 
-MODULE comp_double(input)
+MODULE comp_double(eye_signal,simulate)
+	VAR
+		compare_cross:compare_cordinate(seen_ports[2],cross_ports,3);
+		compare_left:compare_cordinate(seen_ports[0],road,11)
 	DEFINE
-		out:=input;
+		seen_ports:=eye_signal;
+		cross_ports:=simulate.cross;
+		road:=simulate.road;
+		no_port:=[-1,-1];
+		out:=[isCross,to];
+		isCross:=compare_cross.out;
+		isLeft:=compare_left.out;
+		to:=
+		case
+			(isCross[0]!=-1)&(isLeft!=-1):isLeft;
+			(isCross[0]!=-1)&(isLeft=-1):seen_ports[2];
+			TRUE:no_port;
+		esac;
+		
+MODULE comp_cordinate(one,list,num)		
+	DEFINE
+		no_port[-1,-1];
+		out:=
+		case
+			(num<=0)&(one[0]=list[0][0])&(one[1]=list[0][1]):one;
+			(num<=1)&(one[0]=list[1][0])&(one[1]=list[1][1]):one;
+			(num<=2)&(one[0]=list[2][0])&(one[1]=list[2][1]):one;
+			(num<=3)&(one[0]=list[3][0])&(one[1]=list[3][1]):one;
+			(num<=4)&(one[0]=list[4][0])&(one[1]=list[4][1]):one;
+			(num<=5)&(one[0]=list[5][0])&(one[1]=list[5][1]):one;
+			(num<=6)&(one[0]=list[6][0])&(one[1]=list[6][1]):one;
+			(num<=7)&(one[0]=list[7][0])&(one[1]=list[7][1]):one;
+			(num<=8)&(one[0]=list[8][0])&(one[1]=list[8][1]):one;
+			(num<=9)&(one[0]=list[9][0])&(one[1]=list[9][1]):one;
+			(num<=10)&(one[0]=list[10][0])&(one[1]=list[10][1]):one;
+			(num<=11)&(one[0]=list[11][0])&(one[1]=list[11][1]):one;
+			(num<=12)&(one[0]=list[12][0])&(one[1]=list[12][1]):one;
+			TRUE;no_port;
+		esac;
+		
 
 MODULE comp_around(around_signal,simulate)
+	VAR
+		compare_value_port1:comp_cordinate(carport[0],ports,7);
+		compare_value_port2:comp_cordinate(carport[1],ports,7);
+		compare_value_port3:comp_cordinate(carport[2],ports,7);
 	DEFINE
 		--light:input[0];
 		--scene:input[1];
@@ -440,47 +500,11 @@ MODULE comp_around(around_signal,simulate)
 		carport:=simulate.carport;
 		carport_car:=simulate.carport_car;
 		out:=[valuePort1,valuePort2,valuePort3];
-		no_valuePort:=[-1,-1];
 
 		--[2] integer can't be case, replace port itself?
-		valuePort1:=
-		case
-			(ports[0]=carport[0])&(carport_car[0]=0):ports[0];
-			(ports[1]=carport[0])&(carport_car[0]=0):ports[1];
-			(ports[2]=carport[0])&(carport_car[0]=0):ports[2];
-			(ports[3]=carport[0])&(carport_car[0]=0):ports[3];
-			(ports[4]=carport[0])&(carport_car[0]=0):ports[4];
-			(ports[5]=carport[0])&(carport_car[0]=0):ports[5];
-			(ports[6]=carport[0])&(carport_car[0]=0):ports[6];
-			(ports[7]=carport[0])&(carport_car[0]=0):ports[7];
-			TRUE:no_valuePort;
-		esac;
-
-		valuePort2:=
-		case
-			(ports[0]=carport[1])&(carport_car[1]=0):ports[0];
-			(ports[1]=carport[1])&(carport_car[1]=0):ports[1];
-			(ports[2]=carport[1])&(carport_car[1]=0):ports[2];
-			(ports[3]=carport[1])&(carport_car[1]=0):ports[3];
-			(ports[4]=carport[1])&(carport_car[1]=0):ports[4];
-			(ports[5]=carport[1])&(carport_car[1]=0):ports[5];
-			(ports[6]=carport[1])&(carport_car[1]=0):ports[6];
-			(ports[7]=carport[1])&(carport_car[1]=0):ports[7];
-			TRUE:no_valuePort;
-		esac;
-
-		valuePort3:=
-		case
-			(ports[0]=carport[2])&(carport_car[2]=0):ports[0];
-			(ports[1]=carport[2])&(carport_car[2]=0):ports[1];
-			(ports[2]=carport[2])&(carport_car[2]=0):ports[2];
-			(ports[3]=carport[2])&(carport_car[2]=0):ports[3];
-			(ports[4]=carport[2])&(carport_car[2]=0):ports[4];
-			(ports[5]=carport[2])&(carport_car[2]=0):ports[5];
-			(ports[6]=carport[2])&(carport_car[2]=0):ports[6];
-			(ports[7]=carport[2])&(carport_car[2]=0):ports[7];
-			TRUE:no_valuePort;
-		esac;
+		valuePort1:=compare_value_port1;
+		valuePort2:=compare_value_port2;
+		valuePort3:=compare_value_port3;
 --===================================
 --actuator
 --===================================
@@ -508,6 +532,10 @@ MODULE Gear(input)
 
 黑盒部分
 3.trace暂时以车与目标坐标构成
+
+4.[6]拐弯部分还没做
+5.倒车模式和自动驾驶的切换未
+6.需要更强大的轨迹模块，记忆多个预瞄点
 --/
 
 /-- TODO
@@ -519,6 +547,8 @@ MODULE Gear(input)
 [3]plan_action:around
 	sensor around deal with enviroment?
 [4]next=next?
+[5]the path of barrier added
+[6]cross point ignored
 --/
 
 /--Do to

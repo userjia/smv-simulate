@@ -7,16 +7,16 @@
 --===================================main
 MODULE main
 	VAR
-		si:Simulate(car);
+		simulate:Simulate(car);
 		car:Car(ats.actuator);
-		ats:ATS(si,car);
+		ats:ATS(simulate,car);
 
 --===================================main-end
 
 --===================================enviroment
 MODULE Simulate(car)
 	VAR
-		x:{-1,0,1,2,3,4,5,6,7,8};
+		x:{-1,0,1,2,3,4,5,6,7,8,9};
 		y:{-1,0,1,2,3};
 		car_angle:{-1,0,1,2,3,4,5,6,7,8};
 		/--x:integer;
@@ -27,7 +27,7 @@ MODULE Simulate(car)
 	DEFINE
 		--a circle in x,y cordinary
 		road:=[[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[4,2],[4,1],[4,0],[3,0],[2,0],[1,0]];
-		carport:=[[1,1],[2,1],[3,1]];
+		carports:=[[1,1],[2,1],[3,1]];
 		carport_car:=[1,1,0];
 		cross:=[[0,0],[0,2],[4,2],[4,0]];
 		
@@ -45,6 +45,8 @@ MODULE Simulate(car)
 		
 		next(x):=
 		case
+			x>=7:7;
+			x<=-1:-1;
 			(car.car_speed=1)&(car_angle=0):x+1;
 			(car.car_speed=1)&(car_angle=4):x+(-1);
 			(car.car_speed=-1)&(car_angle=0):x+(-1);
@@ -58,6 +60,8 @@ MODULE Simulate(car)
 		
 		next(y):=
 		case
+			y>=3:y;
+			y<=-1:-1;
 			(car.car_speed=1)&(car_angle=2):y+1;
 			(car.car_speed=1)&(car_angle=6):y+(-1);
 			(car.car_speed=-1)&(car_angle=2):y+(-1);
@@ -167,13 +171,14 @@ MODULE DoubleEyeCamera(simulate)
 		x:=car_position[0];
 		y:=car_position[1];
 		car_angle:=simulate.car_angle;
+		erro:=[[x,y],[x,y],[x,y]];
 		out:=
 		case
 			car_angle=0:out0;
 			car_angle=2:out2;
 			car_angle=4:out4;
 			car_angle=6:out6;
-			TRUE:out;
+			TRUE:erro;
 		esac;
 		
 		out0:=[[x+1,y+1],[x+1,y],[x+1,y+(-1)]];
@@ -433,9 +438,9 @@ MODULE comp_back(around_valuePort,can_in)
 		no_port:=[-1,-1];
 		plan_point:=
 		case
-			around_valuePort[0]!=no_port:around_valuePort[0];
-			around_valuePort[1]!=no_port:around_valuePort[1];
-			around_valuePort[2]!=no_port:around_valuePort[2];
+			around_valuePort[0][0]!=-1:around_valuePort[0];
+			around_valuePort[1][0]!=-1:around_valuePort[1];
+			around_valuePort[2][0]!=-1:around_valuePort[2];
 			TRUE:no_port;
 		esac;
 		
@@ -478,7 +483,7 @@ MODULE comp_double(eye_signal,simulate)
 		out:=
 		case
 			front_next[0]!=-1:front_next;
-			front[0]!=-1;front;
+			front[0]!=-1:front;
 			TRUE:no_port;
 		esac;
 		
@@ -530,8 +535,9 @@ MODULE comp_around(around_signal,simulate)
 		--light:input[0];
 		--scene:input[1];
 		ports:=around_signal;
-		carport:=simulate.carport;
+		carport:=simulate.carports;
 		carport_car:=simulate.carport_car;
+		test:=[1,1];
 		out:=[valuePort1,valuePort2,valuePort3];
 
 		--[2] integer can't be case, replace port itself?

@@ -422,9 +422,9 @@ MODULE cross()
 
 MODULE comp_foward(eye_info,can_in)
 	DEFINE
-		first_point:=eye_info[0];
-		second_point:=eye_info[1];
-		trace:=[can_in.car_position,second_point];
+		first_point:=eye_info;
+		--second_point:=eye_info[1];
+		trace:=[can_in.car_position,first_point];
 		--[5]barrier
 		--[6]cross point
 
@@ -447,20 +447,38 @@ MODULE comp_ultrasonic(input)
 
 MODULE comp_double(eye_signal,simulate)
 	VAR
-		compare_cross:compare_cordinate(seen_ports[2],cross_ports,3);
-		compare_left:compare_cordinate(seen_ports[0],road,11);
+		compare_road:compare_cordinate(seen_ports[1],road,11);
+		compare_cross:compare_cordinate(seen_ports[1],cross_ports,3);
+		compare_road_left:compare_cordinate(seen_ports[0],road,11);
 	DEFINE
 		seen_ports:=eye_signal;
 		cross_ports:=simulate.cross;
 		road:=simulate.road;
 		no_port:=[-1,-1];
-		out:=[isCross,to];
 		isCross:=compare_cross.out;
-		isLeft:=compare_left.out;
-		to:=
+		isLeft:=
 		case
-			(isCross[0]!=-1)&(isLeft!=-1):isLeft;
-			(isCross[0]!=-1)&(isLeft=-1):seen_ports[2];
+			isCross[0]!=-1:compare_road_left.out;
+			TRUE:no_port;
+		esac;
+		
+		front:=
+		case
+			compare_road.out[0]!=-1:compare_road.out;
+			TRUE:no_port;
+		esac;
+		
+		front_next:=
+		case
+			(isCross[0]!=-1)&(isLeft[0]!=-1):isLeft;
+			(isCross[0]!=-1)&(isLeft[0]=-1):seen_ports[2];
+			TRUE:no_port;
+		esac;
+		
+		out:=
+		case
+			front_next[0]!=-1:front_next;
+			front[0]!=-1;front;
 			TRUE:no_port;
 		esac;
 		

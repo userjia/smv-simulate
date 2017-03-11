@@ -20,8 +20,11 @@ MODULE Simulate(car)
 		/--x:integer;
 		y:integer;
 		car_angle:integer;--/
-	--INVARSPEC
 		
+	--clock to sync with board compute late
+		i:{0,1,2};
+
+	--INVARSPEC
 	DEFINE
 		--a circle in x,y cordinary
 		road:=[[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[4,2],[4,1],[4,0],[3,0],[2,0],[1,0]];
@@ -39,11 +42,19 @@ MODULE Simulate(car)
 	ASSIGN
 		init(x):=0;
 		init(y):=0;
+		init(i):=1;
 		init(car_angle):=2;
+		
+		next(i):=
+		case
+			i!=2:i+1;
+			TRUE:0;
+		esac;
 		
 		next(x):=
 		case
 			--[8] how to do? limit the border
+			i!=0:x;
 			x>=7:7;
 			x<=-1:-1;
 			(car.car_speed=1)&(car_angle=0):x+1;
@@ -59,6 +70,7 @@ MODULE Simulate(car)
 		
 		next(y):=
 		case
+			i!=0:y;
 			y>=3:y;
 			y<=-1:-1;
 			(car.car_speed=1)&(car_angle=2):y+1;
@@ -74,6 +86,7 @@ MODULE Simulate(car)
 		
 		next(car_angle):=
 		case
+			i!=0:car_angle;
 			(car.car_speed=1)&(car_angle=2)&(car.car_wheelAngle=1):0;
 			(car.car_speed=1)&(car_angle=0)&(car.car_wheelAngle=1):6;
 			(car.car_speed=1)&(car_angle=6)&(car.car_wheelAngle=1):4;
@@ -339,8 +352,8 @@ MODULE comp_ctl(trace,plan_stop,can_in)
 		case
 			(car_angle=0)&(dy=1):-1;
 			(car_angle=0)&(dy=-1):1;
-			(car_angle=4)&(dy=1):-1;
-			(car_angle=4)&(dy=-1):1;
+			(car_angle=4)&(dy=1):1;
+			(car_angle=4)&(dy=-1):-1;
 			(car_angle=2)&(dx=1):1;
 			(car_angle=2)&(dx=-1):-1;
 			(car_angle=6)&(dx=1):-1;

@@ -11,8 +11,6 @@ MODULE main
 		car:Car(ats.actuator);
 		ats:ATS(simulate,car);
 
---===================================main-end
-
 --===================================enviroment
 MODULE Simulate(car)
 	VAR
@@ -23,13 +21,14 @@ MODULE Simulate(car)
 		y:integer;
 		car_angle:integer;--/
 	--INVARSPEC
-		--ground_limit (x<=7)&(x>=0)&(y<=2)&(y>=0);
+		
 	DEFINE
 		--a circle in x,y cordinary
 		road:=[[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[4,2],[4,1],[4,0],[3,0],[2,0],[1,0]];
 		carports:=[[1,1],[2,1],[3,1]];
 		carport_car:=[1,1,0];
 		cross:=[[0,0],[0,2],[4,2],[4,0]];
+		car_position:=[x,y];
 		
 		--[1] how to represent?
 		carport_type:={isLine};
@@ -37,7 +36,6 @@ MODULE Simulate(car)
 		--barrier:=[[-1,-1]];
 		barrier:=0;
 		
-		car_position:=[x,y];
 	ASSIGN
 		init(x):=0;
 		init(y):=0;
@@ -45,6 +43,7 @@ MODULE Simulate(car)
 		
 		next(x):=
 		case
+			--[8] how to do? limit the border
 			x>=7:7;
 			x<=-1:-1;
 			(car.car_speed=1)&(car_angle=0):x+1;
@@ -93,8 +92,7 @@ MODULE Car(actuator)
 		car_wheelAngle:{-1,0,1};
 		car_brake:{0,1};
 		car_gear:{-1,0,1};
-	DEFINE
-		--status:=[car_speed,car_wheelAngle];
+
 	ASSIGN
 		init(car_speed):=0;
 		init(car_wheelAngle):=0;
@@ -105,26 +103,11 @@ MODULE Car(actuator)
 		next(car_speed):=
 		case
 			car_brake=1:0;
-			actuator.brake=1:0;
 			TRUE:actuator.engine;
 		esac;
-		
 		next(car_brake):=actuator.brake;
 		next(car_gear):=actuator.gear;
-
-MODULE CarIner(car,simulate)
-	VAR
-		--front or back
-		sensor_speed:WheelSpeed(car.car_speed);
-		sensor_wheelAngle:WheelAngle(car.car_wheelAngle);
-		sensor_GPS:GPS(simulate.car_position);
-		sensor_campass:Campass(simulate.car_angle);
-	DEFINE
-		car_speed:=sensor_speed.out;
-		car_wheelAngle:=sensor_wheelAngle.out;
-		car_position:=sensor_GPS.out;
-		car_angle:=sensor_campass.out;
-
+		
 --===================================ats
 MODULE ATS(simulate,car)
 	VAR
@@ -150,9 +133,8 @@ MODULE ActuatorSystem(ctl_sys)
 		engine:=actuator_engine.out;
 		brake:=actuator_brake.out;
 		gear:=actuator_gear.out;
---===================================ats-end
---sensor
---===================================
+
+--===================================--sensor
 MODULE Ultrasonic(simulate)
 	DEFINE
 		out:=simulate.barrier;
@@ -163,15 +145,15 @@ MODULE AroundCamera(simulate)
 		x:=car_position[0];
 		y:=car_position[1];
 		around_ports:=[[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)]];
-		--around_ports:=[[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1],[1,1]];
 
 MODULE DoubleEyeCamera(simulate)
 	DEFINE
 		car_position:=simulate.car_position;
+		car_angle:=simulate.car_angle;
 		x:=car_position[0];
 		y:=car_position[1];
-		car_angle:=simulate.car_angle;
-		erro:=[[x,y],[x,y],[x,y]];
+		--erro:=[[x,y],[x,y],[x,y]];
+		erro:=[[-1,-1],[-1,-1],[-1,-1]];
 		out0:=[[x+1,y+1],[x+1,y],[x+1,y+(-1)]];
 		out2:=[[x+(-1),y+1],[x,y+1],[x+1,y+1]];
 		out4:=[[x+(-1),y+(-1)],[x+(-1),y],[x+(-1),y+1]];
@@ -185,26 +167,19 @@ MODULE DoubleEyeCamera(simulate)
 			TRUE:erro;
 		esac;
 		
-
-
-MODULE WheelSpeed(input)
-	DEFINE
-		out:=input;
-
-MODULE WheelAngle(input)
-	DEFINE
-		out:=input;
-
-MODULE GPS(input)
-	DEFINE
-		out:=input;
-
-MODULE Campass(input)
-	DEFINE
-		out:=input;
 --===================================
+MODULE CarIner(car,simulate)
+	VAR
+		sensor_speed:WheelSpeed(car.car_speed);
+		sensor_wheelAngle:WheelAngle(car.car_wheelAngle);
+		sensor_GPS:GPS(simulate.car_position);
+		sensor_campass:Campass(simulate.car_angle);
+	DEFINE
+		car_speed:=sensor_speed.out;
+		car_wheelAngle:=sensor_wheelAngle.out;
+		car_position:=sensor_GPS.out;
+		car_angle:=sensor_campass.out;
 
---===================================
 MODULE ComputeSystem(ultrasonic_signal,around_signal,eye_signal,can_in,simulate)
 	VAR
 		board_TX1:TX1(eye_signal,simulate);
@@ -212,9 +187,7 @@ MODULE ComputeSystem(ultrasonic_signal,around_signal,eye_signal,can_in,simulate)
 		board_Rcar:Rcar(ultrasonic_signal,around_signal,board_I2C.out,can_in,simulate);
 	DEFINE
 		can_out:=board_Rcar.can_out;
---===================================
 
---===================================
 MODULE ControlSystem(input)
 	DEFINE
 		out:=input;
@@ -224,37 +197,15 @@ MODULE ControlSystem(input)
 		gear:=input[2];
 
 --===================================
---bus
---===================================
-MODULE I2C(input)
-	DEFINE
-		out:=input;
-
-MODULE CanBus(output)
-	DEFINE
-		out:=output;
-
---===================================
---===================================
 MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,simulate)
 	VAR
 		ultrasonic:comp_ultrasonic(ultrasonic_signal);
-		--around detect algorithm
 		around:comp_around(around_signal,simulate);
-		
 		plan:comp_plan(ultrasonic.out,around.out,I2C_input,can_in);
 		plan_ctl:comp_ctl(plan.trace,plan.plan_stop,can_in);
-		--I2C_input=eye_signal
 
 	DEFINE
 		can_out:=plan_ctl.control;
-		/--can_out:=[cmd_angle,cmd_speed,cmd_brake,cmd_gear];
-		cmd_speed:=plan_ctl.cmd_speed;
-		--[3]
-		cmd_angle:=plan_ctl.cmd_angle;
-		cmd_gear:=plan_ctl.cmd_gear;
-		cmd_brake:=plan_ctl.cmd_isStop;--/
-
 
 MODULE TX1(input_signal,simulate)
 	VAR
@@ -262,8 +213,7 @@ MODULE TX1(input_signal,simulate)
 
 	DEFINE
 		I2C_out:=target.out;
---===================================
---compute
+
 --===================================
 MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 	VAR
@@ -285,25 +235,26 @@ MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 	DEFINE
 		--[3]the enviroment value form last version around_info
 		around_info:=[1,isLine];
+		parallel:=around_info[0];
 		--Ve:=can_in[0];
+		--flag:=[gear,plan_stop,followLine,parallel,tinyAdjust];
+		
+		plan_stop:=stop.isStop;
 		trace:=
 		case
 			foward_path.trace[1][0]!=-1:foward_path.trace;
-			--[7]
-			--back_path.trace[1][0]!=-1:back_path.trace;
+			--[7]back_path.trace[1][0]!=-1:back_path.trace;
 			TRUE:foward_path.trace;
 		esac;
 		
 		tar_pos:=back_path.plan_point;
 		Xe:=tar_pos[0];
 		Ye:=tar_pos[1];
+		
 		car_position:=can_in.car_position;
 		X0:=car_position[0];
 		Y0:=car_position[1];
-		parallel:=around_info[0];
-		plan_stop:=stop.isStop;
-		--flag:=[gear,plan_stop,followLine,parallel,tinyAdjust];
-
+		
 		--compute the cmd to ctl;
 	ASSIGN
 		init(gear):=0;
@@ -329,7 +280,6 @@ MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 			ultrasonic_info=1:0;
 			TRUE:gear;
 		esac;
-
 
 		next(followLine):=
 		case
@@ -357,16 +307,16 @@ MODULE comp_ctl(trace,plan_stop,can_in)
 	DEFINE
 		--forecase_dis:=1;
 		--PID:=[PID1,PID2];
-
 		--cmd_isStop:=0;
+		
 		car_position:=can_in.car_position;
 		car_angle:=can_in.car_angle;
+		
 		plan_point:=trace[1];
-
 		dx:=(-car_position[0])+(plan_point[0]);
 		dy:=(-car_position[1])+(plan_point[1]);
-		control:=[cmd_speed,cmd_angle,cmd_gear,cmd_isStop];
 		
+		control:=[cmd_speed,cmd_angle,cmd_gear,cmd_isStop];
 	ASSIGN
 		init(cmd_angle):=0;
 		init(cmd_speed):=0;
@@ -413,8 +363,9 @@ MODULE comp_stop(trace,ultrasonic_info,can_in)
 		isStop:{0,1,2};
 	DEFINE
 		--the target speed;
-		velo:=can_in.car_speed;
-		packetStop:=[velo,isStop];
+		--velo:=can_in.car_speed;
+		--packetStop:=[velo,isStop];
+		
 		plan_point:=trace[1];
 		car_position:=trace[0];
 	ASSIGN
@@ -425,14 +376,6 @@ MODULE comp_stop(trace,ultrasonic_info,can_in)
 			(ultrasonic_info=1):2;
 			TRUE:isStop;
 		esac;
-		
-MODULE runDis()
-
-MODULE runAngle()
-
-MODULE getCurve()
-
-MODULE cross()
 
 MODULE comp_foward(eye_info,can_in)
 	DEFINE
@@ -458,6 +401,25 @@ MODULE comp_back(around_valuePort,can_in)
 MODULE comp_ultrasonic(input)
 	DEFINE
 		out:=input;
+		
+MODULE comp_around(around_signal,simulate)
+	VAR
+		compare_value_port1:compare_cordinate(carport[0],ports,7);
+		compare_value_port2:compare_cordinate(carport[1],ports,7);
+		compare_value_port3:compare_cordinate(carport[2],ports,7);
+	DEFINE
+		--light:input[0];
+		--scene:input[1];
+		ports:=around_signal;
+		carport:=simulate.carports;
+		carport_car:=simulate.carport_car;
+		test:=[1,1];
+		out:=[valuePort1,valuePort2,valuePort3];
+
+		--[2] integer can't be case, replace port itself?
+		valuePort1:=compare_value_port1.out;
+		valuePort2:=compare_value_port2.out;
+		valuePort3:=compare_value_port3.out;
 
 MODULE comp_double(eye_signal,simulate)
 	VAR
@@ -533,28 +495,7 @@ MODULE compare_cordinate(one,list,num)
 MODULE decrease(num)
 	DEFINE
 		v:=(num=0)?0:num+(-1);
-		
 
-MODULE comp_around(around_signal,simulate)
-	VAR
-		compare_value_port1:compare_cordinate(carport[0],ports,7);
-		compare_value_port2:compare_cordinate(carport[1],ports,7);
-		compare_value_port3:compare_cordinate(carport[2],ports,7);
-	DEFINE
-		--light:input[0];
-		--scene:input[1];
-		ports:=around_signal;
-		carport:=simulate.carports;
-		carport_car:=simulate.carport_car;
-		test:=[1,1];
-		out:=[valuePort1,valuePort2,valuePort3];
-
-		--[2] integer can't be case, replace port itself?
-		valuePort1:=compare_value_port1.out;
-		valuePort2:=compare_value_port2.out;
-		valuePort3:=compare_value_port3.out;
---===================================
---actuator
 --===================================
 MODULE SteerWheel(input)
 	DEFINE
@@ -571,7 +512,38 @@ MODULE Brake(input)
 MODULE Gear(input)
 	DEFINE
 		out:=input;
+--===================================inner-sensor
+MODULE WheelSpeed(input)
+	DEFINE
+		out:=input;
 
+MODULE WheelAngle(input)
+	DEFINE
+		out:=input;
+
+MODULE GPS(input)
+	DEFINE
+		out:=input;
+
+MODULE Campass(input)
+	DEFINE
+		out:=input;
+--===================================bus
+MODULE I2C(input)
+	DEFINE
+		out:=input;
+
+MODULE CanBus(output)
+	DEFINE
+		out:=output;
+--===================================black box function
+MODULE runDis()
+
+MODULE runAngle()
+
+MODULE getCurve()
+
+MODULE cross()
 --===================================
 
 /--
@@ -601,6 +573,7 @@ MODULE Gear(input)
 [5]the path of barrier added
 [6]cross point ignored
 [7]back_path disable
+[8] how to do? limit the border
 --/
 
 /--Do to
@@ -610,6 +583,8 @@ can_in change to module not array anymore,but later undone;
 
 --/
 /--Problem
-unknown crash, seems like infinate state change over limits
+?unknown crash, seems like infinate state change over limits
+:add <=7:7 temporary
 
+?what kind of state should be var
 --/

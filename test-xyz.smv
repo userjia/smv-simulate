@@ -18,4 +18,4 @@ MODULE main
         ad:=xm+ym+zm;
 
     INVARSPEC
-        ad!=10|zm=6;
+        ad!=10;

@@ -172,6 +172,10 @@ MODULE DoubleEyeCamera(simulate)
 		y:=car_position[1];
 		car_angle:=simulate.car_angle;
 		erro:=[[x,y],[x,y],[x,y]];
+		out0:=[[x+1,y+1],[x+1,y],[x+1,y+(-1)]];
+		out2:=[[x+(-1),y+1],[x,y+1],[x+1,y+1]];
+		out4:=[[x+(-1),y+(-1)],[x+(-1),y],[x+(-1),y+1]];
+		out6:=[[x+1,y+(-1)],[x,y+(-1)],[x+(-1),y+(-1)]];
 		out:=
 		case
 			car_angle=0:out0;
@@ -181,10 +185,7 @@ MODULE DoubleEyeCamera(simulate)
 			TRUE:erro;
 		esac;
 		
-		out0:=[[x+1,y+1],[x+1,y],[x+1,y+(-1)]];
-		out2:=[[x+(-1),y+1],[x,y+1],[x+1,y+1]];
-		out4:=[[x+(-1),y+(-1)],[x+(-1),y],[x+(-1),y+1]];
-		out6:=[[x+1,y+(-1)],[x,y+(-1)],[x+(-1),y+(-1)]];
+
 
 MODULE WheelSpeed(input)
 	DEFINE
@@ -287,8 +288,9 @@ MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 		--Ve:=can_in[0];
 		trace:=
 		case
-			back_path.trace[1][0]!=-1:back_path.trace;
 			foward_path.trace[1][0]!=-1:foward_path.trace;
+			--[7]
+			--back_path.trace[1][0]!=-1:back_path.trace;
 			TRUE:foward_path.trace;
 		esac;
 		
@@ -325,7 +327,6 @@ MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 		next(gear):=
 		case
 			ultrasonic_info=1:0;
-			(Xe=X0)&(Ye=Y0):0;
 			TRUE:gear;
 		esac;
 
@@ -377,6 +378,10 @@ MODULE comp_ctl(trace,plan_stop,can_in)
 			(car_angle=0)&(dx=-1):-1;
 			(car_angle=4)&(dx=1):-1;
 			(car_angle=4)&(dx=-1):1;
+			(car_angle=2)&(dy=1):1;
+			(car_angle=2)&(dy=-1):-1;
+			(car_angle=6)&(dy=1):-1;
+			(car_angle=6)&(dy=-1):1;
 			TRUE:0;
 		esac;
 
@@ -386,6 +391,10 @@ MODULE comp_ctl(trace,plan_stop,can_in)
 			(car_angle=0)&(dy=-1):1;
 			(car_angle=4)&(dy=1):-1;
 			(car_angle=4)&(dy=-1):1;
+			(car_angle=2)&(dx=1):1;
+			(car_angle=2)&(dx=-1):-1;
+			(car_angle=6)&(dx=1):-1;
+			(car_angle=6)&(dx=-1):1;
 			TRUE:0;
 		esac;
 
@@ -591,6 +600,7 @@ MODULE Gear(input)
 [4]next=next?
 [5]the path of barrier added
 [6]cross point ignored
+[7]back_path disable
 --/
 
 /--Do to

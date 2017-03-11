@@ -1,0 +1,116 @@
+init
+trans
+prop
+(`and` (`and` (`=_int` Xm.v__AT0 0) (`=_int` Ym.v__AT0 0)) (`=_int` Zm.v__AT0 0))
+(`and` (`and` (`or` (`=_int` (`+_int` Xm.v__AT0 (`*_int` -1 Xm.v__AT1)) -1) (`=_int` Xm.v__AT0 Xm.v__AT1)) (`or` (`=_int` (`+_int` Ym.v__AT0 (`*_int` -1 Ym.v__AT1)) -2) (`=_int` Ym.v__AT0 Ym.v__AT1))) (`or` (`=_int` (`+_int` Zm.v__AT0 (`*_int` -1 Zm.v__AT1)) -3) (`=_int` Zm.v__AT0 Zm.v__AT1)))
+(`not` (`=_int` (`+_int` Xm.v__AT0 (`+_int` Ym.v__AT0 Zm.v__AT0)) 10))
+parsed system with 3 state variables
+adding predicate 1: .pred.4 := (= Xm.v__AT0 0)
+adding predicate 2: .pred.6 := (= Ym.v__AT0 0)
+adding predicate 3: .pred.8 := (= Zm.v__AT0 0)
+adding predicate 4: .pred.10 := (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10)
+initialized IC3: 3 state vars, 0 input vars, 4 predicates
+current frames:
+frame[1] := {
+}
+
+unsat assumption: .pred.10
+got bad cube of size 1: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+looking at proof obligation of size 1 at idx 1: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+unsat assumption: .pred_next.11
+unsat assumption: .trans.2
+unsat assumption: .init.1
+CTI successfully blocked: subcube of size 1 is inductive relative to frame 0: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+trying to generalize cube of size 1 at 1: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+adding cube of size 1 at level 1: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+1: 1
+trying to propagate cube of size 1: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ] from 1 to 2
+current frames:
+frame[1] := frame[2] + {
+   [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+}
+frame[2] := {
+}
+
+unsat assumption: .pred.10
+got bad cube of size 1: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+looking at proof obligation of size 1 at idx 2: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+got CTI of size 4: [ (= Xm.v__AT0 0) (= Zm.v__AT0 0) ~(= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ~(= Ym.v__AT0 0) ]
+looking at proof obligation of size 4 at idx 1: [ (= Xm.v__AT0 0) (= Zm.v__AT0 0) ~(= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ~(= Ym.v__AT0 0) ]
+got CTI of size 4: [ (= Xm.v__AT0 0) (= Ym.v__AT0 0) (= Zm.v__AT0 0) ~(= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+looking at proof obligation of size 4 at idx 0: [ (= Xm.v__AT0 0) (= Ym.v__AT0 0) (= Zm.v__AT0 0) ~(= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+trying to refine cex of length 3
+entering abstraction refinement
+abstract state 0: (and (and (and (= Xm.v__AT0 0) (= Ym.v__AT0 0)) (= Zm.v__AT0 0)) (not (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10)))
+abstract state 1: (and (not (= Ym.v__AT0 0)) (and (not (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10)) (and (= Xm.v__AT0 0) (= Zm.v__AT0 0))))
+abstract state 2: (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10)
+counterexample is spurious, extracting interpolants
+got interpolant 1: (or (= Ym.v__AT0@1 0) (<= Ym.v__AT0@1 2))
+got interpolant 2: (let ((.def_273 (+ Zm.v__AT0@2 (+ Ym.v__AT0@2 Xm.v__AT0@2)))) (let ((.def_341 (not (<= .def_273 5)))) (let ((.def_342 (and (= 10 .def_273) .def_341))) (let ((.def_347 (and .def_342 (and (and .def_342 (not (<= .def_273 7))) (not (<= .def_273 4)))))) (let ((.def_351 (and .def_347 (and (and .def_341 .def_347) (not (<= .def_273 3)))))) (not (and .def_347 (and .def_351 (and (and .def_347 (and .def_351 (not (<= .def_273 6)))) (not (<= .def_273 8)))))))))))
+adding predicate 5: .pred.14 := (<= Ym.v__AT0 2)
+refinement added 1 new predicates
+unsat assumption: .pred.10
+got bad cube of size 1: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+looking at proof obligation of size 1 at idx 2: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+got CTI of size 5: [ (= Xm.v__AT0 0) (= Zm.v__AT0 0) ~(= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ~(= Ym.v__AT0 0) ~(<= Ym.v__AT0 2) ]
+looking at proof obligation of size 5 at idx 1: [ (= Xm.v__AT0 0) (= Zm.v__AT0 0) ~(= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ~(= Ym.v__AT0 0) ~(<= Ym.v__AT0 2) ]
+unsat assumption: (not .pred_next.15)
+unsat assumption: .trans.2
+unsat assumption: .init.1
+CTI successfully blocked: subcube of size 1 is inductive relative to frame 0: [ ~(<= Ym.v__AT0 2) ]
+trying to generalize cube of size 1 at 1: [ ~(<= Ym.v__AT0 2) ]
+adding cube of size 1 at level 1: [ ~(<= Ym.v__AT0 2) ]
+looking at proof obligation of size 1 at idx 2: [ (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ]
+got CTI of size 5: [ (= Xm.v__AT0 0) ~(= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ~(= Ym.v__AT0 0) ~(= Zm.v__AT0 0) (<= Ym.v__AT0 2) ]
+looking at proof obligation of size 5 at idx 1: [ (= Xm.v__AT0 0) ~(= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) ~(= Ym.v__AT0 0) ~(= Zm.v__AT0 0) (<= Ym.v__AT0 2) ]
+got CTI of size 5: [ (= Xm.v__AT0 0) (= Ym.v__AT0 0) (= Zm.v__AT0 0) ~(= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) (<= Ym.v__AT0 2) ]
+looking at proof obligation of size 5 at idx 0: [ (= Xm.v__AT0 0) (= Ym.v__AT0 0) (= Zm.v__AT0 0) ~(= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10) (<= Ym.v__AT0 2) ]
+trying to refine cex of length 3
+entering abstraction refinement
+abstract state 0: (and (and (and (and (= Xm.v__AT0 0) (= Ym.v__AT0 0)) (= Zm.v__AT0 0)) (not (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10))) (<= Ym.v__AT0 2))
+abstract state 1: (and (<= Ym.v__AT0 2) (and (not (= Zm.v__AT0 0)) (and (not (= Ym.v__AT0 0)) (and (= Xm.v__AT0 0) (not (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10))))))
+abstract state 2: (= (+ Xm.v__AT0 (+ Ym.v__AT0 Zm.v__AT0)) 10)
+counterexample is real
+found counterexample at depth 2
+counterexample
+;; step 0
+(and
+  (= Xm.v__AT0 0)
+  (= Ym.v__AT0 0)
+  (= Zm.v__AT0 0)
+)
+;; step 1
+(and
+  (= Xm.v__AT0 0)
+  (= Ym.v__AT0 2)
+  (= Zm.v__AT0 3)
+)
+;; step 2
+(and
+  (= Xm.v__AT0 0)
+  (= Ym.v__AT0 4)
+  (= Zm.v__AT0 6)
+)
+num_solve_calls = 33
+num_solve_sat_calls = 16
+num_solve_unsat_calls = 17
+num_solver_reset = 0
+num_added_cubes = 2
+num_subsumed_cubes = 0
+num_block = 8
+num_refinements = 2
+num_predicates = 5
+max_cube_size = 1
+avg_cube_size = 1.000
+solve_time = 0.007
+solve_sat_time = 0.003
+solve_unsat_time = 0.002
+block_time = 0.003
+generalize_and_push_time = 0.000
+rec_block_time = 0.019
+propagate_time = 0.000
+refinement_time = 0.013
+total_time = 0.022
+unsafe
+
+Process finished with exit code 0

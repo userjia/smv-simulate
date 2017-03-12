@@ -157,7 +157,14 @@ MODULE AroundCamera(simulate)
 		car_position:=simulate.car_position;
 		x:=car_position[0];
 		y:=car_position[1];
-		around_ports:=[[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)]];
+		around_ports:=
+		case
+		
+		
+		out0:=[[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)]];
+		out2:=[[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)],[x+1,y],[x+1,y+1]];
+		out4:=[[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)],[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1]];
+		out6:=[[x,y+(-1)],[x+1,y+(-1)],[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)]];
 
 MODULE DoubleEyeCamera(simulate)
 	DEFINE
@@ -228,7 +235,7 @@ MODULE TX1(input_signal,simulate)
 		I2C_out:=target.out;
 
 --===================================
-MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
+MODULE comp_plan(ultrasonic_info,around_ports,eye_info,can_in)
 	VAR
 		--port enviroment
 		garage:{0,1};
@@ -242,7 +249,7 @@ MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 
 		--reckon
 		stop:comp_stop(trace,ultrasonic_info,can_in);
-		back_path:comp_back(around_valuePort,can_in);
+		back_path:comp_back(around_ports,can_in);
 		foward_path:comp_foward(eye_info,can_in);
 		
 	DEFINE
@@ -256,7 +263,8 @@ MODULE comp_plan(ultrasonic_info,around_valuePort,eye_info,can_in)
 		trace:=
 		case
 			foward_path.trace[1][0]!=-1:foward_path.trace;
-			--[7]back_path.trace[1][0]!=-1:back_path.trace;
+			--back_mode
+			(back_mode=1)&(back_path.trace[1][0]!=-1):back_path.trace;
 			TRUE:foward_path.trace;
 		esac;
 		
@@ -403,9 +411,15 @@ MODULE comp_back(around_valuePort,can_in)
 		no_port:=[-1,-1];
 		plan_point:=
 		case
-			around_valuePort[0][0]!=-1:around_valuePort[0];
-			around_valuePort[1][0]!=-1:around_valuePort[1];
-			around_valuePort[2][0]!=-1:around_valuePort[2];
+			around_ports[3][0]!=-1:around_ports[3];
+			around_ports[4][0]!=-1:around_ports[4];
+			around_ports[5][0]!=-1:around_ports[5];
+			around_ports[2][0]!=-1:around_ports[2];
+			around_ports[6][0]!=-1:around_ports[6];
+			around_ports[0][0]!=-1:around_ports[0];
+			around_ports[1][0]!=-1:around_ports[1];
+			around_ports[7][0]!=-1:around_ports[7];
+
 			TRUE:no_port;
 		esac;
 		
@@ -417,22 +431,24 @@ MODULE comp_ultrasonic(input)
 		
 MODULE comp_around(around_signal,simulate)
 	VAR
-		compare_value_port1:compare_cordinate(carport[0],ports,7);
-		compare_value_port2:compare_cordinate(carport[1],ports,7);
-		compare_value_port3:compare_cordinate(carport[2],ports,7);
+		compare_port0:compare_cordinate(ports[0],carports,2);
+		compare_port1:compare_cordinate(ports[1],carports,2);
+		compare_port2:compare_cordinate(ports[2],carports,2);
+		compare_port3:compare_cordinate(ports[3],carports,2);
+		compare_port4:compare_cordinate(ports[4],carports,2);
+		compare_port5:compare_cordinate(ports[5],carports,2);
+		compare_port6:compare_cordinate(ports[6],carports,2);
+		compare_port7:compare_cordinate(ports[7],carports,2);
 	DEFINE
 		--light:input[0];
 		--scene:input[1];
 		ports:=around_signal;
-		carport:=simulate.carports;
+		carports:=simulate.carports;
 		carport_car:=simulate.carport_car;
 		test:=[1,1];
-		out:=[valuePort1,valuePort2,valuePort3];
+		out:=[compare_port0.out,compare_port1.out,compare_port2.out,compare_port3.out,compare_port4.out,compare_port5.out,compare_port6.out,compare_port7.out];
 
 		--[2] integer can't be case, replace port itself?
-		valuePort1:=compare_value_port1.out;
-		valuePort2:=compare_value_port2.out;
-		valuePort3:=compare_value_port3.out;
 
 MODULE comp_double(eye_signal,simulate)
 	VAR

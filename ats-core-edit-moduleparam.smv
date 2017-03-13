@@ -29,7 +29,7 @@ MODULE Simulate(car)
 		--a circle in x,y cordinary
 		road:=[[0,0],[0,1],[0,2],[1,2],[2,2],[3,2],[4,2],[4,1],[4,0],[3,0],[2,0],[1,0]];
 		carports:=[[1,1],[2,1],[3,1]];
-		carport_car:=[1,1,0];
+		carport_car:=[1,0,1];
 		cross:=[[0,0],[0,2],[4,2],[4,0]];
 		car_position:=[x,y];
 		
@@ -157,13 +157,20 @@ MODULE AroundCamera(simulate)
 		car_position:=simulate.car_position;
 		x:=car_position[0];
 		y:=car_position[1];
-		around_ports:=
-		case
-		
+		car_angle:=simulate.car_angle;
+		erro:=[[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1]];
 		out0:=[[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)]];
 		out2:=[[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)],[x+1,y],[x+1,y+1]];
 		out4:=[[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)],[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1]];
 		out6:=[[x,y+(-1)],[x+1,y+(-1)],[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)]];
+		around_ports:=
+		case
+			car_angle=0:out0;
+			car_angle=2:out2;
+			car_angle=4:out4;
+			car_angle=6:out6;
+			TRUE:erro;
+		esac;
 
 MODULE DoubleEyeCamera(simulate)
 	DEFINE
@@ -258,7 +265,7 @@ MODULE comp_plan(ultrasonic_info,around,eye_info,can_in)
 		--Ve:=can_in[0];
 		--flag:=[gear,plan_stop,followLine,parallel,tinyAdjust]
 		
-		around_ports=around.out;
+		around_ports:=around.out;
 		back_mode:=1;
 		isInPort:=around.isInPort;
 		plan_stop:=stop.isStop;
@@ -346,7 +353,7 @@ MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 		init(cmd_isStop):=0;
 		next(cmd_gear):=
 		case
-			isInPort:0;
+			isInPort[0]!=-1:0;
 			(car_angle=0)&(dx=1):1;
 			(car_angle=0)&(dx=-1):-1;
 			(car_angle=4)&(dx=1):-1;
@@ -360,7 +367,7 @@ MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 
 		next(cmd_angle):=
 		case
-			isInPort:0;
+			isInPort[0]!=-1:0;
 			(car_angle=0)&(dy=1):-1;
 			(car_angle=0)&(dy=-1):1;
 			(car_angle=4)&(dy=1):1;
@@ -406,19 +413,19 @@ MODULE comp_foward(eye_info,can_in)
 		--[5]barrier
 		--[6]cross point
 
-MODULE comp_back(around_valuePort,can_in)
+MODULE comp_back(around_ports,can_in)
 	DEFINE
 		no_port:=[-1,-1];
 		plan_point:=
 		case
 			around_ports[3][0]!=-1:around_ports[3];
-			around_ports[4][0]!=-1:around_ports[4];
+			--around_ports[4][0]!=-1:around_ports[4];
 			around_ports[5][0]!=-1:around_ports[5];
-			around_ports[2][0]!=-1:around_ports[2];
-			around_ports[6][0]!=-1:around_ports[6];
-			around_ports[0][0]!=-1:around_ports[0];
-			around_ports[1][0]!=-1:around_ports[1];
-			around_ports[7][0]!=-1:around_ports[7];
+			--around_ports[2][0]!=-1:around_ports[2];
+			--around_ports[6][0]!=-1:around_ports[6];
+			--around_ports[0][0]!=-1:around_ports[0];
+			--around_ports[1][0]!=-1:around_ports[1];
+			--around_ports[7][0]!=-1:around_ports[7];
 
 			TRUE:no_port;
 		esac;

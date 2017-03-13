@@ -160,7 +160,6 @@ MODULE AroundCamera(simulate)
 		around_ports:=
 		case
 		
-		
 		out0:=[[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)]];
 		out2:=[[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)],[x+1,y],[x+1,y+1]];
 		out4:=[[x+(-1),y],[x+(-1),y+(-1)],[x,y+(-1)],[x+1,y+(-1)],[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1]];
@@ -221,8 +220,8 @@ MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,simulate)
 	VAR
 		ultrasonic:comp_ultrasonic(ultrasonic_signal);
 		around:comp_around(around_signal,simulate);
-		plan:comp_plan(ultrasonic.out,around.out,I2C_input,can_in);
-		plan_ctl:comp_ctl(plan.trace,plan.plan_stop,can_in);
+		plan:comp_plan(ultrasonic.out,around,I2C_input,can_in);
+		plan_ctl:comp_ctl(plan.trace,plan.plan_stop,plan.isInPort,can_in);
 
 	DEFINE
 		can_out:=plan_ctl.control;
@@ -235,7 +234,7 @@ MODULE TX1(input_signal,simulate)
 		I2C_out:=target.out;
 
 --===================================
-MODULE comp_plan(ultrasonic_info,around_ports,eye_info,can_in)
+MODULE comp_plan(ultrasonic_info,around,eye_info,can_in)
 	VAR
 		--port enviroment
 		garage:{0,1};
@@ -248,7 +247,7 @@ MODULE comp_plan(ultrasonic_info,around_ports,eye_info,can_in)
 		garage_type:{isLine,isGarage};
 
 		--reckon
-		stop:comp_stop(trace,ultrasonic_info,can_in);
+		stop:comp_stop(trace,ultrasonic_info,isInPort,can_in);
 		back_path:comp_back(around_ports,can_in);
 		foward_path:comp_foward(eye_info,can_in);
 		
@@ -257,14 +256,16 @@ MODULE comp_plan(ultrasonic_info,around_ports,eye_info,can_in)
 		around_info:=[1,isLine];
 		parallel:=around_info[0];
 		--Ve:=can_in[0];
-		--flag:=[gear,plan_stop,followLine,parallel,tinyAdjust];
+		--flag:=[gear,plan_stop,followLine,parallel,tinyAdjust]
 		
+		around_ports=around.out;
+		back_mode:=1;
+		isInPort:=around.isInPort;
 		plan_stop:=stop.isStop;
 		trace:=
 		case
-			foward_path.trace[1][0]!=-1:foward_path.trace;
-			--back_mode
 			(back_mode=1)&(back_path.trace[1][0]!=-1):back_path.trace;
+			foward_path.trace[1][0]!=-1:foward_path.trace;
 			TRUE:foward_path.trace;
 		esac;
 		
@@ -314,7 +315,7 @@ MODULE comp_plan(ultrasonic_info,around_ports,eye_info,can_in)
 			TRUE:tinyAdjust;
 		esac;
 
-MODULE comp_ctl(trace,plan_stop,can_in)
+MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 	VAR
 		PID1:runDis();
 		angle:runAngle();
@@ -345,6 +346,7 @@ MODULE comp_ctl(trace,plan_stop,can_in)
 		init(cmd_isStop):=0;
 		next(cmd_gear):=
 		case
+			isInPort:0;
 			(car_angle=0)&(dx=1):1;
 			(car_angle=0)&(dx=-1):-1;
 			(car_angle=4)&(dx=1):-1;
@@ -358,6 +360,7 @@ MODULE comp_ctl(trace,plan_stop,can_in)
 
 		next(cmd_angle):=
 		case
+			isInPort:0;
 			(car_angle=0)&(dy=1):-1;
 			(car_angle=0)&(dy=-1):1;
 			(car_angle=4)&(dy=1):1;
@@ -378,10 +381,7 @@ MODULE comp_ctl(trace,plan_stop,can_in)
 		--[4]can?
 		next(cmd_speed):=next(cmd_gear);
 
-MODULE comp_stop(trace,ultrasonic_info,can_in)
-	VAR
-		-- state flag, 0 normal, 1 speed down, 2 stop
-		isStop:{0,1,2};
+MODULE comp_stop(trace,ultrasonic_info,isInPort,can_in)
 	DEFINE
 		--the target speed;
 		--velo:=can_in.car_speed;
@@ -389,13 +389,13 @@ MODULE comp_stop(trace,ultrasonic_info,can_in)
 		
 		plan_point:=trace[1];
 		car_position:=trace[0];
-	ASSIGN
-		init(isStop):=0;
-		next(isStop):=
+		-- state flag, 0 normal, 1 speed down, 2 stop
+		isStop:=
 		case
+			isInPort[0]!=-1:2;
 			(plan_point[1]+car_position[1]=0)&(plan_point[0]+car_position[0]=0):2;
 			(ultrasonic_info=1):2;
-			TRUE:isStop;
+			TRUE:0;
 		esac;
 
 MODULE comp_foward(eye_info,can_in)
@@ -439,6 +439,7 @@ MODULE comp_around(around_signal,simulate)
 		compare_port5:compare_cordinate(ports[5],carports,2);
 		compare_port6:compare_cordinate(ports[6],carports,2);
 		compare_port7:compare_cordinate(ports[7],carports,2);
+		compare_port_self:compare_cordinate(simulate.car_position,carports,2);
 	DEFINE
 		--light:input[0];
 		--scene:input[1];
@@ -447,8 +448,8 @@ MODULE comp_around(around_signal,simulate)
 		carport_car:=simulate.carport_car;
 		test:=[1,1];
 		out:=[compare_port0.out,compare_port1.out,compare_port2.out,compare_port3.out,compare_port4.out,compare_port5.out,compare_port6.out,compare_port7.out];
-
-		--[2] integer can't be case, replace port itself?
+		isInPort:=compare_port_self.out;
+		
 
 MODULE comp_double(eye_signal,simulate)
 	VAR

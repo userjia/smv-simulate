@@ -23,7 +23,7 @@ MODULE Simulate(car)
 		
 	--clock to sync with board compute late
 		i:{0,1,2};
-
+	
 	--INVARSPEC
 	DEFINE
 		--a circle in x,y cordinary
@@ -38,6 +38,15 @@ MODULE Simulate(car)
 		
 		--barrier:=[[-1,-1]];
 		barrier:=0;
+		
+		--around info
+		svphoto:=1;
+		points:=2;
+		validPoints:=2;
+		validLines:=1;
+		validSlots=1;
+		totalDetectTime=29;
+		slot_info:=[svphoto,points,validPoints,validLines,validSlots,totalDetectTime];
 		
 	ASSIGN
 		init(x):=0;
@@ -447,6 +456,8 @@ MODULE comp_around(around_signal,simulate)
 		compare_port6:compare_cordinate(ports[6],carports,2);
 		compare_port7:compare_cordinate(ports[7],carports,2);
 		compare_port_self:compare_cordinate(simulate.car_position,carports,2);
+		
+		currentState:{receive,MarkingPointDetection,ParkingLineCandidate,removeInvalidLine,verifyParkingLine,getParkingSlot};
 	DEFINE
 		--light:input[0];
 		--scene:input[1];
@@ -454,8 +465,31 @@ MODULE comp_around(around_signal,simulate)
 		carports:=simulate.carports;
 		carport_car:=simulate.carport_car;
 		test:=[1,1];
-		out:=[compare_port0.out,compare_port1.out,compare_port2.out,compare_port3.out,compare_port4.out,compare_port5.out,compare_port6.out,compare_port7.out];
+		
+		out1:=[compare_port0.out,compare_port1.out,compare_port2.out,compare_port3.out,compare_port4.out,compare_port5.out,compare_port6.out,compare_port7.out];
+		out0:=[no_port,no_port,no_port,no_port,no_port,no_port,no_port,no_port];
 		isInPort:=compare_port_self.out;
+		no_port:=[-1,-1];
+		
+		out:=
+		case
+			currentState=getParkingSlot:out1;
+			TRUE:out0;
+		esac;
+		
+	ASSIGN
+		init(currentState):=receive;
+		next(currentState):=
+		case
+			simulate.svphoto=1:MarkingPointDetection;
+			(currentState=MarkingPointDetection)&(simulate.points>=2):ParkingLineCandidate;
+			(currentState=ParkingLineCandidate)&(simulate.validPoints>=2):removeInvalidLine;
+			(currentState=removeInvalidLine)&(simulate.validLines>=1):verifyParkingLine;
+			(currentState=verifyParkingLine)&(simulate.validSlots>=1):getParkingSlot;
+			simulate.totalDetectTime<30:removeInvalidLine;
+			TRUE:removeInvalidLine;
+		esac;
+			
 		
 
 MODULE comp_double(eye_signal,simulate)
@@ -596,6 +630,11 @@ MODULE cross()
 
 !未加入道路识别，导致模型相互矛盾？？？
 先以环绕行走开始
+
+2017-4-4 
+加入环视库位检测，slot-info 通过simulate传递
+!？如何实现事件的触发
+注意库位检测是状态改变，可能模拟的时候要考虑时间迁移
 --/
 
 /-- TODO

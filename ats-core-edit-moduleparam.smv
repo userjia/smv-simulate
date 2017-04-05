@@ -23,6 +23,7 @@ MODULE Simulate(car)
 
 	--clock to sync with board compute late
 		i:{0,1,2};
+		start:{0,1};
 
 	--INVARSPEC
 	DEFINE
@@ -51,19 +52,25 @@ MODULE Simulate(car)
 	ASSIGN
 		init(x):=0;
 		init(y):=0;
-		init(i):=1;
+		init(i):=0;
 		init(car_angle):=2;
+		init(start):=1;
 
 		next(i):=
 		case
-			i!=2:i+1;
+			start=1:1;
+			i=1:2;
+			i=2:0;
+			car.car_complete=1:1;
 			TRUE:0;
 		esac;
+
+		next(start):=0;
 
 		next(x):=
 		case
 			--[8] how to do? limit the border
-			i!=0:x;
+			car.car_complete!=1:x;
 			x>=7:7;
 			x<=-1:-1;
 			(car.car_speed=1)&(car_angle=0):x+1;
@@ -79,7 +86,7 @@ MODULE Simulate(car)
 
 		next(y):=
 		case
-			i!=0:y;
+			car.car_complete!=1:y;
 			y>=3:y;
 			y<=-1:-1;
 			(car.car_speed=1)&(car_angle=2):y+1;
@@ -95,7 +102,7 @@ MODULE Simulate(car)
 
 		next(car_angle):=
 		case
-			i!=0:car_angle;
+			car.car_complete!=1:car_angle;
 			(car.car_speed=1)&(car_angle=2)&(car.car_wheelAngle=1):0;
 			(car.car_speed=1)&(car_angle=0)&(car.car_wheelAngle=1):6;
 			(car.car_speed=1)&(car_angle=6)&(car.car_wheelAngle=1):4;
@@ -114,12 +121,14 @@ MODULE Car(actuator)
 		car_wheelAngle:{-1,0,1};
 		car_brake:{0,1};
 		car_gear:{-1,0,1};
+		car_complete:{1,0};
 
 	ASSIGN
 		init(car_speed):=0;
 		init(car_wheelAngle):=0;
 		init(car_brake):=0;
 		init(car_gear):=0;
+		init(car_complete):=0;
 
 		next(car_wheelAngle):=actuator.steerWheel;
 		next(car_speed):=
@@ -129,6 +138,7 @@ MODULE Car(actuator)
 		esac;
 		next(car_brake):=actuator.brake;
 		next(car_gear):=actuator.gear;
+		next(car_complete):=actuator.complete;
 
 --===================================ats
 MODULE ATS(simulate,car)
@@ -155,6 +165,7 @@ MODULE ActuatorSystem(ctl_sys)
 		engine:=actuator_engine.out;
 		brake:=actuator_brake.out;
 		gear:=actuator_gear.out;
+		complete:=ctl_sys.complete;
 
 --===================================--sensor
 MODULE Ultrasonic(simulate)
@@ -174,6 +185,7 @@ MODULE AroundCamera(simulate)
 		out6:=[[x,y+(-1)],[x+1,y+(-1)],[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)]];
 		around_ports:=
 		case
+			simulate.i!=2:erro;
 			car_angle=0:out0;
 			car_angle=2:out2;
 			car_angle=4:out4;
@@ -195,6 +207,7 @@ MODULE DoubleEyeCamera(simulate)
 		out6:=[[x+1,y+(-1)],[x,y+(-1)],[x+(-1),y+(-1)]];
 		out:=
 		case
+			simulate.i!=2:erro;
 			car_angle=0:out0;
 			car_angle=2:out2;
 			car_angle=4:out4;
@@ -230,6 +243,7 @@ MODULE ControlSystem(input)
 		engine:=input[0];
 		brake:=input[3];
 		gear:=input[2];
+		complete:=input[4];
 
 --===================================
 MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,simulate)
@@ -342,6 +356,7 @@ MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 		cmd_gear:{-1,0,1};
 		cmd_speed:{-1,0,1};
 		cmd_isStop:{0,1};
+		cmd_complete:{0,1};
 	DEFINE
 		--forecase_dis:=1;
 		--PID:=[PID1,PID2];
@@ -351,15 +366,16 @@ MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 		car_angle:=can_in.car_angle;
 
 		plan_point:=trace[1];
-		dx:=(-car_position[0])+(plan_point[0]);
-		dy:=(-car_position[1])+(plan_point[1]);
+		dx:=plan_point[0]=(-1)?0:((-car_position[0])+(plan_point[0]));
+		dy:=plan_point[1]=(-1)?0:((-car_position[1])+(plan_point[1]));
 
-		control:=[cmd_speed,cmd_angle,cmd_gear,cmd_isStop];
+		control:=[cmd_speed,cmd_angle,cmd_gear,cmd_isStop,cmd_complete];
 	ASSIGN
 		init(cmd_angle):=0;
 		init(cmd_speed):=0;
 		init(cmd_gear):=0;
 		init(cmd_isStop):=0;
+		init(cmd_complete):=0;
 		next(cmd_gear):=
 		case
 			isInPort[0]!=-1:0;
@@ -392,6 +408,12 @@ MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 		case
 			plan_stop=2:1;
 			TRUE:cmd_isStop;
+		esac;
+
+		next(cmd_complete):=
+		case
+			(dx!=0)|(dy!=0):1;
+			TRUE:0;
 		esac;
 
 		--[4]can?
@@ -481,6 +503,7 @@ MODULE comp_around(around_signal,simulate)
 		init(currentState):=receive;
 		next(currentState):=
 		case
+			(ports[0][0]=-1)&(ports[0][1]=-1)&(ports[1][0]=-1)&(ports[1][1]=-1):receive;
 			(currentState=receive)&(simulate.svphoto=1):MarkingPointDetection;
 			(currentState=MarkingPointDetection)&(simulate.points>=2):ParkingLineCandidate;
 			(currentState=ParkingLineCandidate)&(simulate.validPoints>=2):removeInvalidLine;

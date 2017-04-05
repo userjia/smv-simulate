@@ -58,10 +58,8 @@ MODULE Simulate(car)
 
 		next(i):=
 		case
-			start=1:1;
-			i=1:2;
-			i=2:0;
-			car.car_complete=1:1;
+			start=1:2;
+			car.statue=2:2;
 			TRUE:0;
 		esac;
 
@@ -70,7 +68,7 @@ MODULE Simulate(car)
 		next(x):=
 		case
 			--[8] how to do? limit the border
-			car.car_complete!=1:x;
+			car.statue!=2:x;
 			x>=7:7;
 			x<=-1:-1;
 			(car.car_speed=1)&(car_angle=0):x+1;
@@ -86,7 +84,7 @@ MODULE Simulate(car)
 
 		next(y):=
 		case
-			car.car_complete!=1:y;
+			car.statue!=2:y;
 			y>=3:y;
 			y<=-1:-1;
 			(car.car_speed=1)&(car_angle=2):y+1;
@@ -102,7 +100,7 @@ MODULE Simulate(car)
 
 		next(car_angle):=
 		case
-			car.car_complete!=1:car_angle;
+			car.statue!=2:car_angle;
 			(car.car_speed=1)&(car_angle=2)&(car.car_wheelAngle=1):0;
 			(car.car_speed=1)&(car_angle=0)&(car.car_wheelAngle=1):6;
 			(car.car_speed=1)&(car_angle=6)&(car.car_wheelAngle=1):4;
@@ -122,6 +120,7 @@ MODULE Car(actuator)
 		car_brake:{0,1};
 		car_gear:{-1,0,1};
 		car_complete:{1,0};
+		statue:{0,1,2};
 
 	ASSIGN
 		init(car_speed):=0;
@@ -129,6 +128,14 @@ MODULE Car(actuator)
 		init(car_brake):=0;
 		init(car_gear):=0;
 		init(car_complete):=0;
+		init(statue):=0;
+
+		next(statue):=
+		case
+			--statue=1:2;
+			actuator.statue=2:2;
+			TRUE:0;
+		esac;
 
 		next(car_wheelAngle):=actuator.steerWheel;
 		next(car_speed):=
@@ -138,7 +145,6 @@ MODULE Car(actuator)
 		esac;
 		next(car_brake):=actuator.brake;
 		next(car_gear):=actuator.gear;
-		next(car_complete):=actuator.complete;
 
 --===================================ats
 MODULE ATS(simulate,car)
@@ -165,7 +171,7 @@ MODULE ActuatorSystem(ctl_sys)
 		engine:=actuator_engine.out;
 		brake:=actuator_brake.out;
 		gear:=actuator_gear.out;
-		complete:=ctl_sys.complete;
+		statue:=ctl_sys.statue;
 
 --===================================--sensor
 MODULE Ultrasonic(simulate)
@@ -185,7 +191,7 @@ MODULE AroundCamera(simulate)
 		out6:=[[x,y+(-1)],[x+1,y+(-1)],[x+1,y],[x+1,y+1],[x,y+1],[x+(-1),y+1],[x+(-1),y],[x+(-1),y+(-1)]];
 		around_ports:=
 		case
-			simulate.i!=2:erro;
+			--simulate.i!=2:erro;
 			car_angle=0:out0;
 			car_angle=2:out2;
 			car_angle=4:out4;
@@ -207,7 +213,7 @@ MODULE DoubleEyeCamera(simulate)
 		out6:=[[x+1,y+(-1)],[x,y+(-1)],[x+(-1),y+(-1)]];
 		out:=
 		case
-			simulate.i!=2:erro;
+			--simulate.i!=2:erro;
 			car_angle=0:out0;
 			car_angle=2:out2;
 			car_angle=4:out4;
@@ -243,7 +249,7 @@ MODULE ControlSystem(input)
 		engine:=input[0];
 		brake:=input[3];
 		gear:=input[2];
-		complete:=input[4];
+		statue:=input[4];
 
 --===================================
 MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,simulate)
@@ -251,7 +257,7 @@ MODULE Rcar(ultrasonic_signal,around_signal,I2C_input,can_in,simulate)
 		ultrasonic:comp_ultrasonic(ultrasonic_signal);
 		around:comp_around(around_signal,simulate);
 		plan:comp_plan(ultrasonic.out,around,I2C_input,can_in);
-		plan_ctl:comp_ctl(plan.trace,plan.plan_stop,plan.isInPort,can_in);
+		plan_ctl:comp_ctl(plan.trace,plan.plan_stop,plan.isInPort,can_in,around);
 
 	DEFINE
 		can_out:=plan_ctl.control;
@@ -280,6 +286,8 @@ MODULE comp_plan(ultrasonic_info,around,eye_info,can_in)
 		stop:comp_stop(trace,ultrasonic_info,isInPort,can_in);
 		back_path:comp_back(around_ports,can_in);
 		foward_path:comp_foward(eye_info,can_in);
+
+		statue:{0,1,2};
 
 	DEFINE
 		--[3]the enviroment value form last version around_info
@@ -314,6 +322,14 @@ MODULE comp_plan(ultrasonic_info,around,eye_info,can_in)
 		init(tinyAdjust):=0;
 		init(garage):=0;
 		init(line):=0;
+		init(statue):=0;
+
+		next(statue):=
+		case
+			statue=1:2;
+			--pre.statue=2:1;
+			TRUE:0;
+		esac;
 
 		next(garage):=
 		case
@@ -345,7 +361,7 @@ MODULE comp_plan(ultrasonic_info,around,eye_info,can_in)
 			TRUE:tinyAdjust;
 		esac;
 
-MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
+MODULE comp_ctl(trace,plan_stop,isInPort,can_in,around)
 	VAR
 		PID1:runDis();
 		angle:runAngle();
@@ -357,6 +373,8 @@ MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 		cmd_speed:{-1,0,1};
 		cmd_isStop:{0,1};
 		cmd_complete:{0,1};
+
+		statue:{0,1,2};
 	DEFINE
 		--forecase_dis:=1;
 		--PID:=[PID1,PID2];
@@ -366,18 +384,27 @@ MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 		car_angle:=can_in.car_angle;
 
 		plan_point:=trace[1];
-		dx:=plan_point[0]=(-1)?0:((-car_position[0])+(plan_point[0]));
-		dy:=plan_point[1]=(-1)?0:((-car_position[1])+(plan_point[1]));
+		dx:=(-car_position[0])+(plan_point[0]);
+		dy:=(-car_position[1])+(plan_point[1]);
 
-		control:=[cmd_speed,cmd_angle,cmd_gear,cmd_isStop,cmd_complete];
+		control:=[cmd_speed,cmd_angle,cmd_gear,cmd_isStop,statue];
 	ASSIGN
 		init(cmd_angle):=0;
 		init(cmd_speed):=0;
 		init(cmd_gear):=0;
 		init(cmd_isStop):=0;
-		init(cmd_complete):=0;
+		init(statue):=0;
+
+		next(statue):=
+		case
+			(dx=-2)&(dy=-2):0;
+			around.statue=2:2;
+			TRUE:0;
+		esac;
+
 		next(cmd_gear):=
 		case
+			around.statue!=2:cmd_gear;
 			isInPort[0]!=-1:0;
 			(car_angle=0)&(dx=1):1;
 			(car_angle=0)&(dx=-1):-1;
@@ -392,6 +419,7 @@ MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 
 		next(cmd_angle):=
 		case
+			around.statue!=2:cmd_gear;
 			isInPort[0]!=-1:0;
 			(car_angle=0)&(dy=1):-1;
 			(car_angle=0)&(dy=-1):1;
@@ -406,14 +434,9 @@ MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 
 		next(cmd_isStop):=
 		case
+			around.statue!=2:cmd_isStop;
 			plan_stop=2:1;
 			TRUE:cmd_isStop;
-		esac;
-
-		next(cmd_complete):=
-		case
-			(dx!=0)|(dy!=0):1;
-			TRUE:0;
 		esac;
 
 		--[4]can?
@@ -480,6 +503,9 @@ MODULE comp_around(around_signal,simulate)
 		compare_port_self:compare_cordinate(simulate.car_position,carports,2);
 
 		currentState:{receive,MarkingPointDetection,ParkingLineCandidate,removeInvalidLine,verifyParkingLine,getParkingSlot};
+
+		statue:{0,1,2};
+
 	DEFINE
 		--light:input[0];
 		--scene:input[1];
@@ -495,21 +521,31 @@ MODULE comp_around(around_signal,simulate)
 
 		out:=
 		case
-			currentState=getParkingSlot:out1;
+			statue=2:out1;
 			TRUE:out0;
 		esac;
 
 	ASSIGN
 		init(currentState):=receive;
+		init(statue):=0;
+
+		next(statue):=
+		case
+			(statue=1)&(currentState=getParkingSlot):2;
+			statue=1:1;
+			simulate.i=2:1;
+			TRUE:0;
+		esac;
+
 		next(currentState):=
 		case
-			(ports[0][0]=-1)&(ports[0][1]=-1)&(ports[1][0]=-1)&(ports[1][1]=-1):receive;
+			statue!=1:receive;
 			(currentState=receive)&(simulate.svphoto=1):MarkingPointDetection;
 			(currentState=MarkingPointDetection)&(simulate.points>=2):ParkingLineCandidate;
 			(currentState=ParkingLineCandidate)&(simulate.validPoints>=2):removeInvalidLine;
 			(currentState=removeInvalidLine)&(simulate.validLines>=1):verifyParkingLine;
 			(currentState=verifyParkingLine)&(simulate.validSlots>=1):getParkingSlot;
-			simulate.totalDetectTime<30:removeInvalidLine;
+			(currentState=verifyParkingLine)&(simulate.totalDetectTime<30):removeInvalidLine;
 			TRUE:receive;
 		esac;
 

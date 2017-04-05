@@ -9,10 +9,21 @@ MODULE Param(i,add)
 MODULE ParamCt(i,add)
     VAR
         v:integer;
+	test:{1,0};
     INIT
         v=i;
     TRANS
         next(v)=v+add;
+    
+	ASSIGN
+	init(test):=0;
+	next(test):=
+	case
+		v=4:1;
+		v=2:1;
+		v=3:test;
+		TRUE:test;
+	esac;
 
 MODULE main
     VAR

@@ -1,0 +1,31 @@
+MODULE Param(i,add)
+    VAR
+        v:integer;
+    INIT
+        v=i;
+    TRANS
+        next(v)=v+add | next(v)=v;
+
+MODULE ParamCt(i,add)
+    VAR
+        v:integer;
+    INIT
+        v=i;
+    TRANS
+        next(v)=v+add;
+
+MODULE main
+    VAR
+        Xm:Param(0,1);
+        Ym:Param(0,1);
+        Zm:Param(0,1);
+	i:ParamCt(0,1);
+    DEFINE
+        xm:=Xm.v;
+        ym:=Ym.v;
+        zm:=Zm.v;
+	im:=i.v;
+        ad:=xm+ym+zm;
+
+    INVARSPEC
+        ad!=4;

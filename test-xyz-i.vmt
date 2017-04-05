@@ -32,6 +32,6 @@
 (define-fun .def_44 () Bool (! (and .def_27 .def_43) :trans true))
 (define-fun .def_48 () Int (+ .def_8 .def_9))
 (define-fun .def_49 () Int (+ .def_7 .def_48))
-(define-fun .def_50 () Bool (= .def_49 20))
+(define-fun .def_50 () Bool (= .def_49 10))
 (define-fun .def_51 () Bool (! (not .def_50) :invar-property 0))
 (assert true)

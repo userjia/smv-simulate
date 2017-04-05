@@ -20,10 +20,10 @@ MODULE Simulate(car)
 		/--x:integer;
 		y:integer;
 		car_angle:integer;--/
-		
+
 	--clock to sync with board compute late
 		i:{0,1,2};
-	
+
 	--INVARSPEC
 	DEFINE
 		--a circle in x,y cordinary
@@ -32,34 +32,34 @@ MODULE Simulate(car)
 		carport_car:=[1,0,1];
 		cross:=[[0,0],[0,2],[4,2],[4,0]];
 		car_position:=[x,y];
-		
+
 		--[1] how to represent?
 		carport_type:={isLine};
-		
+
 		--barrier:=[[-1,-1]];
 		barrier:=0;
-		
+
 		--around info
 		svphoto:=1;
 		points:=2;
 		validPoints:=2;
 		validLines:=1;
-		validSlots=1;
-		totalDetectTime=29;
+		validSlots:=1;
+		totalDetectTime:=29;
 		slot_info:=[svphoto,points,validPoints,validLines,validSlots,totalDetectTime];
-		
+
 	ASSIGN
 		init(x):=0;
 		init(y):=0;
 		init(i):=1;
 		init(car_angle):=2;
-		
+
 		next(i):=
 		case
 			i!=2:i+1;
 			TRUE:0;
 		esac;
-		
+
 		next(x):=
 		case
 			--[8] how to do? limit the border
@@ -76,7 +76,7 @@ MODULE Simulate(car)
 			(car.car_speed!=0)&(car_angle=6)&(car.car_wheelAngle=-1):x+1;
 			TRUE:x;
 		esac;
-		
+
 		next(y):=
 		case
 			i!=0:y;
@@ -92,7 +92,7 @@ MODULE Simulate(car)
 			(car.car_speed!=0)&(car_angle=0)&(car.car_wheelAngle=-1):y+1;
 			TRUE:y;
 		esac;
-		
+
 		next(car_angle):=
 		case
 			i!=0:car_angle;
@@ -106,7 +106,7 @@ MODULE Simulate(car)
 			(car.car_speed=1)&(car_angle=4)&(car.car_wheelAngle=-1):6;
 			TRUE:car_angle;
 		esac;
-		
+
 
 MODULE Car(actuator)
 	VAR
@@ -120,7 +120,7 @@ MODULE Car(actuator)
 		init(car_wheelAngle):=0;
 		init(car_brake):=0;
 		init(car_gear):=0;
-		
+
 		next(car_wheelAngle):=actuator.steerWheel;
 		next(car_speed):=
 		case
@@ -129,7 +129,7 @@ MODULE Car(actuator)
 		esac;
 		next(car_brake):=actuator.brake;
 		next(car_gear):=actuator.gear;
-		
+
 --===================================ats
 MODULE ATS(simulate,car)
 	VAR
@@ -201,7 +201,7 @@ MODULE DoubleEyeCamera(simulate)
 			car_angle=6:out6;
 			TRUE:erro;
 		esac;
-		
+
 --===================================
 MODULE CarIner(car,simulate)
 	VAR
@@ -266,14 +266,14 @@ MODULE comp_plan(ultrasonic_info,around,eye_info,can_in)
 		stop:comp_stop(trace,ultrasonic_info,isInPort,can_in);
 		back_path:comp_back(around_ports,can_in);
 		foward_path:comp_foward(eye_info,can_in);
-		
+
 	DEFINE
 		--[3]the enviroment value form last version around_info
 		around_info:=[1,isLine];
 		parallel:=around_info[0];
 		--Ve:=can_in[0];
 		--flag:=[gear,plan_stop,followLine,parallel,tinyAdjust]
-		
+
 		around_ports:=around.out;
 		back_mode:=1;
 		isInPort:=around.isInPort;
@@ -284,15 +284,15 @@ MODULE comp_plan(ultrasonic_info,around,eye_info,can_in)
 			foward_path.trace[1][0]!=-1:foward_path.trace;
 			TRUE:foward_path.trace;
 		esac;
-		
+
 		tar_pos:=back_path.plan_point;
 		Xe:=tar_pos[0];
 		Ye:=tar_pos[1];
-		
+
 		car_position:=can_in.car_position;
 		X0:=car_position[0];
 		Y0:=car_position[1];
-		
+
 		--compute the cmd to ctl;
 	ASSIGN
 		init(gear):=0;
@@ -346,14 +346,14 @@ MODULE comp_ctl(trace,plan_stop,isInPort,can_in)
 		--forecase_dis:=1;
 		--PID:=[PID1,PID2];
 		--cmd_isStop:=0;
-		
+
 		car_position:=can_in.car_position;
 		car_angle:=can_in.car_angle;
-		
+
 		plan_point:=trace[1];
 		dx:=(-car_position[0])+(plan_point[0]);
 		dy:=(-car_position[1])+(plan_point[1]);
-		
+
 		control:=[cmd_speed,cmd_angle,cmd_gear,cmd_isStop];
 	ASSIGN
 		init(cmd_angle):=0;
@@ -402,7 +402,7 @@ MODULE comp_stop(trace,ultrasonic_info,isInPort,can_in)
 		--the target speed;
 		--velo:=can_in.car_speed;
 		--packetStop:=[velo,isStop];
-		
+
 		plan_point:=trace[1];
 		car_position:=trace[0];
 		-- state flag, 0 normal, 1 speed down, 2 stop
@@ -438,13 +438,13 @@ MODULE comp_back(around_ports,can_in)
 
 			TRUE:no_port;
 		esac;
-		
+
 		trace:=[can_in.car_position,plan_point];
 
 MODULE comp_ultrasonic(input)
 	DEFINE
 		out:=input;
-		
+
 MODULE comp_around(around_signal,simulate)
 	VAR
 		compare_port0:compare_cordinate(ports[0],carports,2);
@@ -456,7 +456,7 @@ MODULE comp_around(around_signal,simulate)
 		compare_port6:compare_cordinate(ports[6],carports,2);
 		compare_port7:compare_cordinate(ports[7],carports,2);
 		compare_port_self:compare_cordinate(simulate.car_position,carports,2);
-		
+
 		currentState:{receive,MarkingPointDetection,ParkingLineCandidate,removeInvalidLine,verifyParkingLine,getParkingSlot};
 	DEFINE
 		--light:input[0];
@@ -465,32 +465,32 @@ MODULE comp_around(around_signal,simulate)
 		carports:=simulate.carports;
 		carport_car:=simulate.carport_car;
 		test:=[1,1];
-		
+
 		out1:=[compare_port0.out,compare_port1.out,compare_port2.out,compare_port3.out,compare_port4.out,compare_port5.out,compare_port6.out,compare_port7.out];
 		out0:=[no_port,no_port,no_port,no_port,no_port,no_port,no_port,no_port];
 		isInPort:=compare_port_self.out;
 		no_port:=[-1,-1];
-		
+
 		out:=
 		case
 			currentState=getParkingSlot:out1;
 			TRUE:out0;
 		esac;
-		
+
 	ASSIGN
 		init(currentState):=receive;
 		next(currentState):=
 		case
-			simulate.svphoto=1:MarkingPointDetection;
+			(currentState=receive)&(simulate.svphoto=1):MarkingPointDetection;
 			(currentState=MarkingPointDetection)&(simulate.points>=2):ParkingLineCandidate;
 			(currentState=ParkingLineCandidate)&(simulate.validPoints>=2):removeInvalidLine;
 			(currentState=removeInvalidLine)&(simulate.validLines>=1):verifyParkingLine;
 			(currentState=verifyParkingLine)&(simulate.validSlots>=1):getParkingSlot;
 			simulate.totalDetectTime<30:removeInvalidLine;
-			TRUE:removeInvalidLine;
+			TRUE:receive;
 		esac;
-			
-		
+
+
 
 MODULE comp_double(eye_signal,simulate)
 	VAR
@@ -508,28 +508,28 @@ MODULE comp_double(eye_signal,simulate)
 			isCross[0]!=-1:compare_road_left.out;
 			TRUE:no_port;
 		esac;
-		
+
 		front:=
 		case
 			compare_road.out[0]!=-1:compare_road.out;
 			TRUE:no_port;
 		esac;
-		
+
 		front_next:=
 		case
 			(isCross[0]!=-1)&(isLeft[0]!=-1):isLeft;
 			(isCross[0]!=-1)&(isLeft[0]=-1):seen_ports[2];
 			TRUE:no_port;
 		esac;
-		
+
 		out:=
 		case
 			front_next[0]!=-1:front_next;
 			front[0]!=-1:front;
 			TRUE:no_port;
 		esac;
-		
-MODULE compare_cordinate(one,list,num)		
+
+MODULE compare_cordinate(one,list,num)
 	VAR
 		n1:decrease(num);
 		n2:decrease(n1.v);
@@ -562,7 +562,7 @@ MODULE compare_cordinate(one,list,num)
 			(num>=12)&(one[0]=list[n12.v][0])&(one[1]=list[n12.v][1]):one;
 			TRUE:no_port;
 		esac;
-		
+
 MODULE decrease(num)
 	DEFINE
 		v:=(num=0)?0:num+(-1);
@@ -631,7 +631,7 @@ MODULE cross()
 !未加入道路识别，导致模型相互矛盾？？？
 先以环绕行走开始
 
-2017-4-4 
+2017-4-4
 加入环视库位检测，slot-info 通过simulate传递
 !？如何实现事件的触发
 注意库位检测是状态改变，可能模拟的时候要考虑时间迁移

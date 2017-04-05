@@ -1,0 +1,28 @@
+MODULE Param(i,add)
+    VAR
+        v:integer;
+    INIT
+        v=i;
+    TRANS
+        ((v=i)->(next(v)=v+add)) & (next(v)=v+add | next(v)=v);
+    /--ASSIGN
+    	init(v):=i;
+    	next(v):=
+	case
+	v=i:v+add;
+	TRUE:v union v+add;
+	esac;--/
+
+MODULE main
+    VAR
+        Xm:Param(0,1);
+        Ym:Param(0,2);
+        Zm:Param(0,3);
+    DEFINE
+        xm:=Xm.v;
+        ym:=Ym.v;
+        zm:=Zm.v;
+        ad:=xm+ym+zm;
+
+    INVARSPEC
+        ad!=10;

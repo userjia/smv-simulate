@@ -1,0 +1,65 @@
+MODULE main
+  VAR
+    simu:simulate();
+    around:comp_around(simu);
+  LTLSPEC
+    F(around.currentState=done);
+    --INVARSPEC
+      --(around.i=7)->(around.currentState=done);
+
+MODULE simulate()
+  DEFINE
+    svphoto:=1;
+    points:=2;
+    validPoints:=2;
+    validLines:=1;
+    validSlots:=1;
+    totalDetectTime:=29;
+
+MODULE faultLib(cmd)
+  VAR
+    v:{normal,fault};
+  ASSIGN
+    init(v):={normal,fault};
+    --init(v):=normal;
+    /--next(v):=
+    case
+      (cmd!=end)&(v=normal):{fault,normal};
+      TRUE:v;
+    esac;--/
+
+MODULE comp_around(simulate)
+	VAR
+		currentState:{start,waiting,done,end,MarkingPointDetection,ParkingLineCandidate,removeInvalidLine,verifyParkingLine,getParkingSlot};
+
+		receive_reality:faultLib(currentState);
+		MarkingPointDetection_reality:faultLib(currentState);
+		ParkingLineCandidate_reality:faultLib(currentState);
+		removeInvalidLine_reality:faultLib(currentState);
+		verifyParkingLine_reality:faultLib(currentState);
+		getParkingSlot_reality:faultLib(currentState);
+    i:integer;
+
+	ASSIGN
+		init(currentState):=start;
+    init(i):=0;
+    --next(i):=i+1;
+    next(i):=currentState=end?i:i+1;
+		next(currentState):=
+		case
+      currentState=start:waiting;
+			(receive_reality.v=normal)&(currentState=waiting)&(simulate.svphoto=1):MarkingPointDetection;
+			(MarkingPointDetection_reality.v=normal)&(currentState=MarkingPointDetection)&(simulate.points>=2):ParkingLineCandidate;
+			(ParkingLineCandidate_reality.v=normal)&(currentState=ParkingLineCandidate)&(simulate.validPoints>=2):removeInvalidLine;
+			(removeInvalidLine_reality.v=normal)&(currentState=removeInvalidLine)&(simulate.validLines>=1):verifyParkingLine;
+			(verifyParkingLine_reality.v=normal)&(currentState=verifyParkingLine)&(simulate.validSlots>=1):getParkingSlot;
+			(getParkingSlot_reality.v=normal)&(currentState=getParkingSlot)&(simulate.totalDetectTime<30):done;
+
+      (currentState=waiting)&((receive_reality.v=fault)|(simulate.svphoto!=1)):end;
+      (currentState=MarkingPointDetection)&((MarkingPointDetection_reality.v=fault)|(simulate.points<2)):end;
+      (currentState=ParkingLineCandidate)&((ParkingLineCandidate_reality.v=fault)|(simulate.validPoints<2)):end;
+      (currentState=removeInvalidLine)&((removeInvalidLine_reality.v=fault)|(simulate.validLines<1)):end;
+      (currentState=verifyParkingLine)&((verifyParkingLine_reality.v=fault)|(simulate.validSlots<1)):end;
+      (currentState=getParkingSlot)&((getParkingSlot_reality.v=fault)|(simulate.totalDetectTime>=30)):end;
+			TRUE:end;
+		esac;

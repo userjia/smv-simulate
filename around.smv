@@ -2,10 +2,10 @@ MODULE main
   VAR
     simu:simulate();
     around:comp_around(simu);
-  LTLSPEC
-    F(around.currentState=done);
-    --INVARSPEC
-      --(around.i=7)->(around.currentState=done);
+  --LTLSPEC
+    --F(around.currentState=done);
+    INVARSPEC
+      around.currentState=done|around.currentState!=end;
 
 MODULE simulate()
   DEFINE
@@ -16,35 +16,36 @@ MODULE simulate()
     validSlots:=1;
     totalDetectTime:=29;
 
-MODULE faultLib(cmd)
+MODULE faultLib(cmd,i,r)
   VAR
-    v:{normal,fault};
+    v:{normal,fault,unknown};
   ASSIGN
-    init(v):={normal,fault};
+    init(v):=unknown;
+    --next(v):=(i=r)?{fault,normal}:v;
     --init(v):=normal;
-    /--next(v):=
+    next(v):=
     case
-      (cmd!=end)&(v=normal):{fault,normal};
+      (cmd!=end)&(i=r):{fault,normal};
       TRUE:v;
-    esac;--/
+    esac;
 
 MODULE comp_around(simulate)
 	VAR
 		currentState:{start,waiting,done,end,MarkingPointDetection,ParkingLineCandidate,removeInvalidLine,verifyParkingLine,getParkingSlot};
 
-		receive_reality:faultLib(currentState);
-		MarkingPointDetection_reality:faultLib(currentState);
-		ParkingLineCandidate_reality:faultLib(currentState);
-		removeInvalidLine_reality:faultLib(currentState);
-		verifyParkingLine_reality:faultLib(currentState);
-		getParkingSlot_reality:faultLib(currentState);
+		receive_reality:faultLib(currentState,i,1);
+		MarkingPointDetection_reality:faultLib(currentState,i,3);
+		ParkingLineCandidate_reality:faultLib(currentState,i,5);
+		removeInvalidLine_reality:faultLib(currentState,i,7);
+		verifyParkingLine_reality:faultLib(currentState,i,9);
+		getParkingSlot_reality:faultLib(currentState,i,11);
     i:integer;
 
 	ASSIGN
 		init(currentState):=start;
     init(i):=0;
     --next(i):=i+1;
-    next(i):=currentState=end?i:i+1;
+    next(i):=(currentState=end)?i:i+1;
 		next(currentState):=
 		case
       currentState=start:waiting;
@@ -61,5 +62,5 @@ MODULE comp_around(simulate)
       (currentState=removeInvalidLine)&((removeInvalidLine_reality.v=fault)|(simulate.validLines<1)):end;
       (currentState=verifyParkingLine)&((verifyParkingLine_reality.v=fault)|(simulate.validSlots<1)):end;
       (currentState=getParkingSlot)&((getParkingSlot_reality.v=fault)|(simulate.totalDetectTime>=30)):end;
-			TRUE:end;
+			TRUE:currentState;
 		esac;

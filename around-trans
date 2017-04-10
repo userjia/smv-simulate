@@ -1,0 +1,157 @@
+(`and`
+  (`and`
+    (`and`
+      (`or`
+        (`not` around.currentState.0__AT0)
+        (`not` (`or` around.currentState.3__AT0 around.currentState.2__AT0))
+      )
+      (`or`
+        (`or` around.currentState.3__AT0 around.currentState.2__AT0)
+        (`or` (`not` around.currentState.1__AT0) (`not` around.currentState.0__AT0))
+      )
+    )
+    (`and`
+      (`and`
+        (`or`
+          (`not` around.currentState.0__AT0) (`not` (`or` around.currentState.3__AT0 around.currentState.2__AT0))
+        )
+        (`or`
+          (`or` around.currentState.3__AT0 around.currentState.2__AT0)
+          (`or` (`not` around.currentState.1__AT0) (`not` around.currentState.0__AT0))
+        )
+      )
+      (`and`
+      (`or`
+        (`not` (`or` around.currentState.3__AT1 around.currentState.2__AT1))
+        (`not` around.currentState.0__AT1))
+        (`or` (`or` around.currentState.3__AT1 around.currentState.2__AT1) (`or` (`not` around.currentState.0__AT1) (`not` around.currentState.1__AT1)))
+      )
+    )
+  )
+  (`and`
+    (`and`
+      (`or`
+        (`not`
+          (`and`
+            (`not` around.currentState.3__AT0)
+            (`and` (`not` around.currentState.2__AT0) (`and` (`not` around.currentState.1__AT0) (`not` around.currentState.0__AT0)))
+          )
+        )
+        (`and` around.currentState.3__AT1 (`and` (`not` around.currentState.1__AT1) (`not` around.currentState.2__AT1)))
+      )
+      (`or`
+        (`and`
+          (`not` around.currentState.3__AT0) (`and` (`not` around.currentState.2__AT0) (`and` (`not` around.currentState.1__AT0) (`not` around.currentState.0__AT0)))
+        )
+        (`and`
+          (`or`
+            (`not`
+              (`and` (`not` around.receive_reality.v.0__AT0) (`and` around.currentState.3__AT0 (`and` (`not` around.currentState.2__AT0) (`not` around.currentState.1__AT0))))
+            )
+            (`and`
+              (`not` around.currentState.3__AT1) (`and` around.currentState.1__AT1 (`not` around.currentState.2__AT1)))
+            )
+            (`or`
+              (`and`
+                (`not` around.receive_reality.v.0__AT0) (`and` around.currentState.3__AT0 (`and` (`not` around.currentState.2__AT0) (`not` around.currentState.1__AT0))))
+              (`and`
+                (`or`
+                  (`not`
+                    (`and`
+                      (`not` around.MarkingPointDetection_reality.v.0__AT0) (`and` (`not` around.currentState.3__AT0) (`and` (`not` around.currentState.2__AT0) around.currentState.1__AT0)))
+                  )
+                  (`and` around.currentState.3__AT1 (`and` around.currentState.1__AT1 (`not` around.currentState.2__AT1)))
+                )
+                (`or`
+                  (`and`
+                    (`not` around.MarkingPointDetection_reality.v.0__AT0) (`and` (`not` around.currentState.3__AT0) (`and` (`not` around.currentState.2__AT0) around.currentState.1__AT0))
+                  )
+                  (`and`
+                    (`or`
+                      (`not` (`and` (`not` around.ParkingLineCandidate_reality.v.0__AT0) (`and` around.currentState.3__AT0 (`and` (`not` around.currentState.2__AT0) around.currentState.1__AT0))))
+                      (`and` (`not` around.currentState.3__AT1) (`and` around.currentState.2__AT1 around.currentState.1__AT1))
+                    )
+                    (`or`
+                      (`and`
+                        (`not` around.ParkingLineCandidate_reality.v.0__AT0) (`and` around.currentState.3__AT0 (`and` (`not` around.currentState.2__AT0) around.currentState.1__AT0))
+                      )
+                      (`and`
+                        (`or`
+                          (`not` (`and` (`not` around.removeInvalidLine_reality.v.0__AT0) (`and` (`not` around.currentState.3__AT0) (`and` around.currentState.2__AT0 around.currentState.1__AT0))))
+                          (`and` around.currentState.3__AT1 (`and` around.currentState.2__AT1 around.currentState.1__AT1))
+                        )
+                        (`or`
+                          (`and` (`not` around.removeInvalidLine_reality.v.0__AT0) (`and` (`not` around.currentState.3__AT0) (`and` around.currentState.2__AT0 around.currentState.1__AT0)))
+                          (`and`
+                            (`or`
+                              (`not` (`and` (`not` around.verifyParkingLine_reality.v.0__AT0) (`and` around.currentState.3__AT0 (`and` around.currentState.2__AT0 around.currentState.1__AT0))))
+                              (`and` (`not` around.currentState.3__AT1) (`and` (`not` around.currentState.2__AT1) (`and` around.currentState.0__AT1 (`not` around.currentState.1__AT1))))
+                            )
+                            (`or`
+                              (`and` (`not` around.verifyParkingLine_reality.v.0__AT0) (`and` around.currentState.3__AT0 (`and` around.currentState.2__AT0 around.currentState.1__AT0)))
+                              (`and`
+                                (`or`
+                                  (`not`
+                                    (`and`
+                                      (`not` around.getParkingSlot_reality.v.0__AT0) (`and` (`not` around.currentState.3__AT0) (`and` (`not` around.currentState.2__AT0) (`and` (`not` around.currentState.1__AT0) around.currentState.0__AT0))))
+                                  )
+                                  (`and`
+                                    (`not` around.currentState.3__AT1) (`and` around.currentState.2__AT1 (`not` around.currentState.1__AT1)))
+                                  )
+                                  (`or`
+                                    (`and`
+                                      (`not` around.getParkingSlot_reality.v.0__AT0) (`and` (`not` around.currentState.3__AT0) (`and` (`not` around.currentState.2__AT0) (`and` (`not` around.currentState.1__AT0) around.currentState.0__AT0))))
+                                      (`and` around.currentState.3__AT1 (`and` around.currentState.2__AT1 (`not` around.currentState.1__AT1)))
+                                  )
+                                )
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+        (`and`
+          (`or`
+            (`not`
+              (`and` around.currentState.3__AT0 (`and` around.currentState.2__AT0 (`not` around.currentState.1__AT0)))
+            )
+            (`=_int` around.i__AT0 around.i__AT1))
+          (`or`
+            (`and` around.currentState.3__AT0 (`and` around.currentState.2__AT0 (`not` around.currentState.1__AT0)))
+            (`=_int` (`+_int` around.i__AT0 (`*_int` -1 around.i__AT1)) -1)))))
+
+
+abstract state 0:
+(and
+  (= around.i__AT0 0) 
+  (and around.getParkingSlot_reality.v.0__AT0
+    (and
+      (not around.verifyParkingLine_reality.v.0__AT0)
+      (and
+        (not around.removeInvalidLine_reality.v.0__AT0)
+        (and
+          (not around.ParkingLineCandidate_reality.v.0__AT0)
+          (and around.MarkingPointDetection_reality.v.0__AT0
+            (and around.receive_reality.v.0__AT0
+              (and (not around.currentState.0__AT0)
+                (and (not around.currentState.1__AT0)
+                (and (not around.currentState.3__AT0)
+                (not around.currentState.2__AT0)
+                )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
+abstract state 1: (and (not (= around.i__AT0 0)) (and around.getParkingSlot_reality.v.0__AT0 (and (not around.verifyParkingLine_reality.v.0__AT0) (and (not around.removeInvalidLine_reality.v.0__AT0) (and (not around.ParkingLineCandidate_reality.v.0__AT0) (and around.MarkingPointDetection_reality.v.0__AT0 (and around.receive_reality.v.0__AT0 (and (not around.currentState.0__AT0) (and (not around.currentState.1__AT0) (and around.currentState.3__AT0 (not around.currentState.2__AT0)))))))))))
+abstract state 2: (and (not around.currentState.1__AT0) (and around.currentState.3__AT0 around.currentState.2__AT0))

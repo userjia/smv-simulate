@@ -12,7 +12,7 @@ MODULE main
 		ats:ATS(simulate,car);
 
 	INVARSPEC
-		ats.cpt_sys.board_Rcar.around.statue=1&ats.cpt_sys.board_Rcar.around.currentState!=receive;
+		(ats.cpt_sys.board_Rcar.around.statue=1)->(ats.cpt_sys.board_Rcar.around.currentState!=waiting);
 
 --===================================enviroment
 MODULE Simulate(car)
@@ -26,7 +26,7 @@ MODULE Simulate(car)
 
 	--clock to sync with board compute late
 		i:{0,1,2};
-		start:{0,1};
+		statue:{0,1};
 
 	--INVARSPEC
 	DEFINE
@@ -57,16 +57,16 @@ MODULE Simulate(car)
 		init(y):=0;
 		init(i):=0;
 		init(car_angle):=2;
-		init(start):=1;
+		init(statue):=1;
 
 		next(i):=
 		case
-			start=1:2;
+			statue=1:2;
 			car.statue=2:2;
 			TRUE:0;
 		esac;
 
-		next(start):=0;
+		next(statue):=0;
 
 		next(x):=
 		case
@@ -506,7 +506,7 @@ MODULE comp_around(around_signal,simulate)
 		compare_port7:compare_cordinate(ports[7],carports,2);
 		compare_port_self:compare_cordinate(simulate.car_position,carports,2);
 
-		currentState:{receive,MarkingPointDetection,ParkingLineCandidate,removeInvalidLine,verifyParkingLine,getParkingSlot};
+		currentState:{start,waiting,done,end,waiting_f,MarkingPointDetection,ParkingLineCandidate,removeInvalidLine,verifyParkingLine,getParkingSlot,MarkingPointDetection_f,ParkingLineCandidate_f,removeInvalidLine_f,verifyParkingLine_f,getParkingSlot_f};
 
 		statue:{0,1,2};
 
@@ -537,7 +537,7 @@ MODULE comp_around(around_signal,simulate)
 		esac;
 
 	ASSIGN
-		init(currentState):=receive;
+		init(currentState):=start;
 		init(statue):=0;
 
 		next(statue):=
@@ -550,14 +550,22 @@ MODULE comp_around(around_signal,simulate)
 
 		next(currentState):=
 		case
-			statue!=1:receive;
-			(receive_reality=normal)&(currentState=receive)&(simulate.svphoto=1):MarkingPointDetection;
-			(MarkingPointDetection_reality=normal)&(currentState=MarkingPointDetection)&(simulate.points>=2):ParkingLineCandidate;
-			(ParkingLineCandidate_reality=normal)&(currentState=ParkingLineCandidate)&(simulate.validPoints>=2):removeInvalidLine;
-			(removeInvalidLine_reality=normal)&(currentState=removeInvalidLine)&(simulate.validLines>=1):verifyParkingLine;
-			(verifyParkingLine_reality=normal)&(currentState=verifyParkingLine)&(simulate.validSlots>=1):getParkingSlot;
-			(getParkingSlot_reality=normal)&(currentState=getParkingSlot)&(simulate.totalDetectTime<30):receive;
-			TRUE:receive;
+      currentState=start:{waiting,waiting_f};
+      (currentState=waiting)&((simulate.svphoto=1)&(simulate.i=2)):{MarkingPointDetection,MarkingPointDetection_f};
+			statue!=1:waiting;
+			(currentState=MarkingPointDetection)&(simulate.points>=2):{ParkingLineCandidate,ParkingLineCandidate_f};
+			(currentState=ParkingLineCandidate)&(simulate.validPoints>=2):{removeInvalidLine,removeInvalidLine_f};
+			(currentState=removeInvalidLine)&(simulate.validLines>=1):{verifyParkingLine,verifyParkingLine_f};
+			(currentState=verifyParkingLine)&(simulate.validSlots>=1):{getParkingSlot,getParkingSlot_f};
+			(currentState=getParkingSlot)&(simulate.totalDetectTime<30):waiting;
+
+      (currentState=waiting_f)|(simulate.svphoto!=1):waiting;
+      (currentState=MarkingPointDetection_f)|(simulate.points<2):waiting;
+      (currentState=ParkingLineCandidate_f)|(simulate.validPoints<2):waiting;
+      (currentState=removeInvalidLine_f)|(simulate.validLines<1):waiting;
+      (currentState=verifyParkingLine_f)|(simulate.validSlots<1):waiting;
+      (currentState=getParkingSlot_f)|(simulate.totalDetectTime>=30):waiting;
+			TRUE:currentState;
 		esac;
 
 MODULE comp_double(eye_signal,simulate)

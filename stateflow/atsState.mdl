@@ -1,12 +1,12 @@
 Model {
-  Name			  "atsPlan"
+  Name			  "atsState"
   Version		  8.0
   MdlSubVersion		  0
   GraphicalInterface {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.38"
+    ComputedModelVersion    "1.118"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -41,7 +41,7 @@ Model {
       $ObjectID		      3
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [206.0, 8.0, 1524.0, 1032.0]
+      Location		      [145.0, 62.0, 1359.0, 1032.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		4
@@ -58,16 +58,28 @@ Model {
 	$ClassName		"Simulink.ExplorerBarInfo"
 	Visible			[1]
       }
-      Object {
-	$PropName		"EditorsInfo"
-	$ObjectID		6
-	$ClassName		"Simulink.EditorInfo"
-	IsActive		[1]
-	ViewObjType		"SimulinkTopLevel"
-	LoadSaveID		"0"
-	Extents			[1472.0, 853.0]
-	ZoomFactor		[1.25]
-	Offset			[185.63317789425707, 86.704932246999945]
+      Array {
+	Type			"Simulink.EditorInfo"
+	Dimension		2
+	Object {
+	  $ObjectID		  6
+	  IsActive		  [0]
+	  ViewObjType		  "SimulinkSubsys"
+	  LoadSaveID		  "92"
+	  Extents		  [1307.0, 849.0]
+	  ZoomFactor		  [1.0]
+	  Offset		  [0.0, 0.0]
+	}
+	Object {
+	  $ObjectID		  7
+	  IsActive		  [1]
+	  ViewObjType		  "StateflowChart"
+	  LoadSaveID		  "196"
+	  Extents		  [1307.0, 849.0]
+	  ZoomFactor		  [0.8]
+	  Offset		  [-390.72951163558969, 207.58549999999991]
+	}
+	PropName		"EditorsInfo"
       }
     }
   }
@@ -77,9 +89,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "think"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Mar 17 11:08:23 2017"
-  RTWModifiedTimeStamp	  411401632
-  ModelVersionFormat	  "1.%<AutoIncrement:38>"
+  LastModifiedDate	  "Thu Mar 23 16:14:14 2017"
+  RTWModifiedTimeStamp	  411991965
+  ModelVersionFormat	  "1.%<AutoIncrement:118>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -114,14 +126,14 @@ Model {
   TryForcingSFcnDF	  off
   Object {
     $PropName		    "DataLoggingOverride"
-    $ObjectID		    7
+    $ObjectID		    8
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
-    model_		    "atsPlan"
+    model_		    "atsState"
     overrideMode_	    [0.0]
     Array {
       Type		      "Cell"
       Dimension		      1
-      Cell		      "atsPlan"
+      Cell		      "atsState"
       PropName		      "logAsSpecifiedByModels_"
     }
     Array {
@@ -173,16 +185,16 @@ Model {
     Type		    "Handle"
     Dimension		    1
     Simulink.ConfigSet {
-      $ObjectID		      8
+      $ObjectID		      9
       Version		      "1.12.1"
       Array {
 	Type			"Handle"
 	Dimension		10
 	Simulink.SolverCC {
-	  $ObjectID		  9
+	  $ObjectID		  10
 	  Version		  "1.12.1"
 	  StartTime		  "0.0"
-	  StopTime		  "100"
+	  StopTime		  "120"
 	  AbsTol		  "auto"
 	  FixedStep		  "0.1"
 	  InitialStep		  "auto"
@@ -214,7 +226,7 @@ Model {
 	  InsertRTBMode		  "Whenever possible"
 	}
 	Simulink.DataIOCC {
-	  $ObjectID		  10
+	  $ObjectID		  11
 	  Version		  "1.12.1"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
@@ -246,7 +258,7 @@ Model {
 	  Refine		  "1"
 	}
 	Simulink.OptimizationCC {
-	  $ObjectID		  11
+	  $ObjectID		  12
 	  Version		  "1.12.1"
 	  Array {
 	    Type		    "Cell"
@@ -302,7 +314,7 @@ Model {
 	  ParallelExecutionInRapidAccelerator on
 	}
 	Simulink.DebuggingCC {
-	  $ObjectID		  12
+	  $ObjectID		  13
 	  Version		  "1.12.1"
 	  Array {
 	    Type		    "Cell"
@@ -398,7 +410,7 @@ Model {
 	  SFTransitionActionBeforeConditionDiag	"warning"
 	}
 	Simulink.HardwareCC {
-	  $ObjectID		  13
+	  $ObjectID		  14
 	  Version		  "1.12.1"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
@@ -435,7 +447,7 @@ Model {
 	  ProdEqTarget		  on
 	}
 	Simulink.ModelReferenceCC {
-	  $ObjectID		  14
+	  $ObjectID		  15
 	  Version		  "1.12.1"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  CheckModelReferenceTargetMessage "error"
@@ -450,7 +462,7 @@ Model {
 	  SupportModelReferenceSimTargetCustomCode off
 	}
 	Simulink.SFSimCC {
-	  $ObjectID		  15
+	  $ObjectID		  16
 	  Version		  "1.12.1"
 	  SFSimEnableDebug	  on
 	  SFSimOverflowDetection  on
@@ -465,7 +477,7 @@ Model {
 	}
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
-	  $ObjectID		  16
+	  $ObjectID		  17
 	  Version		  "1.12.1"
 	  Array {
 	    Type		    "Cell"
@@ -535,7 +547,7 @@ Model {
 	    Type		    "Handle"
 	    Dimension		    2
 	    Simulink.CodeAppCC {
-	      $ObjectID		      17
+	      $ObjectID		      18
 	      Version		      "1.12.1"
 	      Array {
 		Type			"Cell"
@@ -607,7 +619,7 @@ Model {
 	    }
 	    Simulink.GRTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
-	      $ObjectID		      18
+	      $ObjectID		      19
 	      Version		      "1.12.1"
 	      Array {
 		Type			"Cell"
@@ -688,13 +700,13 @@ Model {
 	  }
 	}
 	hdlcoderui.hdlcc {
-	  $ObjectID		  19
+	  $ObjectID		  20
 	  Version		  "1.12.1"
 	  Description		  "HDL Coder custom configuration component"
 	  Name			  "HDL Coder"
 	}
 	SSC.SimscapeCC {
-	  $ObjectID		  20
+	  $ObjectID		  21
 	  Version		  "1.0"
 	  Array {
 	    Type		    "Cell"
@@ -706,7 +718,7 @@ Model {
 	    Type		    "Handle"
 	    Dimension		    2
 	    MECH.SimMechanicsCC {
-	      $ObjectID		      21
+	      $ObjectID		      22
 	      Version		      "1.12.1"
 	      Name		      "SimMechanics"
 	      WarnOnRedundantConstraints on
@@ -739,14 +751,14 @@ Model {
 	      OVRRIDBodyVisualizationType "NONE"
 	    }
 	    simmechanics.ConfigurationSet {
-	      $ObjectID		      22
+	      $ObjectID		      23
 	      Version		      "1.12.1"
 	      Description	      "SimMechanics 2G"
 	      Array {
 		Type			"Handle"
 		Dimension		2
 		simmechanics.DiagnosticsConfigSet {
-		  $ObjectID		  23
+		  $ObjectID		  24
 		  Version		  "1.12.1"
 		  Description		  "Diagnostics"
 		  Name			  "DiagnosticsConfigSet"
@@ -760,7 +772,7 @@ Model {
 		  SimMechanicsJointTargetOverSpecification "error"
 		}
 		simmechanics.ExplorerConfigSet {
-		  $ObjectID		  24
+		  $ObjectID		  25
 		  Version		  "1.12.1"
 		  Description		  "Explorer"
 		  Name			  "ExplorerConfigSet"
@@ -794,11 +806,11 @@ Model {
   }
   Simulink.ConfigSet {
     $PropName		    "ActiveConfigurationSet"
-    $ObjectID		    8
+    $ObjectID		    9
   }
   Object {
     $PropName		    "DataTransfer"
-    $ObjectID		    25
+    $ObjectID		    26
     $ClassName		    "Simulink.GlobalDataTransfer"
     DefaultTransitionBetweenSyncTasks "Ensure deterministic transfer (maximum delay)"
     DefaultTransitionBetweenAsyncTasks "Ensure data integrity only"
@@ -876,11 +888,6 @@ Model {
       Outputs		      "4"
       DisplayOption	      "none"
       BusSelectionMode	      off
-    }
-    Block {
-      BlockType		      Fcn
-      Expr		      "sin(u[1])"
-      SampleTime	      "-1"
     }
     Block {
       BlockType		      Inport
@@ -962,36 +969,13 @@ Model {
       GeneratePreprocessorConditionals off
     }
     Block {
-      BlockType		      TriggerPort
-      TriggerType	      "rising"
-      StatesWhenEnabling      "inherit"
-      PropagateVarSize	      "During execution"
-      ShowOutputPort	      off
-      OutputDataType	      "auto"
-      SampleTimeType	      "triggered"
-      SampleTime	      "1"
-      ZeroCross		      on
-      PortDimensions	      "-1"
-      TriggerSignalSampleTime "-1"
-      OutMin		      "[]"
-      OutMax		      "[]"
-      OutDataTypeStr	      "Inherit: auto"
-      Interpolate	      on
-    }
-    Block {
-      BlockType		      UnitDelay
-      InitialCondition	      "0"
-      InputProcessing	      "Inherited"
-      SampleTime	      "1"
-      StateMustResolveToSignalObject off
-      CodeGenStateStorageClass "Auto"
-      HasFrameUpgradeWarning  on
+      BlockType		      Terminator
     }
   }
   System {
-    Name		    "atsPlan"
-    Location		    [206, 8, 1730, 1040]
-    Open		    on
+    Name		    "atsState"
+    Location		    [-8, -8, 1928, 1048]
+    Open		    off
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
     ScreenColor		    "white"
@@ -1004,14 +988,14 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "125"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "210"
+    SIDHighWatermark	    "222"
     Block {
       BlockType		      Reference
       Name		      "CarSim S-Function"
-      SID		      "193"
+      SID		      "222"
       Ports		      [1, 1]
-      Position		      [800, 484, 900, 546]
-      ZOrder		      45
+      Position		      [780, 354, 880, 416]
+      ZOrder		      52
       Priority		      "1"
       AttributesFormatString  "Vehicle Code: %<VehicleCode>"
       LibraryVersion	      "1.4"
@@ -1021,6 +1005,17 @@ Model {
       SourceType	      "Vehicle math model library"
       VehicleCode	      "i_i"
       SIMFILE		      "simfile"
+    }
+    Block {
+      BlockType		      Demux
+      Name		      "Demux"
+      SID		      "219"
+      Ports		      [1, 3]
+      Position		      [965, 388, 970, 462]
+      ZOrder		      49
+      ShowName		      off
+      Outputs		      "3"
+      DisplayOption	      "bar"
     }
     Block {
       BlockType		      Demux
@@ -1063,18 +1058,18 @@ Model {
     }
     Block {
       BlockType		      Reference
-      Name		      "XY Graph"
-      SID		      "194"
+      Name		      "XY Graph1"
+      SID		      "220"
       Ports		      [2]
-      Position		      [1210, 570, 1240, 605]
-      ZOrder		      46
+      Position		      [1030, 390, 1060, 425]
+      ZOrder		      50
       LibraryVersion	      "1.281"
       SourceBlock	      "simulink/Sinks/XY Graph"
       SourceType	      "XY scope."
-      xmin		      "0"
-      xmax		      "250"
-      ymin		      "-3"
-      ymax		      "6"
+      xmin		      "-50"
+      xmax		      "50"
+      ymin		      "-50"
+      ymax		      "50"
       st		      "-1"
     }
     Block {
@@ -1164,8 +1159,8 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"can"
-	Location		[199, 17, 1723, 1057]
-	Open			off
+	Location		[471, 15, 1830, 1047]
+	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -1241,7 +1236,7 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"computeSystem"
-	Location		[102, 14, 1626, 1054]
+	Location		[-8, -8, 1928, 1048]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -1314,7 +1309,7 @@ Model {
 	  MaskHideContents	  off
 	  System {
 	    Name		    "R-car"
-	    Location		    [102, 14, 1626, 1054]
+	    Location		    [-8, -8, 1928, 1048]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1373,107 +1368,32 @@ Model {
 	    }
 	    Block {
 	      BlockType		      Demux
-	      Name		      "Demux1"
-	      SID		      "161"
-	      Ports		      [1, 2]
-	      Position		      [130, 318, 135, 362]
-	      ZOrder		      15
+	      Name		      "Demux2"
+	      SID		      "213"
+	      Ports		      [1, 5]
+	      Position		      [330, 146, 335, 214]
+	      ZOrder		      24
 	      ShowName		      off
-	      Outputs		      "2"
+	      Outputs		      "5"
 	      DisplayOption	      "bar"
 	    }
 	    Block {
-	      BlockType		      SubSystem
-	      Name		      "getCarPosition"
-	      SID		      "176"
-	      Ports		      [3, 1]
-	      Position		      [315, 448, 415, 522]
-	      ZOrder		      16
-	      MinAlgLoopOccurrences   off
-	      PropExecContextOutsideSubsystem off
-	      RTWSystemCode	      "Auto"
-	      FunctionWithSeparateData off
-	      Opaque		      off
-	      RequestExecContextInheritance off
-	      MaskHideContents	      off
-	      System {
-		Name			"getCarPosition"
-		Location		[102, 14, 1626, 1054]
-		Open			off
-		ModelBrowserVisibility	off
-		ModelBrowserWidth	200
-		ScreenColor		"white"
-		PaperOrientation	"landscape"
-		PaperPositionMode	"auto"
-		PaperType		"usletter"
-		PaperUnits		"inches"
-		TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
-		TiledPageScale		1
-		ShowPageBoundaries	off
-		ZoomFactor		"100"
-		Block {
-		  BlockType		  Inport
-		  Name			  "In2"
-		  SID			  "179"
-		  Position		  [120, 183, 150, 197]
-		  ZOrder		  1
-		  IconDisplay		  "Port number"
-		}
-		Block {
-		  BlockType		  Inport
-		  Name			  "In3"
-		  SID			  "181"
-		  Position		  [120, 303, 150, 317]
-		  ZOrder		  3
-		  Port			  "2"
-		  IconDisplay		  "Port number"
-		}
-		Block {
-		  BlockType		  Inport
-		  Name			  "In1"
-		  SID			  "195"
-		  Position		  [120, 103, 150, 117]
-		  ZOrder		  28
-		  Port			  "3"
-		  IconDisplay		  "Port number"
-		}
-		Block {
-		  BlockType		  UnitDelay
-		  Name			  "Unit Delay"
-		  SID			  "192"
-		  Position		  [250, 93, 285, 127]
-		  ZOrder		  27
-		  InputProcessing	  "Elements as channels (sample based)"
-		  SampleTime		  "-1"
-		}
-		Block {
-		  BlockType		  Outport
-		  Name			  "Out1"
-		  SID			  "178"
-		  Position		  [360, 103, 390, 117]
-		  ZOrder		  -2
-		  IconDisplay		  "Port number"
-		}
-		Line {
-		  SrcBlock		  "Unit Delay"
-		  SrcPort		  1
-		  DstBlock		  "Out1"
-		  DstPort		  1
-		}
-		Line {
-		  SrcBlock		  "In1"
-		  SrcPort		  1
-		  DstBlock		  "Unit Delay"
-		  DstPort		  1
-		}
-	      }
+	      BlockType		      Mux
+	      Name		      "Mux"
+	      SID		      "211"
+	      Ports		      [5, 1]
+	      Position		      [925, 38, 930, 132]
+	      ZOrder		      22
+	      ShowName		      off
+	      Inputs		      "5"
+	      DisplayOption	      "bar"
 	    }
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "mode"
 	      SID		      "196"
-	      Ports		      [2, 5]
-	      Position		      [555, 58, 740, 172]
+	      Ports		      [6, 4]
+	      Position		      [530, 58, 715, 172]
 	      ZOrder		      20
 	      LibraryVersion	      "1.262"
 	      ErrorFcn		      "Stateflow.Translate.translate"
@@ -1489,7 +1409,7 @@ Model {
 	      SFBlockType	      "Chart"
 	      Object {
 		$PropName		"MaskObject"
-		$ObjectID		26
+		$ObjectID		27
 		$ClassName		"Simulink.Mask"
 		Type			"Stateflow"
 		Description		"Stateflow diagram"
@@ -1502,8 +1422,8 @@ Model {
 	      }
 	      System {
 		Name			"mode"
-		Location		[102, 14, 1626, 1054]
-		Open			off
+		Location		[145, 62, 1504, 1094]
+		Open			on
 		ModelBrowserVisibility	off
 		ModelBrowserWidth	200
 		ScreenColor		"white"
@@ -1515,18 +1435,18 @@ Model {
 		TiledPageScale		1
 		ShowPageBoundaries	off
 		ZoomFactor		"100"
-		SIDHighWatermark	"70"
+		SIDHighWatermark	"100"
 		Block {
 		  BlockType		  Inport
 		  Name			  "human_cmd"
-		  SID			  "196::45"
+		  SID			  "196::93"
 		  Position		  [20, 101, 40, 119]
-		  ZOrder		  25
+		  ZOrder		  42
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Inport
-		  Name			  "simulate_info"
+		  Name			  "x"
 		  SID			  "196::46"
 		  Position		  [20, 136, 40, 154]
 		  ZOrder		  26
@@ -1534,25 +1454,61 @@ Model {
 		  IconDisplay		  "Port number"
 		}
 		Block {
+		  BlockType		  Inport
+		  Name			  "y"
+		  SID			  "196::71"
+		  Position		  [20, 171, 40, 189]
+		  ZOrder		  36
+		  Port			  "3"
+		  IconDisplay		  "Port number"
+		}
+		Block {
+		  BlockType		  Inport
+		  Name			  "yaw"
+		  SID			  "196::72"
+		  Position		  [20, 206, 40, 224]
+		  ZOrder		  37
+		  Port			  "4"
+		  IconDisplay		  "Port number"
+		}
+		Block {
+		  BlockType		  Inport
+		  Name			  "vx"
+		  SID			  "196::99"
+		  Position		  [20, 246, 40, 264]
+		  ZOrder		  48
+		  Port			  "5"
+		  IconDisplay		  "Port number"
+		}
+		Block {
+		  BlockType		  Inport
+		  Name			  "vy"
+		  SID			  "196::100"
+		  Position		  [20, 281, 40, 299]
+		  ZOrder		  49
+		  Port			  "6"
+		  IconDisplay		  "Port number"
+		}
+		Block {
 		  BlockType		  Demux
 		  Name			  " Demux "
-		  SID			  "196::38"
-		  Ports			  [1, 2]
-		  Position		  [270, 310, 320, 370]
-		  ZOrder		  18
-		  Outputs		  "2"
+		  SID			  "196::96"
+		  Ports			  [1, 1]
+		  Position		  [270, 245, 320, 285]
+		  ZOrder		  45
+		  Outputs		  "1"
 		}
 		Block {
 		  BlockType		  S-Function
 		  Name			  " SFunction "
-		  SID			  "196::37"
-		  Tag			  "Stateflow S-Function atsPlan 1"
-		  Ports			  [4, 9]
-		  Position		  [180, 109, 230, 311]
-		  ZOrder		  17
+		  SID			  "196::95"
+		  Tag			  "Stateflow S-Function atsState 1"
+		  Ports			  [6, 5]
+		  Position		  [180, 102, 230, 243]
+		  ZOrder		  44
 		  FunctionName		  "sf_sfun"
-		  PortCounts		  "[4 9]"
-		  EnableBusSupport	  off
+		  PortCounts		  "[6 5]"
+		  EnableBusSupport	  on
 		  Port {
 		    PortNumber		    2
 		    Name		    "cmd_speed"
@@ -1567,283 +1523,23 @@ Model {
 		  }
 		  Port {
 		    PortNumber		    4
-		    Name		    "cmd_gear"
-		    RTWStorageClass	    "Auto"
-		    DataLoggingNameMode	    "SignalName"
-		  }
-		  Port {
-		    PortNumber		    5
 		    Name		    "cmd_brake"
 		    RTWStorageClass	    "Auto"
 		    DataLoggingNameMode	    "SignalName"
 		  }
 		  Port {
-		    PortNumber		    6
-		    Name		    "plan_cmd"
+		    PortNumber		    5
+		    Name		    "cmd_gear"
 		    RTWStorageClass	    "Auto"
 		    DataLoggingNameMode	    "SignalName"
 		  }
 		}
 		Block {
-		  BlockType		  SubSystem
-		  Name			  "PlanControl"
-		  SID			  "196::59"
-		  Ports			  [2, 1, 0, 1]
-		  Position		  [180, 400, 230, 460]
-		  ZOrder		  33
-		  BlockMirror		  on
-		  UndoDeleteFcn		  "Stateflow.SLINSF.SimulinkMan.restorePreDeleteFcn"
-		  PreDeleteFcn		  "Stateflow.SLINSF.SimulinkMan.removePreDeleteFcn"
-		  MinAlgLoopOccurrences	  off
-		  PropExecContextOutsideSubsystem off
-		  RTWSystemCode		  "Auto"
-		  FunctionWithSeparateData off
-		  Opaque		  off
-		  RequestExecContextInheritance	off
-		  MaskHideContents	  off
-		  System {
-		    Name		    "PlanControl"
-		    Location		    [102, 14, 1626, 1054]
-		    Open		    off
-		    ModelBrowserVisibility  off
-		    ModelBrowserWidth	    200
-		    ScreenColor		    "white"
-		    PaperOrientation	    "landscape"
-		    PaperPositionMode	    "auto"
-		    PaperType		    "usletter"
-		    PaperUnits		    "inches"
-		    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
-		    TiledPageScale	    1
-		    ShowPageBoundaries	    off
-		    ZoomFactor		    "100"
-		    Block {
-		    BlockType		    Inport
-		    Name		    "route"
-		    SID			    "196::61"
-		    Position		    [475, 313, 505, 327]
-		    ZOrder		    30
-		    IconDisplay		    "Port number"
-		    }
-		    Block {
-		    BlockType		    Inport
-		    Name		    "car_position"
-		    SID			    "196::62"
-		    Position		    [475, 273, 505, 287]
-		    ZOrder		    34
-		    Port		    "2"
-		    IconDisplay		    "Port number"
-		    }
-		    Block {
-		    BlockType		    TriggerPort
-		    Name		    "f"
-		    SID			    "196::60"
-		    Ports		    []
-		    Position		    [800, 180, 820, 200]
-		    ZOrder		    1
-		    CopyFcn		    "Stateflow.SLINSF.SimulinkMan.removeBlockPreDeleteFcn"
-		    PreDeleteFcn	    "Stateflow.SLINSF.SimulinkMan.unsafePredeleteFcn"
-		    TriggerType		    "function-call"
-		    StatesWhenEnabling	    "held"
-		    }
-		    Block {
-		    BlockType		    Constant
-		    Name		    "Constant"
-		    SID			    "196::63"
-		    Position		    [915, 450, 945, 480]
-		    ZOrder		    33
-		    Value		    "0"
-		    }
-		    Block {
-		    BlockType		    S-Function
-		    Name		    "Controller"
-		    SID			    "196::64"
-		    Ports		    [1, 1]
-		    Position		    [705, 317, 855, 363]
-		    ZOrder		    29
-		    FunctionName	    "MPC_Controller"
-		    EnableBusSupport	    off
-		    }
-		    Block {
-		    BlockType		    Fcn
-		    Name		    "Fcn1"
-		    SID			    "196::65"
-		    Position		    [925, 345, 985, 375]
-		    ZOrder		    31
-		    Expr		    "180*u/3.1415926"
-		    }
-		    Block {
-		    BlockType		    Mux
-		    Name		    "Mux"
-		    SID			    "196::66"
-		    Ports		    [2, 1]
-		    Position		    [585, 291, 590, 329]
-		    ZOrder		    35
-		    ShowName		    off
-		    Inputs		    "2"
-		    DisplayOption	    "bar"
-		    }
-		    Block {
-		    BlockType		    Mux
-		    Name		    "Mux1"
-		    SID			    "196::67"
-		    Ports		    [4, 1]
-		    Position		    [1030, 318, 1035, 427]
-		    ZOrder		    32
-		    ShowName		    off
-		    DisplayOption	    "bar"
-		    }
-		    Block {
-		    BlockType		    Outport
-		    Name		    "Out2"
-		    SID			    "196::68"
-		    Position		    [1105, 368, 1135, 382]
-		    ZOrder		    28
-		    IconDisplay		    "Port number"
-		    }
-		    Line {
-		    SrcBlock		    "Controller"
-		    SrcPort		    1
-		    Points		    [10, 0; 0, 20]
-		    DstBlock		    "Fcn1"
-		    DstPort		    1
-		    }
-		    Line {
-		    SrcBlock		    "Mux1"
-		    SrcPort		    1
-		    DstBlock		    "Out2"
-		    DstPort		    1
-		    }
-		    Line {
-		    SrcBlock		    "Fcn1"
-		    SrcPort		    1
-		    Points		    [25, 0]
-		    Branch {
-		    DstBlock		    "Mux1"
-		    DstPort		    2
-		    }
-		    Branch {
-		    DstBlock		    "Mux1"
-		    DstPort		    1
-		    }
-		    }
-		    Line {
-		    SrcBlock		    "Constant"
-		    SrcPort		    1
-		    Points		    [38, 0; 0, -55; 27, 0]
-		    Branch {
-		    DstBlock		    "Mux1"
-		    DstPort		    3
-		    }
-		    Branch {
-		    DstBlock		    "Mux1"
-		    DstPort		    4
-		    }
-		    }
-		    Line {
-		    SrcBlock		    "car_position"
-		    SrcPort		    1
-		    Points		    [55, 0; 0, 20]
-		    DstBlock		    "Mux"
-		    DstPort		    1
-		    }
-		    Line {
-		    SrcBlock		    "Mux"
-		    SrcPort		    1
-		    Points		    [68, 0; 0, 30]
-		    DstBlock		    "Controller"
-		    DstPort		    1
-		    }
-		    Line {
-		    SrcBlock		    "route"
-		    SrcPort		    1
-		    DstBlock		    "Mux"
-		    DstPort		    2
-		    }
-		  }
-		}
-		Block {
-		  BlockType		  SubSystem
-		  Name			  "PlanPath"
-		  SID			  "196::47"
-		  Ports			  [1, 1, 0, 1]
-		  Position		  [180, 492, 230, 538]
-		  ZOrder		  27
-		  BlockMirror		  on
-		  UndoDeleteFcn		  "Stateflow.SLINSF.SimulinkMan.restorePreDeleteFcn"
-		  PreDeleteFcn		  "Stateflow.SLINSF.SimulinkMan.removePreDeleteFcn"
-		  MinAlgLoopOccurrences	  off
-		  PropExecContextOutsideSubsystem off
-		  RTWSystemCode		  "Auto"
-		  FunctionWithSeparateData off
-		  Opaque		  off
-		  RequestExecContextInheritance	off
-		  MaskHideContents	  off
-		  System {
-		    Name		    "PlanPath"
-		    Location		    [102, 14, 1626, 1054]
-		    Open		    off
-		    ModelBrowserVisibility  off
-		    ModelBrowserWidth	    200
-		    ScreenColor		    "white"
-		    PaperOrientation	    "landscape"
-		    PaperPositionMode	    "auto"
-		    PaperType		    "usletter"
-		    PaperUnits		    "inches"
-		    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
-		    TiledPageScale	    1
-		    ShowPageBoundaries	    off
-		    ZoomFactor		    "100"
-		    Block {
-		    BlockType		    Inport
-		    Name		    "In1"
-		    SID			    "196::52"
-		    Position		    [195, 158, 225, 172]
-		    ZOrder		    10
-		    IconDisplay		    "Port number"
-		    }
-		    Block {
-		    BlockType		    TriggerPort
-		    Name		    "f"
-		    SID			    "196::48"
-		    Ports		    []
-		    Position		    [360, 80, 380, 100]
-		    ZOrder		    1
-		    CopyFcn		    "Stateflow.SLINSF.SimulinkMan.removeBlockPreDeleteFcn"
-		    PreDeleteFcn	    "Stateflow.SLINSF.SimulinkMan.unsafePredeleteFcn"
-		    TriggerType		    "function-call"
-		    StatesWhenEnabling	    "held"
-		    }
-		    Block {
-		    BlockType		    S-Function
-		    Name		    "PathPlan"
-		    SID			    "196::50"
-		    Ports		    [1, 1]
-		    Position		    [295, 140, 450, 190]
-		    ZOrder		    8
-		    FunctionName	    "MPC_TrajPlanner"
-		    EnableBusSupport	    off
-		    }
-		    Block {
-		    BlockType		    Outport
-		    Name		    "Out1"
-		    SID			    "196::58"
-		    Position		    [535, 158, 565, 172]
-		    ZOrder		    11
-		    IconDisplay		    "Port number"
-		    }
-		    Line {
-		    SrcBlock		    "In1"
-		    SrcPort		    1
-		    DstBlock		    "PathPlan"
-		    DstPort		    1
-		    }
-		    Line {
-		    SrcBlock		    "PathPlan"
-		    SrcPort		    1
-		    DstBlock		    "Out1"
-		    DstPort		    1
-		    }
-		  }
+		  BlockType		  Terminator
+		  Name			  " Terminator "
+		  SID			  "196::98"
+		  Position		  [460, 256, 480, 274]
+		  ZOrder		  47
 		}
 		Block {
 		  BlockType		  Outport
@@ -1864,29 +1560,20 @@ Model {
 		}
 		Block {
 		  BlockType		  Outport
-		  Name			  "cmd_gear"
-		  SID			  "196::54"
+		  Name			  "cmd_brake"
+		  SID			  "196::56"
 		  Position		  [460, 171, 480, 189]
-		  ZOrder		  29
+		  ZOrder		  31
 		  Port			  "3"
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Outport
-		  Name			  "cmd_brake"
-		  SID			  "196::56"
+		  Name			  "cmd_gear"
+		  SID			  "196::54"
 		  Position		  [460, 206, 480, 224]
-		  ZOrder		  31
+		  ZOrder		  29
 		  Port			  "4"
-		  IconDisplay		  "Port number"
-		}
-		Block {
-		  BlockType		  Outport
-		  Name			  "plan_cmd"
-		  SID			  "196::70"
-		  Position		  [460, 246, 480, 264]
-		  ZOrder		  35
-		  Port			  "5"
 		  IconDisplay		  "Port number"
 		}
 		Line {
@@ -1896,10 +1583,34 @@ Model {
 		  DstPort		  1
 		}
 		Line {
-		  SrcBlock		  "simulate_info"
+		  SrcBlock		  "x"
 		  SrcPort		  1
 		  DstBlock		  " SFunction "
 		  DstPort		  2
+		}
+		Line {
+		  SrcBlock		  "y"
+		  SrcPort		  1
+		  DstBlock		  " SFunction "
+		  DstPort		  3
+		}
+		Line {
+		  SrcBlock		  "yaw"
+		  SrcPort		  1
+		  DstBlock		  " SFunction "
+		  DstPort		  4
+		}
+		Line {
+		  SrcBlock		  "vx"
+		  SrcPort		  1
+		  DstBlock		  " SFunction "
+		  DstPort		  5
+		}
+		Line {
+		  SrcBlock		  "vy"
+		  SrcPort		  1
+		  DstBlock		  " SFunction "
+		  DstPort		  6
 		}
 		Line {
 		  Name			  "cmd_speed"
@@ -1918,334 +1629,32 @@ Model {
 		  DstPort		  1
 		}
 		Line {
-		  Name			  "cmd_gear"
-		  Labels		  [0, 0]
-		  SrcBlock		  " SFunction "
-		  SrcPort		  4
-		  DstBlock		  "cmd_gear"
-		  DstPort		  1
-		}
-		Line {
 		  Name			  "cmd_brake"
 		  Labels		  [0, 0]
 		  SrcBlock		  " SFunction "
-		  SrcPort		  5
+		  SrcPort		  4
 		  DstBlock		  "cmd_brake"
 		  DstPort		  1
 		}
 		Line {
-		  Name			  "plan_cmd"
+		  Name			  "cmd_gear"
 		  Labels		  [0, 0]
 		  SrcBlock		  " SFunction "
-		  SrcPort		  6
-		  DstBlock		  "plan_cmd"
+		  SrcPort		  5
+		  DstBlock		  "cmd_gear"
 		  DstPort		  1
-		}
-		Line {
-		  SrcBlock		  " SFunction "
-		  SrcPort		  7
-		  DstBlock		  "PlanPath"
-		  DstPort		  1
-		}
-		Line {
-		  SrcBlock		  "PlanPath"
-		  SrcPort		  1
-		  DstBlock		  " SFunction "
-		  DstPort		  3
 		}
 		Line {
 		  SrcBlock		  " Demux "
 		  SrcPort		  1
-		  DstBlock		  "PlanPath"
-		  DstPort		  trigger
-		}
-		Line {
-		  SrcBlock		  " SFunction "
-		  SrcPort		  8
-		  DstBlock		  "PlanControl"
+		  DstBlock		  " Terminator "
 		  DstPort		  1
-		}
-		Line {
-		  SrcBlock		  " SFunction "
-		  SrcPort		  9
-		  DstBlock		  "PlanControl"
-		  DstPort		  2
-		}
-		Line {
-		  SrcBlock		  "PlanControl"
-		  SrcPort		  1
-		  DstBlock		  " SFunction "
-		  DstPort		  4
-		}
-		Line {
-		  SrcBlock		  " Demux "
-		  SrcPort		  2
-		  DstBlock		  "PlanControl"
-		  DstPort		  trigger
 		}
 		Line {
 		  SrcBlock		  " SFunction "
 		  SrcPort		  1
 		  DstBlock		  " Demux "
 		  DstPort		  1
-		}
-	      }
-	    }
-	    Block {
-	      BlockType		      SubSystem
-	      Name		      "plan"
-	      SID		      "118"
-	      Ports		      [4, 1]
-	      Position		      [505, 214, 670, 441]
-	      ZOrder		      8
-	      MinAlgLoopOccurrences   off
-	      PropExecContextOutsideSubsystem off
-	      RTWSystemCode	      "Auto"
-	      FunctionWithSeparateData off
-	      Opaque		      off
-	      RequestExecContextInheritance off
-	      MaskHideContents	      off
-	      System {
-		Name			"plan"
-		Location		[102, 14, 1626, 1054]
-		Open			off
-		ModelBrowserVisibility	off
-		ModelBrowserWidth	200
-		ScreenColor		"white"
-		PaperOrientation	"landscape"
-		PaperPositionMode	"auto"
-		PaperType		"usletter"
-		PaperUnits		"inches"
-		TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
-		TiledPageScale		1
-		ShowPageBoundaries	off
-		ZoomFactor		"80"
-		Block {
-		  BlockType		  Inport
-		  Name			  "ultrasonic_info"
-		  SID			  "119"
-		  Position		  [125, 258, 155, 272]
-		  ZOrder		  -1
-		  IconDisplay		  "Port number"
-		}
-		Block {
-		  BlockType		  Inport
-		  Name			  "speed"
-		  SID			  "132"
-		  Position		  [125, 318, 155, 332]
-		  ZOrder		  5
-		  Port			  "2"
-		  IconDisplay		  "Port number"
-		}
-		Block {
-		  BlockType		  Inport
-		  Name			  "steerAngle"
-		  SID			  "133"
-		  Position		  [125, 378, 155, 392]
-		  ZOrder		  6
-		  Port			  "3"
-		  IconDisplay		  "Port number"
-		}
-		Block {
-		  BlockType		  Inport
-		  Name			  "carPosition"
-		  SID			  "188"
-		  Position		  [125, 448, 155, 462]
-		  ZOrder		  8
-		  Port			  "4"
-		  IconDisplay		  "Port number"
-		}
-		Block {
-		  BlockType		  S-Function
-		  Name			  "PathPlan"
-		  SID			  "175"
-		  Ports			  [1, 1]
-		  Position		  [315, 430, 470, 480]
-		  ZOrder		  7
-		  FunctionName		  "MPC_TrajPlanner"
-		  EnableBusSupport	  off
-		}
-		Block {
-		  BlockType		  Outport
-		  Name			  "Out2"
-		  SID			  "128"
-		  Position		  [595, 448, 625, 462]
-		  ZOrder		  1
-		  IconDisplay		  "Port number"
-		}
-		Line {
-		  SrcBlock		  "PathPlan"
-		  SrcPort		  1
-		  DstBlock		  "Out2"
-		  DstPort		  1
-		}
-		Line {
-		  SrcBlock		  "carPosition"
-		  SrcPort		  1
-		  DstBlock		  "PathPlan"
-		  DstPort		  1
-		}
-	      }
-	    }
-	    Block {
-	      BlockType		      SubSystem
-	      Name		      "planToPoint"
-	      SID		      "147"
-	      Ports		      [2, 1]
-	      Position		      [795, 297, 895, 413]
-	      ZOrder		      14
-	      MinAlgLoopOccurrences   off
-	      PropExecContextOutsideSubsystem off
-	      RTWSystemCode	      "Auto"
-	      FunctionWithSeparateData off
-	      Opaque		      off
-	      RequestExecContextInheritance off
-	      MaskHideContents	      off
-	      System {
-		Name			"planToPoint"
-		Location		[102, 14, 1626, 1054]
-		Open			off
-		ModelBrowserVisibility	off
-		ModelBrowserWidth	200
-		ScreenColor		"white"
-		PaperOrientation	"landscape"
-		PaperPositionMode	"auto"
-		PaperType		"usletter"
-		PaperUnits		"inches"
-		TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
-		TiledPageScale		1
-		ShowPageBoundaries	off
-		ZoomFactor		"100"
-		Block {
-		  BlockType		  Inport
-		  Name			  "route"
-		  SID			  "168"
-		  Position		  [550, 368, 580, 382]
-		  ZOrder		  19
-		  IconDisplay		  "Port number"
-		}
-		Block {
-		  BlockType		  Inport
-		  Name			  "carPosition"
-		  SID			  "189"
-		  Position		  [550, 328, 580, 342]
-		  ZOrder		  26
-		  Port			  "2"
-		  IconDisplay		  "Port number"
-		}
-		Block {
-		  BlockType		  Constant
-		  Name			  "Constant"
-		  SID			  "173"
-		  Position		  [990, 505, 1020, 535]
-		  ZOrder		  24
-		  Value			  "0"
-		}
-		Block {
-		  BlockType		  S-Function
-		  Name			  "Controller"
-		  SID			  "167"
-		  Ports			  [1, 1]
-		  Position		  [780, 372, 930, 418]
-		  ZOrder		  18
-		  FunctionName		  "MPC_Controller"
-		  EnableBusSupport	  off
-		}
-		Block {
-		  BlockType		  Fcn
-		  Name			  "Fcn1"
-		  SID			  "171"
-		  Position		  [1000, 400, 1060, 430]
-		  ZOrder		  22
-		  Expr			  "180*u/3.1415926"
-		}
-		Block {
-		  BlockType		  Mux
-		  Name			  "Mux"
-		  SID			  "191"
-		  Ports			  [2, 1]
-		  Position		  [660, 346, 665, 384]
-		  ZOrder		  27
-		  ShowName		  off
-		  Inputs		  "2"
-		  DisplayOption		  "bar"
-		}
-		Block {
-		  BlockType		  Mux
-		  Name			  "Mux1"
-		  SID			  "172"
-		  Ports			  [4, 1]
-		  Position		  [1105, 373, 1110, 482]
-		  ZOrder		  23
-		  ShowName		  off
-		  DisplayOption		  "bar"
-		}
-		Block {
-		  BlockType		  Outport
-		  Name			  "Out2"
-		  SID			  "150"
-		  Position		  [1180, 423, 1210, 437]
-		  ZOrder		  1
-		  IconDisplay		  "Port number"
-		}
-		Line {
-		  SrcBlock		  "Controller"
-		  SrcPort		  1
-		  Points		  [10, 0; 0, 20]
-		  DstBlock		  "Fcn1"
-		  DstPort		  1
-		}
-		Line {
-		  SrcBlock		  "Mux1"
-		  SrcPort		  1
-		  DstBlock		  "Out2"
-		  DstPort		  1
-		}
-		Line {
-		  SrcBlock		  "Fcn1"
-		  SrcPort		  1
-		  Points		  [25, 0]
-		  Branch {
-		    DstBlock		    "Mux1"
-		    DstPort		    2
-		  }
-		  Branch {
-		    DstBlock		    "Mux1"
-		    DstPort		    1
-		  }
-		}
-		Line {
-		  SrcBlock		  "Constant"
-		  SrcPort		  1
-		  Points		  [38, 0; 0, -55; 27, 0]
-		  Branch {
-		    DstBlock		    "Mux1"
-		    DstPort		    3
-		  }
-		  Branch {
-		    DstBlock		    "Mux1"
-		    DstPort		    4
-		  }
-		}
-		Line {
-		  SrcBlock		  "carPosition"
-		  SrcPort		  1
-		  Points		  [55, 0; 0, 20]
-		  DstBlock		  "Mux"
-		  DstPort		  1
-		}
-		Line {
-		  SrcBlock		  "Mux"
-		  SrcPort		  1
-		  Points		  [68, 0; 0, 30]
-		  DstBlock		  "Controller"
-		  DstPort		  1
-		}
-		Line {
-		  SrcBlock		  "route"
-		  SrcPort		  1
-		  DstBlock		  "Mux"
-		  DstPort		  2
 		}
 	      }
 	    }
@@ -2258,96 +1667,95 @@ Model {
 	      IconDisplay	      "Port number"
 	    }
 	    Line {
-	      SrcBlock		      "ultrasonic_info"
-	      SrcPort		      1
-	      Points		      [112, 0; 0, 95]
-	      DstBlock		      "plan"
-	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "plan"
-	      SrcPort		      1
-	      Points		      [57, 0; 0, -5]
-	      DstBlock		      "planToPoint"
-	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "around_info"
-	      SrcPort		      1
-	      Points		      [176, 0; 0, 5]
-	      DstBlock		      "getCarPosition"
-	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "can_in"
-	      SrcPort		      1
-	      Points		      [31, 0]
-	      Branch {
-		Points			[0, 93; 27, 0; 0, 77]
-		DstBlock		"getCarPosition"
-		DstPort			3
-	      }
-	      Branch {
-		DstBlock		"Demux1"
-		DstPort			1
-	      }
-	    }
-	    Line {
-	      SrcBlock		      "Demux1"
-	      SrcPort		      2
-	      Points		      [180, 0; 0, 5]
-	      DstBlock		      "plan"
-	      DstPort		      3
-	    }
-	    Line {
-	      SrcBlock		      "i2c_in"
-	      SrcPort		      1
-	      Points		      [3, 0; 0, -20]
-	      DstBlock		      "getCarPosition"
-	      DstPort		      2
-	    }
-	    Line {
-	      SrcBlock		      "getCarPosition"
-	      SrcPort		      1
-	      Points		      [13, 0]
-	      Branch {
-		Points			[0, -340]
-		DstBlock		"mode"
-		DstPort			2
-	      }
-	      Branch {
-		Points			[27, 0; 0, -6]
-		Branch {
-		  Points		  [270, 0; 0, -94]
-		  DstBlock		  "planToPoint"
-		  DstPort		  2
-		}
-		Branch {
-		  Points		  [0, -69]
-		  DstBlock		  "plan"
-		  DstPort		  4
-		}
-	      }
-	    }
-	    Line {
-	      SrcBlock		      "Demux1"
-	      SrcPort		      1
-	      Points		      [177, 0; 0, -30]
-	      DstBlock		      "plan"
-	      DstPort		      2
-	    }
-	    Line {
 	      SrcBlock		      "human_cmd1"
 	      SrcPort		      1
+	      Points		      [62, 0; 0, -25]
 	      DstBlock		      "mode"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "mode"
-	      SrcPort		      5
-	      Points		      [220, 0; 0, 200]
+	      SrcPort		      1
+	      Points		      [42, 0; 0, -25]
+	      DstBlock		      "Mux"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "mode"
+	      SrcPort		      2
+	      Points		      [19, 0; 0, -35]
+	      DstBlock		      "Mux"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "mode"
+	      SrcPort		      3
+	      Points		      [105, 0; 0, -25]
+	      Branch {
+		DstBlock		"Mux"
+		DstPort			4
+	      }
+	      Branch {
+		Points			[0, -20]
+		DstBlock		"Mux"
+		DstPort			3
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "mode"
+	      SrcPort		      4
+	      Points		      [190, 0]
+	      DstBlock		      "Mux"
+	      DstPort		      5
+	    }
+	    Line {
+	      SrcBlock		      "Demux2"
+	      SrcPort		      1
+	      Points		      [128, 0; 0, -65]
+	      DstBlock		      "mode"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Demux2"
+	      SrcPort		      2
+	      Points		      [51, 0; 0, 13; 108, 0; 0, -73]
+	      DstBlock		      "mode"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Demux2"
+	      SrcPort		      3
+	      Points		      [107, 0; 0, -55]
+	      DstBlock		      "mode"
+	      DstPort		      4
+	    }
+	    Line {
+	      SrcBlock		      "Mux"
+	      SrcPort		      1
+	      Points		      [47, 0; 0, 270]
 	      DstBlock		      "Out2"
 	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "can_in"
+	      SrcPort		      1
+	      Points		      [151, 0; 0, -160]
+	      DstBlock		      "Demux2"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Demux2"
+	      SrcPort		      4
+	      Points		      [174, 0; 0, -50]
+	      DstBlock		      "mode"
+	      DstPort		      5
+	    }
+	    Line {
+	      SrcBlock		      "Demux2"
+	      SrcPort		      5
+	      Points		      [144, 0; 0, -45]
+	      DstBlock		      "mode"
+	      DstPort		      6
 	    }
 	  }
 	}
@@ -2538,7 +1946,7 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"controlSystem"
-	Location		[199, 17, 1723, 1057]
+	Location		[272, 11, 1631, 1043]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -2624,7 +2032,7 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"doubleEye_camera"
-	Location		[125, 0, 1649, 1040]
+	Location		[272, 11, 1631, 1043]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -2646,17 +2054,6 @@ Model {
 	  IconDisplay		  "Port number"
 	}
 	Block {
-	  BlockType		  Demux
-	  Name			  "Demux"
-	  SID			  "165"
-	  Ports			  [1, 2]
-	  Position		  [190, 81, 195, 139]
-	  ZOrder		  1
-	  ShowName		  off
-	  Outputs		  "[2,1]"
-	  DisplayOption		  "bar"
-	}
-	Block {
 	  BlockType		  Outport
 	  Name			  "Out1"
 	  SID			  "18"
@@ -2667,12 +2064,7 @@ Model {
 	Line {
 	  SrcBlock		  "In1"
 	  SrcPort		  1
-	  DstBlock		  "Demux"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Demux"
-	  SrcPort		  1
+	  Points		  [105, 0; 0, -15]
 	  DstBlock		  "Out1"
 	  DstPort		  1
 	}
@@ -2694,7 +2086,7 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"interactive"
-	Location		[414, 60, 1938, 1100]
+	Location		[272, 11, 1631, 1043]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -2723,12 +2115,44 @@ Model {
 	  Value			  "0"
 	}
 	Block {
+	  BlockType		  Constant
+	  Name			  "Constant2"
+	  SID			  "214"
+	  Position		  [185, 300, 215, 330]
+	  ZOrder		  10
+	}
+	Block {
+	  BlockType		  Constant
+	  Name			  "Constant3"
+	  SID			  "215"
+	  Position		  [185, 370, 215, 400]
+	  ZOrder		  11
+	  Value			  "0"
+	}
+	Block {
 	  BlockType		  ManualSwitch
 	  Name			  "Manual Switch"
 	  SID			  "204"
 	  Position		  [300, 167, 330, 203]
 	  ZOrder		  6
-	  CurrentSetting	  "0"
+	}
+	Block {
+	  BlockType		  ManualSwitch
+	  Name			  "Manual Switch1"
+	  SID			  "216"
+	  Position		  [300, 317, 330, 353]
+	  ZOrder		  9
+	}
+	Block {
+	  BlockType		  Mux
+	  Name			  "Mux"
+	  SID			  "217"
+	  Ports			  [2, 1]
+	  Position		  [430, 276, 435, 314]
+	  ZOrder		  12
+	  ShowName		  off
+	  Inputs		  "2"
+	  DisplayOption		  "bar"
 	}
 	Block {
 	  BlockType		  Outport
@@ -2755,7 +2179,35 @@ Model {
 	Line {
 	  SrcBlock		  "Manual Switch"
 	  SrcPort		  1
-	  Points		  [75, 0; 0, 20]
+	  Points		  [51, 0; 0, 100]
+	  DstBlock		  "Mux"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Constant3"
+	  SrcPort		  1
+	  Points		  [31, 0; 0, -40]
+	  DstBlock		  "Manual Switch1"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Constant2"
+	  SrcPort		  1
+	  Points		  [65, 0]
+	  DstBlock		  "Manual Switch1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Manual Switch1"
+	  SrcPort		  1
+	  Points		  [45, 0; 0, -30]
+	  DstBlock		  "Mux"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Mux"
+	  SrcPort		  1
+	  Points		  [22, 0; 0, -90]
 	  DstBlock		  "Out1"
 	  DstPort		  1
 	}
@@ -2817,30 +2269,22 @@ Model {
     Line {
       SrcBlock		      "Mux"
       SrcPort		      1
-      Points		      [24, 0]
+      Points		      [143, 0; 0, 155; -970, 0; 0, -310]
       Branch {
-	Points			[119, 0; 0, 155; -970, 0; 0, -310]
+	Points			[0, -60]
 	Branch {
 	  Points		  [0, -60]
-	  Branch {
-	    Points		    [0, -60]
-	    DstBlock		    "ultrasonic"
-	    DstPort		    1
-	  }
-	  Branch {
-	    DstBlock		    "around_camera"
-	    DstPort		    1
-	  }
+	  DstBlock		  "ultrasonic"
+	  DstPort		  1
 	}
 	Branch {
-	  DstBlock		  "doubleEye_camera"
+	  DstBlock		  "around_camera"
 	  DstPort		  1
 	}
       }
       Branch {
-	Points			[0, 127; -554, 0; 0, -97]
-	DstBlock		"controlSystem"
-	DstPort			3
+	DstBlock		"doubleEye_camera"
+	DstPort			1
       }
     }
     Line {
@@ -2887,14 +2331,23 @@ Model {
     Line {
       SrcBlock		      "controlSystem"
       SrcPort		      2
+      Points		      [27, 0; 0, -130]
       DstBlock		      "CarSim S-Function"
       DstPort		      1
     }
     Line {
       SrcBlock		      "CarSim S-Function"
       SrcPort		      1
-      DstBlock		      "Demux2"
-      DstPort		      1
+      Points		      [39, 0; 0, 40]
+      Branch {
+	Points			[0, 147; -334, 0]
+	DstBlock		"controlSystem"
+	DstPort			3
+      }
+      Branch {
+	DstBlock		"Demux"
+	DstPort			1
+      }
     }
     Line {
       SrcBlock		      "Demux2"
@@ -2906,17 +2359,9 @@ Model {
     Line {
       SrcBlock		      "Demux2"
       SrcPort		      6
-      Points		      [47, 0]
-      Branch {
-	Points			[0, 45]
-	DstBlock		"XY Graph"
-	DstPort			1
-      }
-      Branch {
-	Points			[13, 0]
-	DstBlock		"Mux"
-	DstPort			6
-      }
+      Points		      [60, 0]
+      DstBlock		      "Mux"
+      DstPort		      6
     }
     Line {
       SrcBlock		      "controlSystem"
@@ -2927,17 +2372,9 @@ Model {
     Line {
       SrcBlock		      "Demux2"
       SrcPort		      5
-      Points		      [30, 0]
-      Branch {
-	Points			[0, 75]
-	DstBlock		"XY Graph"
-	DstPort			2
-      }
-      Branch {
-	Points			[5, 0; 0, -5]
-	DstBlock		"Mux"
-	DstPort			5
-      }
+      Points		      [35, 0; 0, -5]
+      DstBlock		      "Mux"
+      DstPort		      5
     }
     Line {
       SrcBlock		      "Demux2"
@@ -2987,6 +2424,19 @@ Model {
       DstBlock		      "computeSystem"
       DstPort		      5
     }
+    Line {
+      SrcBlock		      "Demux"
+      SrcPort		      1
+      DstBlock		      "XY Graph1"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Demux"
+      SrcPort		      2
+      Points		      [12, 0; 0, -10]
+      DstBlock		      "XY Graph1"
+      DstPort		      2
+    }
     Annotation {
       SID		      "163"
       Name		      "注意\n路径规划模块模型表示方法未知\n暂时使用位置参数Xo,Yo,Yaw直接带入传感器"
@@ -3013,19 +2463,19 @@ Model {
 Stateflow {
   machine {
     id			    1
-    name		    "atsPlan"
+    name		    "atsState"
     created		    "16-Apr-2014 13:46:19"
     isLibrary		    0
-    firstTarget		    65
+    firstTarget		    68
     sfVersion		    76014001.001
     sfDemoChecksum	    [2988005370 2771551416 1695967507 1706016003]
   }
   chart {
     id			    2
     name		    "computeSystem/R-car/mode"
-    windowPosition	    [169.5 246.75 417 348.75]
-    viewLimits		    [-324.621 1147.379 284.84 1145.84]
-    zoomFactor		    1.333
+    windowPosition	    [272 11 1359 1032]
+    viewLimits		    [-390.73 1964.27 207.585 1298.835]
+    zoomFactor		    1.667
     stateColor		    [0.3803921568627451 0.2745098039215687 0.1803921568627451]
     stateLabelColor	    [0.4588235294117647 0.2980392156862745 0.1411764705882353]
     transitionColor	    [0.3215686274509804 0.5450980392156862 0.7725490196078432]
@@ -3034,15 +2484,16 @@ Stateflow {
     chartColor		    [1 0.9882352941176471 0.9254901960784314]
     screen		    [1 1 1920 1200 1.333333333333333]
     treeNode		    [0 4 0 0]
-    firstTransition	    61
+    firstTransition	    64
     viewObj		    2
     visible		    1
     machine		    1
     subviewS {
     }
-    ssIdHighWaterMark	    93
+    ssIdHighWaterMark	    158
     decomposition	    CLUSTER_CHART
-    firstData		    54
+    firstEvent		    62
+    firstData		    50
     chartFileNumber	    1
     saturateOnIntegerOverflow 1
     userSpecifiedStateTransitionExecutionOrder 1
@@ -3051,11 +2502,12 @@ Stateflow {
   state {
     id			    3
     labelString		    "automative_parking"
-    position		    [510 303 581.75 877.1625]
+    position		    [447.25 303 729.25 888.4125]
     fontSize		    12
     chart		    2
     treeNode		    [2 5 4 9]
-    firstTransition	    19
+    firstTransition	    17
+    firstJunction	    16
     visible		    0
     subviewer		    2
     ssIdNumber		    5
@@ -3065,7 +2517,7 @@ Stateflow {
   state {
     id			    4
     labelString		    "dead"
-    position		    [294.006 303 90 60]
+    position		    [260.006 303 90 60]
     fontSize		    12
     chart		    2
     treeNode		    [2 0 0 3]
@@ -3078,12 +2530,11 @@ Stateflow {
   state {
     id			    5
     labelString		    "routing"
-    position		    [534 356 340 259]
+    position		    [471.25 356 417.6 260.6]
     fontSize		    12
     chart		    2
-    treeNode		    [3 7 0 15]
-    firstTransition	    23
-    firstJunction	    21
+    treeNode		    [3 7 0 11]
+    firstTransition	    25
     visible		    0
     subviewer		    2
     ssIdNumber		    10
@@ -3092,123 +2543,28 @@ Stateflow {
   }
   state {
     id			    6
-    labelString		    "[sys,x0,str,ts] = MPC_TrajPlanner(t,x,u,flag)"
-    position		    [20.6905 548.1483 236.2763 68.7487]
+    labelString		    "out(s,a,b,g)"
+    position		    [130.856 600.1867 240 118.5125]
     fontSize		    12
     chart		    2
-    treeNode		    [2 0 9 11]
-    superState		    SUBCHART
+    treeNode		    [2 0 9 0]
+    firstTransition	    31
+    firstJunction	    30
     visible		    0
     subviewer		    2
-    ssIdNumber		    43
+    ssIdNumber		    79
     type		    FUNC_STATE
     decomposition	    CLUSTER_STATE
-    firstData		    27
-    eml {
-      isEML		      1
-      script		      "function [sys,x0,str,ts] = MPC_TrajPlanner(t,x,u,flag)\n% 该程序功能：用点质量模型设计规划期，能够"
-      "规避障碍物\n% 程序版本 V1.0，MATLAB版本：R2011a,采用S函数的标准形式，\n% 程序编写日期 2013.12.17\n% 最近一次改写"
-      " 2014.02.24\n% 状态量=[y_dot,x_dot,phi,,Y,X]，控制量为前轮偏角ay\n\n\nswitch flag,\n case 0  %flag=0表示处于初始"
-      "化状态，此时用函数mdlInitializeSizes进行初始化\n  [sys,x0,str,ts] = mdlInitializeSizes; % Initialization\n  \n c"
-      "ase 2  %flag=2表示此时要计算下一个离散状态\n  sys = mdlUpdates(t,x,u); % Update discrete states\n  \n case 3 %fl"
-      "ag=3表示此时要计算输出\n  sys = mdlOutputs(t,x,u); % Calculate outputs\n \n%  case 4\n%   sys = mdlGetTimeOfNext"
-      "VarHit(t,x,u); % Get next sample time \n\n case {1,4,9} % Unused flags\n    % flag=1表示此时要计算连续状态的微分"
-      "\n    %flag=4表示此时要计算下一次采样的时间，只在离散采样系统中有用，主要用于变步长的设置\n    %flag=9表示此时系"
-      "统要结束，一般来说写上在mdlTerminate函数中写上sys=[]就可\n  sys = [];\n  \n otherwise\n  error(['unhandled flag "
-      "= ',num2str(flag)]); % Error handling\nend\n% End of dsfunc.\n\n%==============================================="
-      "===============\n% Initialization\n%==============================================================\n\nfunction ["
-      "sys,x0,str,ts] = mdlInitializeSizes\n\n% Call simsizes for a sizes structure, fill it in, and convert it \n% to "
-      "a sizes array.\n\nsizes = simsizes; %用于设置模块参数的结构体用simsizes来生成\nsizes.NumContStates  = 0;%模块连续"
-      "状态变量的个数\nsizes.NumDiscStates  = 5;%模块离散状态变量的个数\nsizes.NumOutputs     = 10;%输出期望的Y和phi,给"
-      "出的是拟合曲线的系数如果有需要可以考虑dphi,dphi=ay/x_dot;\nsizes.NumInputs      = 6;%模块输入变量的个数\nsizes.D"
-      "irFeedthrough = 1; %模块是否存在直接贯通\nsizes.NumSampleTimes = 1;%模块的采样次数，至少是一个\nsys = simsizes(s"
-      "izes); %设置完后赋给sys输出\n\nx0 =[0.001;0.0001;0.0001;0.00001;0.00001;];    %状态变量设置\n%global U;\n%U=[0];"
-      "%控制量初始化,U为一维的\n% global x;\n% x = zeros(md.ne + md.pye + md.me + md.Hu*md.me,1);   \n% Initialize the "
-      "discrete states.\nstr = [];             %保留参数， Set str to an empty matrix.\nts  = [0.1 0];       % 采样周期"
-      ": [period, offset],这里轨迹规划的周期设为100ms\n%End of mdlInitializeSizes\n		      \n%========================="
-      "=====================================\n% Update the discrete states\n%=========================================="
-      "====================\nfunction sys = mdlUpdates(t,x,u)\n  \nsys = x; %更新状态变量\n%End of mdlUpdate.\n\n%====="
-      "=========================================================\n% Calculate outputs\n%==============================="
-      "===============================\nfunction sys = mdlOutputs(t,x,u)\n    %u是CarSim的输出\n    %x是状态量，x=[y_do"
-      "t,x_dot,phi,,Y,X]\n    %t是时间变量\n    tic\n    Nx=5;%状态量的个数， \n    %Nu=1;%控制量的个数，控制量为前轮偏"
-      "角ay\n    %Ny=2;%输出量的个数，这边falcone在LTV里面验证了两个输出量没有三个输出量的控制效果好，这边可以先用两个输"
-      "出量\n    Np =15;%预测步长\n    Nc=2;%控制步长\n    Nobs=6;%障碍物个数\n    T=0.1;%Sample Time\n   \n    %输入接"
-      "口转换,x_dot后面加一个非常小的数，是防止出现分母为零的情况\n    % y_dot=u(1)/3.6-0.000000001*0.4786;%CarSim输出的"
-      "是km/h，转换为m/s\n    y_dot=u(1)/3.6; %速度单位是km/h，转换为m/s\n    x_dot=u(2)/3.6+0.0001;%CarSim输出的是km/h"
-      "，转换为m/s.加一个很小的数是为了防止分母为零\n    phi=u(3)*pi/180; %CarSim输出的为角度，角度转换为弧度\n    phi_"
-      "dot=u(4)*pi/180;%角速度，角度转换为弧度\n    Y=u(5);%单位为m\n    X=u(6);%单位为米\n   \n%% 参考轨迹生成\n    %%"
-      "shape=2.4;%参数名称，用于参考轨迹生成\n    %%dx1=25;dx2=21.95;%没有任何实际意义，只是参数名称\n    %%dy1=4.05;dy"
-      "2=5.7;%没有任何实际意义，只是参数名称\n    %%Xs1=27.19;Xs2=56.46;%参数名称\n  	X_phi=1:1:220;%这个点的区间是根据"
-      "纵向速度（x_dot）来定的，如果速度为10m/s则区间=10*0.1=1\n    %%z1=shape/dx1*(X_phi-Xs1)-shape/2;\n   %%z2=shape/"
-      "dx2*(X_phi-Xs2)-shape/2;\n    %%Y_ref=dy1/2.*(1+tanh(z1))-dy2/2.*(1+tanh(z2));\n%     if (X_phi/10>=1)\n%       "
-      "  if (X_phi/20>=1)\n%             if (X_phi/40>=1)           \n%                 if (X_phi/60>=1)\n%            "
-      "         Y_ref=(X_phi/10000);\n%                 else\n%                     Y_ref=-(X_phi/0.0001);    \n%      "
-      "           end\n%             else\n%                 Y_ref=(X_phi/10000);\n%             end\n%         else\n%"
-      "             Y_ref=(X_phi/0.0001);\n%         end\n%     else\n%         Y_ref=(X_phi/10000);\n%     end\n    if"
-      " X_phi/20<1\n       Y_ref=-X_phi;\n    else\n       Y_ref=(X_phi)-40;\n    end\n   % phi_ref=atan(dy1*(1./cosh(z"
-      "1)).^2*(1.2/dx1)-dy2*(1./cosh(z2)).^2*(1.2/dx2));\n%% 矩阵转换。将状态变量转化为状态变量矩阵\n    State_Initial="
-      "zeros(Nx,1);\n    State_Initial(1,1)=y_dot;\n    State_Initial(2,1)=x_dot;\n    State_Initial(3,1)=phi;\n    Sta"
-      "te_Initial(4,1)=Y;\n    State_Initial(5,1)=X;    \n%% 障碍物信息设置\n    X_obstacle=zeros(Nobs,1);\n    X_obsta"
-      "cle(1:2)=30;\n    X_obstacle(3:4)=35;\n    X_obstacle(5:6)=32.5;\n%     X_obstacle(1:2)=30;\n%     X_obstacle(3:"
-      "4)=60;\n%     X_obstacle(5:6)=45;\n    Y_obstacle=zeros(Nobs,1);\n    Y_obstacle(1)=0.5;\n    Y_obstacle(2)=1;\n"
-      "    Y_obstacle(3)=0.5;\n    Y_obstacle(4)=1;\n    Y_obstacle(5)=0.5;\n    Y_obstacle(6)=1;\n%     Y_obstacle(1)="
-      "-1;\n%     Y_obstacle(2)=1;\n%     Y_obstacle(3)=-1;\n%     Y_obstacle(4)=1;\n%     Y_obstacle(5)=-1;\n%     Y_o"
-      "bstacle(6)=1;\n    Yref=(Y_ref(1,round(State_Initial(5,1))+1:round(State_Initial(5,1))+15))';%Yref采用的是近似算"
-      "法，此处为局部期望路径\n    Q=100*eye(Np,Np);%这里设置评价矩阵，都设为了1。可以根据跟踪情况加以调整\n    R=20*ey"
-      "e(Nc,Nc); %\n    S=100;%避障函数的权重    \n%% 开始求解过程\n    %设置约束\n    mu=0.4;%地面摩擦系数\n    g=9.8;"
-      "\n    lb=[-mu*g;-mu*g];\n    ub=[mu*g;mu*g];\n    A=[];\n    b=[];\n    Aeq=[];\n    beq=[];\n    options = opti"
-      "mset('Algorithm','active-set');\n%   [A,fval,exitflag]=fmincon(@(x)MY_costfunction(x,State_Initial,Np,Nc,Nobs,T,"
-      "Yref,Q,R,S,X_obstacle,Y_obstacle),[0;0;],A,b,Aeq,beq,lb,ub,[],options);%有约束求解，但速度慢\n%   [A,fval,exitfl"
-      "ag]=fminbnd(@(x)MY_costfunction(x,State_Initial,Np,Nc,T,Yref,Q,R,S),lb,ub);%只有上下界约束，但容易陷入局部最小\n"
-      "    [A,fval,exitflag]=fminsearch(@(x)MY_costfunction(x,State_Initial,Np,Nc,Nobs,T,Yref,Q,R,S,X_obstacle,Y_obstac"
-      "le),[0;0]);%无约束求解，速度最快\n    fprintf('exitflag=%d\\n',exitflag);\n   \n%% 计算输出\n% 以下根据计算出的控"
-      "制量推导所有的状态量\n    y_dot_predict=zeros(Np,1);\n    x_dot_predict=zeros(Np,1);\n    phi_predict=zeros(Np,1"
-      ");\n    Y_predict=zeros(Np,1);\n    X_predict=zeros(Np,1);\n\n for i=1:1:Np\n     if i==Nc-1 \n            ay(i)"
-      "=A(1);\n             % 以下完成状态量更新\n            y_dot_predict(i,1)=State_Initial(1,1)+T*ay(i);\n         "
-      "   x_dot_predict(i,1)=State_Initial(2,1);\n            phi_predict(i,1)=State_Initial(3,1)+T*ay(i)/State_Initial"
-      "(2,1);\n            Y_predict(i,1)=State_Initial(4,1)+T*(State_Initial(2,1)*sin(State_Initial(3,1))+State_Initia"
-      "l(1,1)*cos(State_Initial(3,1)));\n            X_predict(i,1)=State_Initial(5,1)+T*(State_Initial(2,1)*cos(State_"
-      "Initial(3,1))-State_Initial(1,1)*sin(State_Initial(3,1)));  \n      else %if i<=5\n            ay(i)=A(2);%这种写"
-      "法是仅仅考虑两个控制周期\n            y_dot_predict(i,1)=y_dot_predict(i-1,1)+T*ay(i);\n            x_dot_predic"
-      "t(i,1)=State_Initial(2,1);\n            phi_predict(i,1)=phi_predict(i-1,1)+T*ay(i)/x_dot_predict(i-1,1);\n     "
-      "       Y_predict(i,1)=Y_predict(i-1)+T*(State_Initial(2,1)*sin(phi_predict(i-1))+y_dot_predict(i-1)*cos(phi_pred"
-      "ict(i-1)));\n            X_predict(i,1)=X_predict(i-1)+T*(State_Initial(2,1)*cos(phi_predict(i-1))-y_dot_predict"
-      "(i-1)*sin(phi_predict(i-1)));\n      end \n end\n    Paramater_X_Y=polyfit(X_predict,Y_predict,4);\n    Paramate"
-      "r_X_PHI=polyfit(X_predict,phi_predict,4);\n    OutPut(1:5)=Paramater_X_Y;\n    OutPut(6:10)=Paramater_X_PHI;\n  "
-      "  sys=OutPut;\n    toc\n% End of mdlOutputs.\n %% 求代价函数的功能子函数\nfunction cost = MY_costfunction(x,Stat"
-      "e_Initial,Np,Nc,Nobs,T,Yref,Q,R,S,X_obstacle,Y_obstacle)\n    cost=0;\n    y_dot=State_Initial(1,1);\n    x_dot="
-      "State_Initial(2,1);\n    phi=State_Initial(3,1);\n    Y=State_Initial(4,1);\n    X_start=State_Initial(5,1);\n  "
-      "  \n    y_dot_predict=zeros(Np,1);\n    x_dot_predict=zeros(Np,1);\n    phi_predict=zeros(Np,1);\n    Y_predict="
-      "zeros(Np,1);\n    X_predict=zeros(Np,1);\n    Y_error=zeros(Np,1);\n    J_obst=zeros(Np,1);\n    ay=zeros(Np,1);"
-      "\n    \n    for i=1:1:Np\n        if i==Nc-1 \n            ay(i,1)=x(1);\n             % 以下完成状态量更新\n   "
-      "         y_dot_predict(i,1)=y_dot+T*ay(i,1);\n            x_dot_predict(i,1)=x_dot;\n            phi_predict(i,1"
-      ")=phi+T*ay(i)/x_dot;\n            Y_predict(i,1)=Y+T*(x_dot*sin(phi)+y_dot*cos(phi));\n            X_predict(i,1"
-      ")=X_start+T*(x_dot*cos(phi)-y_dot*sin(phi));\n            for j=1:1:Nobs\n                J_obst(i,1)=J_obst(i,1"
-      ")+1/(((X_predict(i,1))-X_obstacle(j,1))^2+(Y_predict(i,1)-Y_obstacle(j,1))^2+0.000001);\n            end\n      "
-      "  else %if i<=5\n            ay(i,1)=x(2);%这种写法是仅仅考虑两个控制周期\n            y_dot_predict(i,1)=y_dot_"
-      "predict(i-1,1)+T*ay(i,1);\n            x_dot_predict(i,1)=x_dot;\n            phi_predict(i,1)=phi_predict(i-1,1"
-      ")+T*ay(i)/x_dot_predict(i-1,1);\n            Y_predict(i,1)=Y_predict(i-1)+T*(x_dot*sin(phi_predict(i-1))+y_dot_"
-      "predict(i-1)*cos(phi_predict(i-1)));\n            X_predict(i,1)=X_predict(i-1)+T*(x_dot*cos(phi_predict(i-1))-y"
-      "_dot_predict(i-1)*sin(phi_predict(i-1)));\n            for p=1:1:Nobs\n                J_obst(i,1)=J_obst(i,1)+1"
-      "/(((X_predict(i,1))-X_obstacle(p,1))^2+(Y_predict(i,1)-Y_obstacle(p,1))^2+0.000001);\n            end\n%        "
-      "     else \n%             ay(i)=x(2);\n%             y_dot_predict(i,1)=y_dot_predict(i-1,1)+T*ay(i);\n%        "
-      "     x_dot_predict(i,1)=x_dot;\n%             phi_predict(i,1)=phi_predict(i-1,1)+T*ay(i)/x_dot_predict(i-1,1);\n"
-      "%             Y_predict(i,1)=Y_predict(i-1)+T*(x_dot*sin(phi_predict(5,1))+y_dot_predict(5,1)*cos(phi_predict(5,"
-      "1)));\n%             X_predict(i,1)=X_predict(i-1)+T*(x_dot*cos(phi_predict(5,1))-y_dot_predict(5,1)*sin(phi_pre"
-      "dict(5,1)));\n%             end \n        end\n    %J_obst=J_obst+1/(((X_predict(i,1))-X_obstacle(2,1))^2+(Y_pre"
-      "dict(i,1)-Y_obstacle(2,1))^2+0.00001);\n        Y_error(i,1)=Y_predict(i,1)-Yref(i,1);%注意此处Yref与Y_ref要区分"
-      "开来，Yref是局部期望路径,Y_ref为全局期望路径\n    end \n        cost=cost+Y_error'*Q*Y_error+ay(1:2)'*R*ay(1:2)+"
-      "S*sum(J_obst(:));\n% End of CostFunction\n"
-      editorLayout	      "100 M4x1[10 5 700 500]"
-    }
+    firstData		    26
   }
   state {
     id			    7
     labelString		    "going_stright"
-    position		    [579 394 90 60]
+    position		    [517.05 364.4 312.4 175.2]
     fontSize		    12
     chart		    2
-    treeNode		    [5 0 0 8]
+    treeNode		    [5 15 0 0]
+    firstTransition	    32
     visible		    0
     subviewer		    2
     ssIdNumber		    13
@@ -3217,14 +2573,16 @@ Stateflow {
   }
   state {
     id			    8
-    labelString		    "finding_port"
-    position		    [720.2974 394 90 60]
+    labelString		    "parkping"
+    position		    [469.25 786.75 470.5 367.75]
     fontSize		    12
     chart		    2
-    treeNode		    [5 0 7 10]
+    treeNode		    [3 12 10 0]
+    firstTransition	    35
+    firstJunction	    34
     visible		    0
     subviewer		    2
-    ssIdNumber		    15
+    ssIdNumber		    11
     type		    OR_STATE
     decomposition	    CLUSTER_STATE
   }
@@ -3232,7 +2590,7 @@ Stateflow {
     id			    9
     labelString		    "车的状态？模式？\n输出：\n\n档位\n刹车指令\n方向盘角度\n速度\n\n未知：\nsimulink function使用\n参"
     "数向外传递\n\n计划：\n先内部排除语法错误\n模拟运行无问题再出去"
-    position		    [1111.7065 356 7.5 4.5]
+    position		    [1237.7065 338.5 122 227]
     fontSize		    12
     chart		    2
     treeNode		    [2 0 3 6]
@@ -3247,12 +2605,10 @@ Stateflow {
   state {
     id			    10
     labelString		    "stopping"
-    position		    [590 509 124 91]
+    position		    [735.8 683.35 118.4 44.6]
     fontSize		    12
     chart		    2
-    treeNode		    [5 0 8 0]
-    firstTransition	    36
-    firstJunction	    35
+    treeNode		    [3 0 11 8]
     visible		    0
     subviewer		    2
     ssIdNumber		    39
@@ -3261,30 +2617,24 @@ Stateflow {
   }
   state {
     id			    11
-    labelString		    "Out1 = PlanPath(In1)"
-    position		    [81.5038 751.6812 132.5055 75]
+    labelString		    "complete"
+    position		    [500 681.283 90 60]
     fontSize		    12
     chart		    2
-    treeNode		    [2 0 6 18]
-    superState		    SUBCHART
+    treeNode		    [3 0 5 10]
     visible		    0
     subviewer		    2
-    ssIdNumber		    52
-    type		    FUNC_STATE
+    ssIdNumber		    37
+    type		    OR_STATE
     decomposition	    CLUSTER_STATE
-    firstData		    37
-    simulink {
-      isSimulinkFcn	      1
-      blockName		      "PlanPath"
-    }
   }
   state {
     id			    12
     labelString		    "holding"
-    position		    [640.2974 730.733 90 60]
+    position		    [609.7503 818.4832 90 60]
     fontSize		    12
     chart		    2
-    treeNode		    [15 0 14 13]
+    treeNode		    [8 0 0 14]
     visible		    0
     subviewer		    2
     ssIdNumber		    65
@@ -3294,10 +2644,12 @@ Stateflow {
   state {
     id			    13
     labelString		    "executing"
-    position		    [566.2974 883.783 160 245]
+    position		    [502.2974 921.283 310 200]
     fontSize		    12
     chart		    2
-    treeNode		    [15 0 12 16]
+    treeNode		    [8 0 14 0]
+    firstTransition	    44
+    firstJunction	    41
     visible		    0
     subviewer		    2
     ssIdNumber		    29
@@ -3307,10 +2659,12 @@ Stateflow {
   state {
     id			    14
     labelString		    "adjusting"
-    position		    [768.7974 665.233 91 62]
+    position		    [831.6 850.233 91 62]
     fontSize		    12
     chart		    2
-    treeNode		    [15 0 0 12]
+    treeNode		    [8 0 12 13]
+    firstTransition	    49
+    firstJunction	    48
     visible		    0
     subviewer		    2
     ssIdNumber		    31
@@ -3319,81 +2673,47 @@ Stateflow {
   }
   state {
     id			    15
-    labelString		    "parkping"
-    position		    [532 643 468 511.5]
+    labelString		    "finding_port"
+    position		    [673.6808 380.2899 76.8 41.6]
     fontSize		    12
     chart		    2
-    treeNode		    [3 14 5 0]
-    firstTransition	    40
-    firstJunction	    39
+    treeNode		    [7 0 0 0]
     visible		    0
     subviewer		    2
-    ssIdNumber		    11
-    type		    OR_STATE
-    decomposition	    CLUSTER_STATE
-  }
-  state {
-    id			    16
-    labelString		    "complete"
-    position		    [758.2974 903.783 90 60]
-    fontSize		    12
-    chart		    2
-    treeNode		    [15 0 13 0]
-    visible		    0
-    subviewer		    2
-    ssIdNumber		    37
-    type		    OR_STATE
-    decomposition	    CLUSTER_STATE
-  }
-  state {
-    id			    17
-    labelString		    "out(s,a,g,b)"
-    position		    [101.1565 1009.233 135 35]
-    fontSize		    12
-    chart		    2
-    treeNode		    [2 0 18 0]
-    visible		    0
-    subviewer		    2
-    ssIdNumber		    79
-    type		    FUNC_STATE
-    decomposition	    CLUSTER_STATE
-    firstData		    47
-  }
-  state {
-    id			    18
-    labelString		    "Out2 = PlanControl(route,car_position)"
-    position		    [74.3668 853.25 214.6 85.4]
-    fontSize		    12
-    chart		    2
-    treeNode		    [2 0 11 17]
-    superState		    SUBCHART
-    visible		    0
-    subviewer		    2
-    ssIdNumber		    88
-    type		    FUNC_STATE
-    decomposition	    CLUSTER_STATE
-    firstData		    51
-    simulink {
-      isSimulinkFcn	      1
-      blockName		      "PlanControl"
+    subviewS {
+      x1		      -16
+      y1		      -16
+      pos		      [0 0 96 64]
     }
+    ssIdNumber		    121
+    type		    OR_STATE
+    decomposition	    CLUSTER_STATE
+  }
+  junction {
+    id			    16
+    position		    [655.75 711.283 7]
+    chart		    2
+    linkNode		    [3 0 0]
+    subviewer		    2
+    ssIdNumber		    153
+    type		    CONNECTIVE_JUNCTION
   }
   transition {
-    id			    19
+    id			    17
     labelString		    ""
-    labelPosition	    [605.778 341 0 0]
+    labelPosition	    [559.41 341 0 0]
     fontSize		    12
     src {
-      intersection	      [0 -0 1 0 605.7778 326 0 0]
+      intersection	      [0 -0 1 0 559.41 326 0 0]
     }
     dst {
       id		      5
-      intersection	      [1 0 -1 0.2111 605.7778 356 0 0]
+      intersection	      [1 0 -1 0.2111 559.41 356 0 0]
     }
-    midPoint		    [605.7778 341]
+    midPoint		    [559.41 341]
     chart		    2
-    linkNode		    [3 0 20]
-    dataLimits		    [603.378 608.178 326 356]
+    linkNode		    [3 0 18]
+    dataLimits		    [557.01 561.81 326 356]
     subviewer		    2
     drawStyle		    SMART
     slide {
@@ -3403,155 +2723,229 @@ Stateflow {
     ssIdNumber		    12
   }
   transition {
-    id			    20
-    labelString		    ""
-    labelPosition	    [579.5 602 0 0]
+    id			    18
+    labelString		    "[x>=10||y>=10]\n{value=1;}"
+    labelPosition	    [738.822 484.588 81.25 32]
     fontSize		    12
     src {
-      id		      5
-      intersection	      [3 0 1 0.8676 579 615 0 0]
+      id		      15
+      intersection	      [3 0 1 0.268 729.8947 421.8899 0 0]
     }
     dst {
-      id		      15
-      intersection	      [1 -0 -1 0.1004 579 643 0 0]
+      id		      10
+      intersection	      [4 -1 0 0.867 735.8 689.2818 0 0]
     }
-    midPoint		    [579 625]
+    midPoint		    [695.4223 589.0109]
     chart		    2
-    linkNode		    [3 19 0]
-    dataLimits		    [576.6 581.4 615 643]
+    linkNode		    [3 17 19]
+    visible		    0
+    dataLimits		    [694.503 735.8 421.89 691.682]
     subviewer		    2
     drawStyle		    SMART
     slide {
       sticky		      BOTH_STICK
     }
     executionOrder	    1
-    ssIdNumber		    22
+    ssIdNumber		    122
   }
-  junction {
+  transition {
+    id			    19
+    labelString		    "[(vx<=0.1&&vy<=0.1)&&(vx>=-0.1&&vy>=-0.1)]"
+    labelPosition	    [521.159 650.869 252 17]
+    fontSize		    12
+    src {
+      id		      10
+      intersection	      [4 -1 0 0.3737 735.8 711.283 0 0]
+    }
+    dst {
+      id		      16
+      intersection	      [2 1 0 0 662.75 711.283 0 0]
+    }
+    midPoint		    [703.275 711.283]
+    chart		    2
+    linkNode		    [3 18 20]
+    dataLimits		    [662.75 735.8 708.883 713.683]
+    subviewer		    2
+    drawStyle		    SMART
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    2
+    ssIdNumber		    147
+  }
+  transition {
+    id			    20
+    labelString		    ""
+    labelPosition	    [630.173 690.032 2 17]
+    fontSize		    12
+    src {
+      id		      16
+      intersection	      [2 0.9899 0.1418 0 662.6793 712.2753 0 0]
+    }
+    dst {
+      id		      10
+      intersection	      [4 -1 0 0.1903 735.8 719.4628 0 0]
+    }
+    midPoint		    [695.1569 717.03]
+    chart		    2
+    linkNode		    [3 19 21]
+    dataLimits		    [662.679 735.8 712.275 721.863]
+    stampAngle		    -0.7854
+    subviewer		    2
+    drawStyle		    SMART
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    3
+    ssIdNumber		    158
+  }
+  transition {
     id			    21
-    position		    [749.7065 522.508 7]
+    labelString		    "[done==3]"
+    labelPosition	    [573.645 752.67 56.25 17]
+    fontSize		    12
+    src {
+      id		      16
+      intersection	      [4 -0.8873 0.4612 0 649.5391 714.5117 0 0]
+    }
+    dst {
+      id		      11
+      intersection	      [2 1 0 0.7523 590 726.4204 0 0]
+    }
+    midPoint		    [624.5149 723.5159]
     chart		    2
-    linkNode		    [5 0 22]
+    linkNode		    [3 20 22]
+    dataLimits		    [590 649.539 714.512 728.82]
+    stampAngle		    2.3562
     subviewer		    2
-    ssIdNumber		    60
-    type		    CONNECTIVE_JUNCTION
+    drawStyle		    SMART
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    1
+    ssIdNumber		    154
   }
-  junction {
+  transition {
     id			    22
-    position		    [549 539 7]
+    labelString		    "[done<=2]\n{done=done+1;}"
+    labelPosition	    [683.645 753.17 88 32]
+    fontSize		    12
+    src {
+      id		      16
+      intersection	      [3 0.625 0.7806 0 660.125 716.7474 0 0]
+    }
+    dst {
+      id		      8
+      intersection	      [1 0 -1 0.4211 667.3947 786.75 0 0]
+    }
+    midPoint		    [668.6369 746.0369]
     chart		    2
-    linkNode		    [5 21 0]
+    linkNode		    [3 21 23]
+    dataLimits		    [660.125 669.795 716.747 786.75]
+    stampAngle		    0.7854
     subviewer		    2
-    ssIdNumber		    20
-    type		    CONNECTIVE_JUNCTION
+    drawStyle		    SMART
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    2
+    ssIdNumber		    155
   }
   transition {
     id			    23
-    labelString		    "[value=1?]"
-    labelPosition	    [628.65 466.632 58 17]
+    labelString		    "[done==3]"
+    labelPosition	    [742.902 797.113 56.25 17]
     fontSize		    12
     src {
-      id		      7
-      intersection	      [3 0 1 0.5033 623.7065 454 0 0]
+      id		      12
+      intersection	      [2 1 0 0.3865 699.7503 841.6706 0 0]
     }
     dst {
       id		      10
-      intersection	      [1 -0 -1 0.2718 623.7065 509 0 0]
+      intersection	      [3 0 1 0.6804 773.6447 727.95 0 0]
     }
-    midPoint		    [623.7065 477.5]
+    midPoint		    [752.8207 804.9335]
     chart		    2
-    linkNode		    [5 0 24]
-    dataLimits		    [621.307 626.107 454 509]
+    linkNode		    [3 22 24]
+    dataLimits		    [699.75 776.045 727.95 841.671]
     subviewer		    2
     drawStyle		    SMART
     slide {
       sticky		      BOTH_STICK
     }
-    executionOrder	    1
-    ssIdNumber		    63
+    executionOrder	    3
+    ssIdNumber		    151
   }
   transition {
     id			    24
-    labelString		    "[f1=1]"
-    labelPosition	    [744.812 465.369 32.25 17]
-    fontSize		    12
-    src {
-      id		      8
-      intersection	      [3 0 1 0.6732 749.7065 454 0 0]
-    }
-    dst {
-      id		      21
-      intersection	      [1 -0 -1 0 749.7065 515.508 0 0]
-    }
-    midPoint		    [749.7065 480.754]
-    chart		    2
-    linkNode		    [5 23 25]
-    dataLimits		    [747.307 752.107 454 515.508]
-    subviewer		    2
-    drawStyle		    SMART
-    slide {
-      sticky		      BOTH_STICK
-    }
-    executionOrder	    1
-    ssIdNumber		    18
-  }
-  transition {
-    id			    25
-    labelString		    "[value=1?]"
-    labelPosition	    [797.897 487.8 58 17]
-    fontSize		    12
-    src {
-      id		      21
-      intersection	      [2 1 0 0 756.7065 522.508 0 0]
-    }
-    dst {
-      id		      8
-      intersection	      [3 0 1 0.1654 795.413 454 0 0]
-    }
-    midPoint		    [785.0384 501.2327]
-    chart		    2
-    linkNode		    [5 24 26]
-    dataLimits		    [756.707 797.813 454 522.508]
-    stampAngle		    -1.8425
-    subviewer		    2
-    drawStyle		    SMART
-    slide {
-      sticky		      BOTH_STICK
-    }
-    executionOrder	    1
-    ssIdNumber		    61
-  }
-  transition {
-    id			    26
-    labelString		    "stop"
-    labelPosition	    [567.011 522.508 24.75 17]
+    labelString		    "[(vx>0.1||vy>0.1)||(vx<-0.1||vy<-0.1)||cmd_speed!=0]\n{out(0,0,4,0);}"
+    labelPosition	    [841.134 755.176 279.75 32]
     fontSize		    12
     src {
       id		      10
-      intersection	      [4 -1 0 0.6703 590 539 0 0]
+      intersection	      [3 0 1 0.1645 834.7267 727.95 0 0]
     }
     dst {
-      id		      22
-      intersection	      [2 1 0 0 556 539 0 0]
+      id		      10
+      intersection	      [3 0 1 0.5699 786.7267 727.95 0 0]
     }
-    midPoint		    [577 539]
+    midPoint		    [810.7267 775.95]
     chart		    2
-    linkNode		    [5 25 0]
-    dataLimits		    [556 590 536.6 541.4]
-    stampAngle		    -3.927
+    linkNode		    [3 23 0]
+    visible		    0
+    dataLimits		    [784.327 834.727 727.95 776.067]
+    subviewer		    2
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    1
+    ssIdNumber		    148
+  }
+  transition {
+    id			    25
+    labelString		    ""
+    labelPosition	    [507.468 502.466 0 0]
+    fontSize		    12
+    src {
+      intersection	      [0 0.9993 -0.0378 0 488.0808 519.0849 0 0]
+    }
+    dst {
+      id		      7
+      intersection	      [4 -1 0 0.1234 517.05 517.9882 0 0]
+    }
+    midPoint		    [495.9407 518.5366]
+    chart		    2
+    linkNode		    [5 0 0]
+    dataLimits		    [488.081 517.05 515.588 520.388]
     subviewer		    2
     drawStyle		    SMART
     slide {
       sticky		      BOTH_STICK
     }
     executionOrder	    1
-    ssIdNumber		    41
+    ssIdNumber		    124
+  }
+  data {
+    id			    26
+    ssIdNumber		    82
+    name		    "s"
+    linkNode		    [6 0 27]
+    scope		    FUNCTION_INPUT_DATA
+    machine		    1
+    props {
+      type {
+	primitive		SF_DOUBLE_TYPE
+	isSigned		1
+	wordLength		"16"
+      }
+    }
+    dataType		    "double"
   }
   data {
     id			    27
-    ssIdNumber		    44
-    name		    "t"
-    linkNode		    [6 0 28]
+    ssIdNumber		    83
+    name		    "a"
+    linkNode		    [6 26 28]
     scope		    FUNCTION_INPUT_DATA
     machine		    1
     props {
@@ -3565,8 +2959,8 @@ Stateflow {
   }
   data {
     id			    28
-    ssIdNumber		    45
-    name		    "x"
+    ssIdNumber		    81
+    name		    "b"
     linkNode		    [6 27 29]
     scope		    FUNCTION_INPUT_DATA
     machine		    1
@@ -3581,90 +2975,10 @@ Stateflow {
   }
   data {
     id			    29
-    ssIdNumber		    46
-    name		    "u"
-    linkNode		    [6 28 30]
+    ssIdNumber		    80
+    name		    "g"
+    linkNode		    [6 28 0]
     scope		    FUNCTION_INPUT_DATA
-    machine		    1
-    props {
-      type {
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
-    }
-    dataType		    "double"
-  }
-  data {
-    id			    30
-    ssIdNumber		    47
-    name		    "flag"
-    linkNode		    [6 29 31]
-    scope		    FUNCTION_INPUT_DATA
-    machine		    1
-    props {
-      type {
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
-    }
-    dataType		    "double"
-  }
-  data {
-    id			    31
-    ssIdNumber		    48
-    name		    "sys"
-    linkNode		    [6 30 32]
-    scope		    FUNCTION_OUTPUT_DATA
-    machine		    1
-    props {
-      type {
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
-    }
-    dataType		    "double"
-  }
-  data {
-    id			    32
-    ssIdNumber		    49
-    name		    "x0"
-    linkNode		    [6 31 33]
-    scope		    FUNCTION_OUTPUT_DATA
-    machine		    1
-    props {
-      type {
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
-    }
-    dataType		    "double"
-  }
-  data {
-    id			    33
-    ssIdNumber		    50
-    name		    "str"
-    linkNode		    [6 32 34]
-    scope		    FUNCTION_OUTPUT_DATA
-    machine		    1
-    props {
-      type {
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
-    }
-    dataType		    "double"
-  }
-  data {
-    id			    34
-    ssIdNumber		    51
-    name		    "ts"
-    linkNode		    [6 33 0]
-    scope		    FUNCTION_OUTPUT_DATA
     machine		    1
     props {
       type {
@@ -3676,108 +2990,112 @@ Stateflow {
     dataType		    "double"
   }
   junction {
-    id			    35
-    position		    [658.9565 565.233 7]
+    id			    30
+    position		    [343.856 669.3075 7]
     chart		    2
-    linkNode		    [10 0 0]
+    linkNode		    [6 0 0]
     subviewer		    2
-    ssIdNumber		    85
+    ssIdNumber		    100
     type		    CONNECTIVE_JUNCTION
   }
   transition {
-    id			    36
-    labelString		    "{out(0,0,0,1);}"
-    labelPosition	    [649.957 537.233 74.75 17]
+    id			    31
+    labelString		    "{cmd_speed=s;\ncmd_wheelAngle=a;\ncmd_gear=g;\ncmd_brake=b;}"
+    labelPosition	    [177.804 647.359 110.25 62]
     fontSize		    12
     src {
-      intersection	      [0 0.7071 0.7071 0 632.7935 539.0701 0 0]
+      intersection	      [0 0.9995 0.0326 0 145.8005 662.8481 0 0]
     }
     dst {
-      id		      35
-      intersection	      [1 -0.7071 -0.7071 0 654.0068 560.2833 0 0]
+      id		      30
+      intersection	      [4 -0.9995 -0.0326 0 336.8597 669.0793 0 0]
     }
-    midPoint		    [643.4002 549.6767]
+    midPoint		    [237.3322 665.8333]
     chart		    2
-    linkNode		    [10 0 0]
-    dataLimits		    [632.794 654.007 539.07 560.283]
+    linkNode		    [6 0 0]
+    dataLimits		    [145.801 336.86 662.848 671.217]
     subviewer		    2
     drawStyle		    SMART
     slide {
       sticky		      BOTH_STICK
     }
     executionOrder	    1
-    ssIdNumber		    84
+    ssIdNumber		    99
   }
-  data {
-    id			    37
-    ssIdNumber		    55
-    name		    "In1"
-    linkNode		    [11 0 38]
-    scope		    FUNCTION_INPUT_DATA
-    machine		    1
-    props {
-      array {
-	size			"-1"
-      }
-      type {
-	method			SF_INHERITED_TYPE
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
-      complexity	      SF_COMPLEX_INHERITED
-      frame		      SF_FRAME_INHERITED
+  transition {
+    id			    32
+    labelString		    ""
+    labelPosition	    [582.843 385.931 2 17]
+    fontSize		    12
+    src {
+      intersection	      [0 1 0 0 563.189 403.8243 0 0]
     }
-    dataType		    "Inherit: Same as Simulink"
+    dst {
+      id		      15
+      intersection	      [4 -1 0 0.4343 673.6808 403.8243 0 0]
+    }
+    midPoint		    [614.4349 403.8243]
+    chart		    2
+    linkNode		    [7 0 33]
+    dataLimits		    [563.189 673.681 401.424 406.224]
+    subviewer		    2
+    drawStyle		    SMART
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    1
+    ssIdNumber		    96
   }
-  data {
-    id			    38
-    ssIdNumber		    86
-    name		    "Out1"
-    linkNode		    [11 37 0]
-    scope		    FUNCTION_OUTPUT_DATA
-    machine		    1
-    props {
-      array {
-	size			"-1"
-	isDynamic		1
-      }
-      type {
-	method			SF_INHERITED_TYPE
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
-      complexity	      SF_COMPLEX_INHERITED
-      frame		      SF_FRAME_INHERITED
+  transition {
+    id			    33
+    labelString		    "[x<10&&y<10&&value==0]\n{out(50,0,0,4);}"
+    labelPosition	    [546.852 459.859 143 32]
+    fontSize		    12
+    src {
+      id		      15
+      intersection	      [3 0 1 0.5935 704.8969 421.8899 0 0]
     }
-    dataType		    "Inherit: Same as Simulink"
+    dst {
+      id		      15
+      intersection	      [4 -1 0 0.1885 673.6808 414.0481 0 0]
+    }
+    midPoint		    [665.2888 441.969]
+    chart		    2
+    linkNode		    [7 32 0]
+    visible		    0
+    dataLimits		    [660.459 704.897 411.648 445.652]
+    subviewer		    2
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    2
+    ssIdNumber		    146
   }
   junction {
-    id			    39
-    position		    [588.7065 810.508 7]
+    id			    34
+    position		    [564.6065 838.958 7]
     chart		    2
-    linkNode		    [15 0 0]
+    linkNode		    [8 0 0]
     subviewer		    2
     ssIdNumber		    67
     type		    CONNECTIVE_JUNCTION
   }
   transition {
-    id			    40
+    id			    35
     labelString		    ""
-    labelPosition	    [666.707 715.733 0 0]
+    labelPosition	    [636.16 803.483 0 0]
     fontSize		    12
     src {
-      intersection	      [0 -0 1 0 666.7065 700.733 0 0]
+      intersection	      [0 -0 1 0 636.1594 788.4832 0 0]
     }
     dst {
       id		      12
-      intersection	      [1 0 -1 0.2934 666.7065 730.733 0 0]
+      intersection	      [1 0 -1 0.2934 636.1594 818.4832 0 0]
     }
-    midPoint		    [666.7065 715.733]
+    midPoint		    [636.1594 803.4832]
     chart		    2
-    linkNode		    [15 0 41]
-    dataLimits		    [664.307 669.107 700.733 730.733]
+    linkNode		    [8 0 36]
+    dataLimits		    [633.759 638.559 788.483 818.483]
     subviewer		    2
     drawStyle		    SMART
     slide {
@@ -3787,22 +3105,47 @@ Stateflow {
     ssIdNumber		    66
   }
   transition {
-    id			    41
-    labelString		    ""
-    labelPosition	    [769.665 701.129 0 0]
+    id			    36
+    labelString		    "[done==0]"
+    labelPosition	    [546.995 808.568 56.25 17]
+    fontSize		    12
+    src {
+      id		      12
+      intersection	      [4 -1 0 0.6588 609.7503 838.958 0 0]
+    }
+    dst {
+      id		      34
+      intersection	      [2 1 0 0 571.6065 838.958 0 0]
+    }
+    midPoint		    [594.6784 838.958]
+    chart		    2
+    linkNode		    [8 35 37]
+    dataLimits		    [571.606 609.75 836.558 841.358]
+    subviewer		    2
+    drawStyle		    SMART
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    2
+    ssIdNumber		    26
+  }
+  transition {
+    id			    37
+    labelString		    "[y<-5]"
+    labelPosition	    [777.804 840.429 32 17]
     fontSize		    12
     src {
       id		      14
-      intersection	      [4 -1 0 0.3181 768.7974 707.508 0 0]
+      intersection	      [1 0 -1 0.2197 851.596 850.233 0 0]
     }
     dst {
       id		      12
-      intersection	      [2 1 0 0.1879 730.2974 742.008 0 0]
+      intersection	      [2 1 0 0.867 699.7503 870.5032 0 0]
     }
-    midPoint		    [753.5474 724.758]
+    midPoint		    [797.8315 842.2098]
     chart		    2
-    linkNode		    [15 40 42]
-    dataLimits		    [730.297 768.797 707.508 744.408]
+    linkNode		    [8 36 38]
+    dataLimits		    [699.75 851.596 838.936 872.903]
     stampAngle		    -5.4978
     subviewer		    2
     drawStyle		    SMART
@@ -3813,72 +3156,47 @@ Stateflow {
     ssIdNumber		    70
   }
   transition {
-    id			    42
-    labelString		    "[done=0]"
-    labelPosition	    [776.782 772.495 49.25 17]
+    id			    38
+    labelString		    ""
+    labelPosition	    [578.645 828.92 2 17]
     fontSize		    12
     src {
-      id		      12
-      intersection	      [2 1 0 0.5546 730.2974 764.008 0 0]
+      id		      34
+      intersection	      [3 0 1 0 564.6065 845.958 0 0]
     }
     dst {
-      id		      14
-      intersection	      [3 -0 1 0.6343 802.0724 727.233 0 0]
+      id		      13
+      intersection	      [1 -0 -1 0.201 564.6065 921.283 0 0]
     }
-    midPoint		    [775.8509 759.2865]
+    midPoint		    [564.6065 879.6205]
     chart		    2
-    linkNode		    [15 41 43]
-    dataLimits		    [730.297 804.472 727.233 764.008]
+    linkNode		    [8 37 39]
+    dataLimits		    [562.207 567.006 845.958 921.283]
     subviewer		    2
     drawStyle		    SMART
     slide {
       sticky		      BOTH_STICK
     }
     executionOrder	    1
-    ssIdNumber		    34
+    ssIdNumber		    30
   }
   transition {
-    id			    43
-    labelString		    "{path=PlanPath(simulate_info);}"
-    labelPosition	    [539.861 761.931 171 17]
-    fontSize		    12
-    src {
-      id		      12
-      intersection	      [4 -1 0 0.133 640.2974 782.753 0 0]
-    }
-    dst {
-      id		      39
-      intersection	      [1 0.5588 -0.8293 0 592.6183 804.7031 0 0]
-    }
-    midPoint		    [616.1651 785.6589]
-    chart		    2
-    linkNode		    [15 42 44]
-    dataLimits		    [592.618 640.297 782.753 804.703]
-    subviewer		    2
-    drawStyle		    SMART
-    slide {
-      sticky		      BOTH_STICK
-    }
-    executionOrder	    3
-    ssIdNumber		    26
-  }
-  transition {
-    id			    44
-    labelString		    "finish"
-    labelPosition	    [671.213 817.7 29.75 17]
+    id			    39
+    labelString		    ""
+    labelPosition	    [690.559 891.269 2 17]
     fontSize		    12
     src {
       id		      13
-      intersection	      [1 0 -1 0.7708 689.6232 883.783 0 0]
+      intersection	      [1 0 -1 0.5919 685.7787 921.283 0 0]
     }
     dst {
       id		      12
-      intersection	      [3 0 1 0.4297 691.6232 790.733 0 0]
+      intersection	      [3 0 1 0.3219 670.7787 878.4832 0 0]
     }
-    midPoint		    [690.6232 841.258]
+    midPoint		    [678.2787 903.8831]
     chart		    2
-    linkNode		    [15 43 45]
-    dataLimits		    [689.223 694.023 790.733 883.783]
+    linkNode		    [8 38 40]
+    dataLimits		    [668.379 685.779 878.483 921.283]
     subviewer		    2
     drawStyle		    SMART
     slide {
@@ -3888,225 +3206,313 @@ Stateflow {
     ssIdNumber		    33
   }
   transition {
-    id			    45
-    labelString		    "[done=1]"
-    labelPosition	    [750.565 819.666 49.25 17]
+    id			    40
+    labelString		    "[done==1||done==2]"
+    labelPosition	    [758.512 907.89 110 17]
     fontSize		    12
     src {
       id		      12
-      intersection	      [3 0 1 0.1066 720.7065 790.733 0 0]
+      intersection	      [3 0 1 0.1192 689.0205 878.4832 0 0]
     }
     dst {
-      id		      16
-      intersection	      [1 0 -1 0.0887 766.2774 903.783 0 0]
+      id		      14
+      intersection	      [4 -1 0 0.3589 831.6 889.979 0 0]
     }
-    midPoint		    [743.492 843.258]
+    midPoint		    [739.4266 901.1148]
     chart		    2
-    linkNode		    [15 44 46]
-    dataLimits		    [720.707 768.677 790.733 903.783]
-    stampAngle		    0.7854
-    subviewer		    2
-    drawStyle		    SMART
-    slide {
-      sticky		      BOTH_STICK
-    }
-    executionOrder	    2
-    ssIdNumber		    69
-  }
-  transition {
-    id			    46
-    labelString		    "{plan_cmd=PlanControl(path,simulate_info);}"
-    labelPosition	    [596.04 855.575 240.5 17]
-    fontSize		    12
-    src {
-      id		      39
-      intersection	      [3 0 1 0 588.7065 817.508 0 0]
-    }
-    dst {
-      id		      13
-      intersection	      [1 -0 -1 0.1401 588.7065 883.783 0 0]
-    }
-    midPoint		    [588.7065 846.6455]
-    chart		    2
-    linkNode		    [15 45 0]
-    dataLimits		    [586.307 591.107 817.508 883.783]
+    linkNode		    [8 39 0]
+    dataLimits		    [689.02 831.6 878.483 901.277]
     subviewer		    2
     drawStyle		    SMART
     slide {
       sticky		      BOTH_STICK
     }
     executionOrder	    1
-    ssIdNumber		    30
+    ssIdNumber		    34
   }
-  data {
+  junction {
+    id			    41
+    position		    [754.8431 993.1777 7]
+    chart		    2
+    linkNode		    [13 0 42]
+    subviewer		    2
+    ssIdNumber		    145
+    type		    CONNECTIVE_JUNCTION
+  }
+  junction {
+    id			    42
+    position		    [686.0931 1017.3072 7]
+    chart		    2
+    linkNode		    [13 41 43]
+    visible		    0
+    subviewer		    2
+    ssIdNumber		    142
+    type		    CONNECTIVE_JUNCTION
+  }
+  junction {
+    id			    43
+    position		    [582.3431 1040.8855 7]
+    chart		    2
+    linkNode		    [13 42 0]
+    subviewer		    2
+    ssIdNumber		    139
+    type		    CONNECTIVE_JUNCTION
+  }
+  transition {
+    id			    44
+    labelString		    "{out(-10,cmd_wheelAngle,0,0);}"
+    labelPosition	    [623.08 1001.148 170 17]
+    fontSize		    12
+    src {
+      id		      42
+      intersection	      [2 0.9436 -0.3312 0 692.6981 1014.989 0 0]
+    }
+    dst {
+      id		      41
+      intersection	      [4 -0.9436 0.3312 0 748.2381 995.4959 0 0]
+    }
+    midPoint		    [716.6938 1006.5671]
+    chart		    2
+    linkNode		    [13 0 45]
+    visible		    0
+    dataLimits		    [692.698 748.238 995.496 1014.989]
+    stampAngle		    -1.1463
+    subviewer		    2
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    1
+    ssIdNumber		    144
+  }
+  transition {
+    id			    45
+    labelString		    "[yaw>=90]\n{cmd_wheelAngle=0;\ndone=1;}"
+    labelPosition	    [499.951 975.433 114.25 47]
+    fontSize		    12
+    src {
+      id		      43
+      intersection	      [2 0.8316 -0.5554 0 588.1642 1036.9977 0 0]
+    }
+    dst {
+      id		      42
+      intersection	      [4 -0.9899 -0.1414 0 679.1635 1016.3172 0 0]
+    }
+    midPoint		    [630.9152 1014.5927]
+    chart		    2
+    linkNode		    [13 44 46]
+    visible		    0
+    dataLimits		    [588.164 679.164 1012.272 1036.998]
+    stampAngle		    -2.5703
+    subviewer		    2
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    1
+    ssIdNumber		    141
+  }
+  transition {
+    id			    46
+    labelString		    "[yaw<90]\n{cmd_wheelAngle=-540;}"
+    labelPosition	    [655.083 1053.946 135.75 32]
+    fontSize		    12
+    src {
+      id		      43
+      intersection	      [2 0.951 0.3091 0 589.0003 1043.0493 0 0]
+    }
+    dst {
+      id		      42
+      intersection	      [4 -0.724 0.6898 0 681.025 1022.1357 0 0]
+    }
+    midPoint		    [639.0576 1050.3486]
+    chart		    2
+    linkNode		    [13 45 47]
+    visible		    0
+    dataLimits		    [589 681.025 1022.136 1051.065]
+    stampAngle		    -2.5703
+    subviewer		    2
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    2
+    ssIdNumber		    140
+  }
+  transition {
     id			    47
-    ssIdNumber		    82
-    name		    "s"
-    linkNode		    [17 0 48]
-    scope		    FUNCTION_INPUT_DATA
-    machine		    1
-    props {
-      type {
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
+    labelString		    ""
+    labelPosition	    [565.606 1055.164 0 0]
+    fontSize		    12
+    src {
+      intersection	      [0 0.7608 -0.649 0 554.1942 1064.8989 0 0]
     }
-    dataType		    "double"
+    dst {
+      id		      43
+      intersection	      [4 -0.7608 0.649 0 577.0177 1045.4286 0 0]
+    }
+    midPoint		    [565.606 1055.1637]
+    chart		    2
+    linkNode		    [13 46 0]
+    dataLimits		    [554.194 577.018 1045.429 1064.899]
+    subviewer		    2
+    drawStyle		    SMART
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    1
+    ssIdNumber		    143
   }
-  data {
+  junction {
     id			    48
-    ssIdNumber		    83
-    name		    "a"
-    linkNode		    [17 47 49]
-    scope		    FUNCTION_INPUT_DATA
-    machine		    1
-    props {
-      type {
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
-    }
-    dataType		    "double"
+    position		    [878.7755 899.4177 7]
+    chart		    2
+    linkNode		    [14 0 0]
+    subviewer		    2
+    ssIdNumber		    157
+    type		    CONNECTIVE_JUNCTION
   }
-  data {
+  transition {
     id			    49
-    ssIdNumber		    80
-    name		    "g"
-    linkNode		    [17 48 50]
-    scope		    FUNCTION_INPUT_DATA
-    machine		    1
-    props {
-      type {
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
+    labelString		    "{out(-10,0,0,0);\ndone=done+1;}"
+    labelPosition	    [892.776 870.421 84 32]
+    fontSize		    12
+    src {
+      intersection	      [0 0.7071 0.7071 0 852.6125 873.2548 0 0]
     }
-    dataType		    "double"
+    dst {
+      id		      48
+      intersection	      [4 -0.7071 -0.7071 0 873.8258 894.468 0 0]
+    }
+    midPoint		    [863.2192 883.8614]
+    chart		    2
+    linkNode		    [14 0 0]
+    dataLimits		    [852.612 873.826 873.255 894.468]
+    subviewer		    2
+    drawStyle		    SMART
+    slide {
+      sticky		      BOTH_STICK
+    }
+    executionOrder	    1
+    ssIdNumber		    156
   }
   data {
     id			    50
-    ssIdNumber		    81
-    name		    "b"
-    linkNode		    [17 49 0]
-    scope		    FUNCTION_INPUT_DATA
+    ssIdNumber		    78
+    name		    "cmd_speed"
+    linkNode		    [2 0 51]
+    scope		    OUTPUT_DATA
     machine		    1
     props {
-      type {
-	primitive		SF_DOUBLE_TYPE
-	isSigned		1
-	wordLength		"16"
-      }
-    }
-    dataType		    "double"
-  }
-  data {
-    id			    51
-    ssIdNumber		    89
-    name		    "route"
-    linkNode		    [18 0 52]
-    scope		    FUNCTION_INPUT_DATA
-    machine		    1
-    props {
-      array {
-	size			"-1"
-      }
       type {
 	method			SF_INHERITED_TYPE
-	primitive		SF_DOUBLE_TYPE
+	primitive		SF_INT32_TYPE
 	isSigned		1
 	wordLength		"16"
       }
-      complexity	      SF_COMPLEX_INHERITED
-      frame		      SF_FRAME_INHERITED
+      frame		      SF_FRAME_NO
     }
     dataType		    "Inherit: Same as Simulink"
   }
   data {
-    id			    52
-    ssIdNumber		    90
-    name		    "car_position"
-    linkNode		    [18 51 53]
-    scope		    FUNCTION_INPUT_DATA
+    id			    51
+    ssIdNumber		    76
+    name		    "cmd_wheelAngle"
+    linkNode		    [2 50 52]
+    scope		    OUTPUT_DATA
     machine		    1
     props {
-      array {
-	size			"-1"
-      }
       type {
 	method			SF_INHERITED_TYPE
-	primitive		SF_DOUBLE_TYPE
+	primitive		SF_INT32_TYPE
 	isSigned		1
 	wordLength		"16"
       }
-      complexity	      SF_COMPLEX_INHERITED
-      frame		      SF_FRAME_INHERITED
+      frame		      SF_FRAME_NO
+    }
+    dataType		    "Inherit: Same as Simulink"
+    debug		    [1]
+  }
+  data {
+    id			    52
+    ssIdNumber		    77
+    name		    "cmd_brake"
+    linkNode		    [2 51 53]
+    scope		    OUTPUT_DATA
+    machine		    1
+    props {
+      type {
+	method			SF_INHERITED_TYPE
+	primitive		SF_INT32_TYPE
+	isSigned		1
+	wordLength		"16"
+      }
+      frame		      SF_FRAME_NO
     }
     dataType		    "Inherit: Same as Simulink"
   }
   data {
     id			    53
-    ssIdNumber		    91
-    name		    "Out2"
-    linkNode		    [18 52 0]
-    scope		    FUNCTION_OUTPUT_DATA
+    ssIdNumber		    3
+    name		    "human_cmd"
+    linkNode		    [2 52 54]
+    scope		    INPUT_DATA
     machine		    1
     props {
       array {
 	size			"-1"
-	isDynamic		1
       }
       type {
 	method			SF_INHERITED_TYPE
 	primitive		SF_DOUBLE_TYPE
+	busObject		"<object name>"
 	isSigned		1
 	wordLength		"16"
       }
-      complexity	      SF_COMPLEX_INHERITED
       frame		      SF_FRAME_INHERITED
     }
     dataType		    "Inherit: Same as Simulink"
   }
   data {
     id			    54
-    ssIdNumber		    78
-    name		    "cmd_speed"
-    linkNode		    [2 0 55]
-    scope		    OUTPUT_DATA
+    ssIdNumber		    4
+    name		    "x"
+    linkNode		    [2 53 55]
+    scope		    INPUT_DATA
     machine		    1
     props {
+      array {
+	size			"-1"
+      }
       type {
+	method			SF_INHERITED_TYPE
 	primitive		SF_DOUBLE_TYPE
 	isSigned		1
 	wordLength		"16"
       }
-      frame		      SF_FRAME_NO
+      frame		      SF_FRAME_INHERITED
     }
-    dataType		    "double"
+    dataType		    "Inherit: Same as Simulink"
   }
   data {
     id			    55
-    ssIdNumber		    76
-    name		    "cmd_wheelAngle"
+    ssIdNumber		    75
+    name		    "cmd_gear"
     linkNode		    [2 54 56]
     scope		    OUTPUT_DATA
     machine		    1
     props {
       type {
-	primitive		SF_DOUBLE_TYPE
+	method			SF_INHERITED_TYPE
+	primitive		SF_INT32_TYPE
 	isSigned		1
 	wordLength		"16"
       }
       frame		      SF_FRAME_NO
     }
-    dataType		    "double"
+    dataType		    "Inherit: Same as Simulink"
   }
   data {
     id			    56
-    ssIdNumber		    3
-    name		    "human_cmd"
+    ssIdNumber		    94
+    name		    "y"
     linkNode		    [2 55 57]
     scope		    INPUT_DATA
     machine		    1
@@ -4126,8 +3532,8 @@ Stateflow {
   }
   data {
     id			    57
-    ssIdNumber		    4
-    name		    "simulate_info"
+    ssIdNumber		    95
+    name		    "yaw"
     linkNode		    [2 56 58]
     scope		    INPUT_DATA
     machine		    1
@@ -4147,72 +3553,106 @@ Stateflow {
   }
   data {
     id			    58
-    ssIdNumber		    75
-    name		    "cmd_gear"
+    ssIdNumber		    102
+    name		    "value"
     linkNode		    [2 57 59]
-    scope		    OUTPUT_DATA
+    scope		    LOCAL_DATA
     machine		    1
     props {
+      initialValue	      "0"
       type {
 	primitive		SF_DOUBLE_TYPE
 	isSigned		1
 	wordLength		"16"
       }
-      frame		      SF_FRAME_NO
     }
     dataType		    "double"
   }
   data {
     id			    59
-    ssIdNumber		    77
-    name		    "cmd_brake"
+    ssIdNumber		    113
+    name		    "done"
     linkNode		    [2 58 60]
-    scope		    OUTPUT_DATA
+    scope		    LOCAL_DATA
     machine		    1
     props {
+      initialValue	      "-1"
       type {
+	method			SF_DOUBLE_TYPE
 	primitive		SF_DOUBLE_TYPE
 	isSigned		1
 	wordLength		"16"
       }
-      frame		      SF_FRAME_NO
+      frame		      SF_FRAME_INHERITED
     }
     dataType		    "double"
   }
   data {
     id			    60
-    ssIdNumber		    93
-    name		    "plan_cmd"
-    linkNode		    [2 59 0]
-    scope		    OUTPUT_DATA
+    ssIdNumber		    149
+    name		    "vx"
+    linkNode		    [2 59 61]
+    scope		    INPUT_DATA
     machine		    1
     props {
       type {
-	method			SF_INHERITED_TYPE
 	primitive		SF_DOUBLE_TYPE
 	isSigned		1
 	wordLength		"16"
       }
-      frame		      SF_FRAME_NO
     }
-    dataType		    "Inherit: Same as Simulink"
+    dataType		    "double"
+  }
+  data {
+    id			    61
+    ssIdNumber		    150
+    name		    "vy"
+    linkNode		    [2 60 0]
+    scope		    INPUT_DATA
+    machine		    1
+    props {
+      type {
+	primitive		SF_DOUBLE_TYPE
+	isSigned		1
+	wordLength		"16"
+      }
+    }
+    dataType		    "double"
+  }
+  event {
+    id			    62
+    ssIdNumber		    111
+    name		    "finish"
+    linkNode		    [2 0 63]
+    scope		    LOCAL_EVENT
+    trigger		    RISING_EDGE_EVENT
+    machine		    1
+  }
+  event {
+    id			    63
+    ssIdNumber		    112
+    name		    "stopped"
+    linkNode		    [2 62 0]
+    scope		    LOCAL_EVENT
+    trigger		    RISING_EDGE_EVENT
+    machine		    1
   }
   transition {
-    id			    61
+    id			    64
     labelString		    ""
-    labelPosition	    [318.66 269.622 0 0]
+    labelPosition	    [284.66 269.622 0 0]
     fontSize		    12
     src {
-      intersection	      [0 -0 1 0 308.006 273 0 0]
+      intersection	      [0 -0 1 0 274.006 273 0 0]
     }
     dst {
       id		      4
-      intersection	      [1 0 -1 0.1444 307.006 303 0 0]
+      intersection	      [1 0 -1 0.1444 273.006 303 0 0]
     }
-    midPoint		    [307.506 284]
+    midPoint		    [273.506 284]
     chart		    2
-    linkNode		    [2 0 62]
-    dataLimits		    [304.606 309.406 273 303]
+    linkNode		    [2 0 65]
+    dataLimits		    [270.606 275.406 273 303]
     subviewer		    2
     drawStyle		    SMART
     slide {
@@ -4222,22 +3662,22 @@ Stateflow {
     ssIdNumber		    8
   }
   transition {
-    id			    62
-    labelString		    "[human_cmd=1]"
-    labelPosition	    [415.827 314 88.75 17]
+    id			    65
+    labelString		    "[human_cmd[0]==1&&done!=3]"
+    labelPosition	    [334.827 367.6 169.25 17]
     fontSize		    12
     src {
       id		      4
-      intersection	      [2 1 0 0.4833 384.006 332 0 0]
+      intersection	      [2 1 0 0.4833 350.006 332 0 0]
     }
     dst {
       id		      3
-      intersection	      [4 -1 -0 0.9669 510 332 0 0]
+      intersection	      [4 -1 -0 0.9674 447.25 332 0 0]
     }
-    midPoint		    [443.003 332]
+    midPoint		    [394.628 332]
     chart		    2
-    linkNode		    [2 61 63]
-    dataLimits		    [384.006 510 329.6 334.4]
+    linkNode		    [2 64 66]
+    dataLimits		    [350.006 447.25 329.6 334.4]
     subviewer		    2
     drawStyle		    SMART
     slide {
@@ -4247,22 +3687,22 @@ Stateflow {
     ssIdNumber		    9
   }
   transition {
-    id			    63
+    id			    66
     labelString		    ""
-    labelPosition	    [441.111 916.398 0 0]
+    labelPosition	    [470.911 720.426 0 0]
     fontSize		    12
     src {
-      id		      16
-      intersection	      [4 -1 0 0.133 758.2974 955.803 0 0]
+      id		      11
+      intersection	      [4 -1 0 0.133 500 733.303 0 0]
     }
     dst {
       id		      4
-      intersection	      [3 0 1 0.6487 325.6232 363 0 0]
+      intersection	      [3 0 1 0.6487 291.6232 363 0 0]
     }
-    midPoint		    [518.6232 976.1872]
+    midPoint		    [461.4693 704.9358]
     chart		    2
-    linkNode		    [2 62 0]
-    dataLimits		    [319.692 758.297 363 980.706]
+    linkNode		    [2 65 0]
+    dataLimits		    [289.223 500 363 733.303]
     subviewer		    2
     drawStyle		    SMART
     slide {
@@ -4272,13 +3712,13 @@ Stateflow {
     ssIdNumber		    73
   }
   instance {
-    id			    64
+    id			    67
     name		    "computeSystem/R-car/mode"
     machine		    1
     chart		    2
   }
   target {
-    id			    65
+    id			    68
     name		    "sfun"
     description		    "Default Simulink S-Function Target."
     machine		    1

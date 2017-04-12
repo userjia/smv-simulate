@@ -21,28 +21,28 @@ MODULE comp_around(simulate)
 	VAR
 		currentState:{start,waiting,done,end,waiting_f,MarkingPointDetection,ParkingLineCandidate,removeInvalidLine,verifyParkingLine,getParkingSlot,MarkingPointDetection_f,ParkingLineCandidate_f,removeInvalidLine_f,verifyParkingLine_f,getParkingSlot_f};
 
-    i:integer;
+		i:integer;
 
 	ASSIGN
 		init(currentState):=start;
-    init(i):=0;
-    --next(i):=i+1;
-    next(i):=(currentState=end)?i:i+1;
+		init(i):=0;
+
+		next(i):=(currentState=end)?i:i+1;
 		next(currentState):=
 		case
-      currentState=start:{waiting,waiting_f};
-      (currentState=waiting)&(simulate.svphoto=1):{MarkingPointDetection,MarkingPointDetection_f};
+			currentState=start:{waiting,waiting_f};
+			(currentState=waiting)&(simulate.svphoto=1):{MarkingPointDetection,MarkingPointDetection_f};
 			(currentState=MarkingPointDetection)&(simulate.points>=2):{ParkingLineCandidate,ParkingLineCandidate_f};
 			(currentState=ParkingLineCandidate)&(simulate.validPoints>=2):{removeInvalidLine,removeInvalidLine_f};
 			(currentState=removeInvalidLine)&(simulate.validLines>=1):{verifyParkingLine,verifyParkingLine_f};
 			(currentState=verifyParkingLine)&(simulate.validSlots>=1):{getParkingSlot,getParkingSlot_f};
 			(currentState=getParkingSlot)&(simulate.totalDetectTime<30):done;
 
-      (currentState=waiting_f)|(simulate.svphoto!=1):end;
-      (currentState=MarkingPointDetection_f)|(simulate.points<2):end;
-      (currentState=ParkingLineCandidate_f)|(simulate.validPoints<2):end;
-      (currentState=removeInvalidLine_f)|(simulate.validLines<1):end;
-      (currentState=verifyParkingLine_f)|(simulate.validSlots<1):end;
-      (currentState=getParkingSlot_f)|(simulate.totalDetectTime>=30):end;
+			(currentState=waiting_f)|(simulate.svphoto!=1):end;
+			(currentState=MarkingPointDetection_f)|(simulate.points<2):end;
+			(currentState=ParkingLineCandidate_f)|(simulate.validPoints<2):end;
+			(currentState=removeInvalidLine_f)|(simulate.validLines<1):end;
+			(currentState=verifyParkingLine_f)|(simulate.validSlots<1):end;
+			(currentState=getParkingSlot_f)|(simulate.totalDetectTime>=30):end;
 			TRUE:currentState;
 		esac;

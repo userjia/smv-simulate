@@ -1,26 +1,39 @@
 MODULE main
   VAR
-    simu:simulate();
-    around:comp_around(simu);
+    around:comp_around();
   --LTLSPEC
     --F(around.currentState=done);
     INVARSPEC
       around.currentState=done|around.currentState!=end;
 
 MODULE simulate()
+  /--VAR
+    svphoto:{0,1};
+    points:{1,2};
+    validPoints:{1,2};
+    validLines:{0,1};
+    validSlots:{0,1};
+    totalDetectTime:{29,30};
+  ASSIGN
+    init(svphoto):={0,1};
+    init(points):={1,2};
+    init(validPoints):={1,2};
+    init(validLines):={0,1};
+    init(validSlots):={0,1};
+    init(totalDetectTime):={29,30};--/
+
   DEFINE
     svphoto:=1;
     points:=2;
     validPoints:=2;
     validLines:=1;
     validSlots:=1;
-    totalDetectTime:=29;
+    totalDetectTime:=30;
 
-
-MODULE comp_around(simulate)
+MODULE comp_around()
 	VAR
 		currentState:{start,waiting,done,end,waiting_f,MarkingPointDetection,ParkingLineCandidate,removeInvalidLine,verifyParkingLine,getParkingSlot,MarkingPointDetection_f,ParkingLineCandidate_f,removeInvalidLine_f,verifyParkingLine_f,getParkingSlot_f};
-
+    simulate:simulate();
 		i:integer;
 
 	ASSIGN
@@ -38,11 +51,18 @@ MODULE comp_around(simulate)
 			(currentState=verifyParkingLine)&(simulate.validSlots>=1):{getParkingSlot,getParkingSlot_f};
 			(currentState=getParkingSlot)&(simulate.totalDetectTime<30):done;
 
-			(currentState=waiting_f)|(simulate.svphoto!=1):end;
-			(currentState=MarkingPointDetection_f)|(simulate.points<2):end;
-			(currentState=ParkingLineCandidate_f)|(simulate.validPoints<2):end;
-			(currentState=removeInvalidLine_f)|(simulate.validLines<1):end;
-			(currentState=verifyParkingLine_f)|(simulate.validSlots<1):end;
-			(currentState=getParkingSlot_f)|(simulate.totalDetectTime>=30):end;
+			/--(currentState=waiting_f)|((currentState=waiting)&(simulate.svphoto!=1)):end;
+			(currentState=MarkingPointDetection_f)|((currentState=MarkingPointDetection)&(simulate.points<2)):end;
+			(currentState=ParkingLineCandidate_f)|((currentState=ParkingLineCandidate)&(simulate.validPoints<2)):end;
+			(currentState=removeInvalidLine_f)|((currentState=removeInvalidLine)&(simulate.validLines<1)):end;
+			(currentState=verifyParkingLine_f)|((currentState=verifyParkingLine)&(simulate.validSlots<1)):end;
+			(currentState=getParkingSlot_f)|((currentState=getParkingSlot)&(simulate.totalDetectTime>=30)):end;
 			TRUE:currentState;
+
+      (currentState=MarkingPointDetection)&(simulate.points<2):done;
+			(currentState=ParkingLineCandidate)&(simulate.validPoints<2):done;
+			(currentState=removeInvalidLine)&(simulate.validLines<1):done;
+			(currentState=verifyParkingLine)&(simulate.validSlots<1):done;
+      (currentState=getParkingSlot)&(simulate.totalDetectTime>=30):done;--/
+      TRUE:end;
 		esac;

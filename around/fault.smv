@@ -16,15 +16,44 @@ MODULE simulate()
     validLines:=1;
     validSlots:=1;
     totalDetectTime:=30;--/
-
+	
+MODULE faultLib(states)
+  VAR
+    v:{normal,fault,unknown};
+	
+  DEFINE
+	out:=
+	case	
+		v=normal:states[0];
+		v=fault:states[1];
+		TRUE:states[0];
+	esac;
+		
+  ASSIGN
+    init(v):=unknown;
+    next(v):=
+    case
+      v=unknown:{fault,normal};
+      TRUE:v;
+    esac;
+	
+	
+	
 MODULE comp_around()
-	VAR
-    viewPhotos:{0,1};
+  VAR
+    /--viewPhotos:{0,1};
     points:{1,2};
     validPoints:{1,2};
     validLines:{0,1};
     validSlots:{0,1};
-    totalDetectTime:{29,30};
+    totalDetectTime:{29,30};--/
+	
+	viewPhotos:faultLib(0,1);
+    points:faultLib(1,2);
+    validPoints:faultLib(1,2);
+    validLines:faultLib(0,1);
+    validSlots:faultLib(0,1);
+    totalDetectTime:faultLib(29,30);
 
     currentState:{start,done,end,
 			waiting,waiting_f,
@@ -58,18 +87,18 @@ MODULE comp_around()
 		next(currentState):=
 		case
 			(currentState=start):{waiting,waiting_f};
-			(currentState=waiting)&(viewPhotos=1):{generateSurroundView,generateSurroundView_f};
+			(currentState=waiting)&(viewPhotos.out=1):{generateSurroundView,generateSurroundView_f};
 			(currentState=generateSurroundView):{imagePathExaming,imagePathExaming_f};
 			(currentState=imagePathExaming):{featureExtraction,featureExtraction_f};
 			(currentState=featureExtraction):{markingPointClassification,markingPointClassification_f};
 			(currentState=markingPointClassification):{markingPointfinish,markingPointFinish_f};
-			(currentState=markingPointfinish)&(validPoints>=2):{parkingLineCandidate,parkingLineCandidate_f};
+			(currentState=markingPointfinish)&(validPoints.out>=2):{parkingLineCandidate,parkingLineCandidate_f};
 			(currentState=parkingLineCandidate):{findPotentialLine,findPotentialLine_f};
 			(currentState=findPotentialLine):{linePatternExaming,linePatternExaming_f};
 			(currentState=linePatternExaming):{removeInvalidLine,removeInvalidLine_f};
-			(currentState=removeInvalidLine)&(validLines>=1):{verifyParkingLine,verifyParkingLine_f};
+			(currentState=removeInvalidLine)&(validLines.out>=1):{verifyParkingLine,verifyParkingLine_f};
 			(currentState=verifyParkingLine):{validSlot,validSlot_f};
 			(currentState=validSlot):{parkingSlotsInfo,parkingSlotsInfo_f};
-			(currentState=parkingSlotsInfo)&(totalDetectTime<30):done;
+			(currentState=parkingSlotsInfo)&(totalDetectTime.out<30):done;
 			TRUE:end;
 		esac;

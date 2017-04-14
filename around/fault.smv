@@ -7,20 +7,7 @@ MODULE main
       around.currentState=done|around.currentState!=end;
 
 MODULE simulate()
-  VAR
-    viewPhotos:{0,1};
-    points:{1,2};
-    validPoints:{1,2};
-    validLines:{0,1};
-    validSlots:{0,1};
-    totalDetectTime:{29,30};
-  ASSIGN
-    init(viewPhotos):={0,1};
-    init(points):={1,2};
-    init(validPoints):={1,2};
-    init(validLines):={0,1};
-    init(validSlots):={0,1};
-    init(totalDetectTime):={29,30};
+
 
   /--DEFINE
     viewPhotos:=1;
@@ -32,7 +19,14 @@ MODULE simulate()
 
 MODULE comp_around()
 	VAR
-		currentState:{start,done,end,
+    viewPhotos:{0,1};
+    points:{1,2};
+    validPoints:{1,2};
+    validLines:{0,1};
+    validSlots:{0,1};
+    totalDetectTime:{29,30};
+
+    currentState:{start,done,end,
 			waiting,waiting_f,
 
 			generateSurroundView,generateSurroundView_f,
@@ -56,26 +50,26 @@ MODULE comp_around()
 		simulate:simulate();
 		i:integer;
 
-	ASSIGN
+  ASSIGN
 		init(currentState):=start;
 		init(i):=0;
-
 		next(i):=(currentState=end)?i:i+1;
+
 		next(currentState):=
 		case
 			(currentState=start):{waiting,waiting_f};
-			(currentState=waiting)&(simulate.viewPhotos=1):{generateSurroundView,generateSurroundView_f};
+			(currentState=waiting)&(viewPhotos=1):{generateSurroundView,generateSurroundView_f};
 			(currentState=generateSurroundView):{imagePathExaming,imagePathExaming_f};
 			(currentState=imagePathExaming):{featureExtraction,featureExtraction_f};
 			(currentState=featureExtraction):{markingPointClassification,markingPointClassification_f};
 			(currentState=markingPointClassification):{markingPointfinish,markingPointFinish_f};
-			(currentState=markingPointfinish)&(simulate.validPoints>=2):{parkingLineCandidate,parkingLineCandidate_f};
+			(currentState=markingPointfinish)&(validPoints>=2):{parkingLineCandidate,parkingLineCandidate_f};
 			(currentState=parkingLineCandidate):{findPotentialLine,findPotentialLine_f};
 			(currentState=findPotentialLine):{linePatternExaming,linePatternExaming_f};
 			(currentState=linePatternExaming):{removeInvalidLine,removeInvalidLine_f};
-			(currentState=removeInvalidLine)&(simulate.validLines>=1):{verifyParkingLine,verifyParkingLine_f};
+			(currentState=removeInvalidLine)&(validLines>=1):{verifyParkingLine,verifyParkingLine_f};
 			(currentState=verifyParkingLine):{validSlot,validSlot_f};
 			(currentState=validSlot):{parkingSlotsInfo,parkingSlotsInfo_f};
-			(currentState=parkingSlotsInfo)&(simulate.totalDetectTime<30):done;
+			(currentState=parkingSlotsInfo)&(totalDetectTime<30):done;
 			TRUE:end;
 		esac;

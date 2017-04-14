@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan svphoto;
+chan slotposition;
+chan viewphotos;</declaration>
+	<template>
+		<name x="5" y="5">ParkingslotDetection</name>
+		<declaration>// Place local declarations here.
+int points, validpoints, validlines, validslots;
+clock totaldetectionTime;
+
+
+void photoproperty()
+{
+    if(points++ == 5)    points = 0;
+    if(validpoints++ == 4)   validpoints = 0;
+    if(validlines++ == 3)    validlines = 0;
+    if(validslots++ == 2)    validslots = 0;
+}</declaration>
+		<location id="id0" x="-561" y="-153">
+			<name x="-629" y="-187">InvalidLineDel</name>
+		</location>
+		<location id="id1" x="-365" y="-323">
+			<name x="-399" y="-357">ValidSlot</name>
+		</location>
+		<location id="id2" x="-348" y="42">
+			<name x="-358" y="8">LinePatternExaming</name>
+		</location>
+		<location id="id3" x="-161" y="0">
+			<name x="-171" y="-34">FindPotentialLine</name>
+		</location>
+		<location id="id4" x="76" y="68">
+			<name x="42" y="77">MarkpointFinish</name>
+		</location>
+		<location id="id5" x="178" y="8">
+			<name x="110" y="-26">MarkingpointClassification</name>
+		</location>
+		<location id="id6" x="153" y="-93">
+			<name x="111" y="-127">FeatureExtraction</name>
+		</location>
+		<location id="id7" x="127" y="-195">
+			<name x="76" y="-229">ImagePatchExaming</name>
+		</location>
+		<location id="id8" x="93" y="-357">
+			<name x="42" y="-391">generateSurroundview</name>
+		</location>
+		<location id="id9" x="-374" y="-187">
+			<name x="-434" y="-221">verifyParkingLine</name>
+		</location>
+		<location id="id10" x="-357" y="-450">
+			<name x="-408" y="-484">ParkingslotsInfo</name>
+		</location>
+		<location id="id11" x="-340" y="-59">
+			<name x="-350" y="-93">removeInvalidLine</name>
+		</location>
+		<location id="id12" x="-85" y="119">
+			<name x="-161" y="85">ParkinglineCandidate</name>
+		</location>
+		<location id="id13" x="-119" y="-229">
+			<name x="-162" y="-263">receiveViewphotos</name>
+		</location>
+		<init ref="id13"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id13"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id9"/>
+			<nail x="-561" y="-340"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id9"/>
+			<nail x="-476" y="-102"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id0"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id10"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id1"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<nail x="-255" y="144"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id11"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id7"/>
+			<nail x="272" y="-51"/>
+			<nail x="212" y="-204"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id3"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id13"/>
+			<label kind="guard" x="8" y="-119">points &lt; 2</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-34" y="76">points&gt;=2</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="assignment" x="102" y="-289">photoproperty()</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-25" y="-340">viewphotos?</label>
+			<label kind="assignment" x="-51" y="-323">totaldetectionTime := 0</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id13"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-246" y="-161">validlines == 0</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-272" y="-425">totaldetectionTime &lt; 30</label>
+			<label kind="synchronisation" x="-263" y="-408">slotposition!</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-408" y="-127">validlines &gt;=1</label>
+		</transition>
+	</template>
+	<template>
+		<name>other</name>
+		<location id="id14" x="127" y="0">
+		</location>
+		<init ref="id14"/>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="93" y="102">slotposition?</label>
+			<nail x="51" y="102"/>
+			<nail x="195" y="93"/>
+		</transition>
+	</template>
+	<template>
+		<name>Camera</name>
+		<declaration>clock captureTime;</declaration>
+		<location id="id15" x="-93" y="-8">
+			<name x="-76" y="-34">Capture</name>
+			<label kind="invariant" x="-76" y="-17">captureTime &lt;= 30</label>
+		</location>
+		<init ref="id15"/>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-153" y="68">viewphotos!</label>
+			<label kind="assignment" x="-160" y="85">captureTime := 0</label>
+			<nail x="-51" y="85"/>
+			<nail x="-178" y="85"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Detection = ParkingslotDetection();
+View = Camera();
+Other = other();
+// List one or more processes to be composed into a system.
+system Detection,Camera,Other;</system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (validslots==0)
+			</formula>
+			<comment>
+			</comment>
+		</query>
+	</queries>
+</nta>

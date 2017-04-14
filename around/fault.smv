@@ -23,7 +23,7 @@ MODULE simulate()
     init(totalDetectTime):={29,30};--/
 
   DEFINE
-    svphoto:=1;
+    viewPhotos:=1;
     points:=2;
     validPoints:=2;
     validLines:=1;
@@ -34,23 +34,23 @@ MODULE comp_around()
 	VAR
 		currentState:{start,done,end,
 			waiting,waiting_f,
-			
-			generateSurroundView,generateSurroundView_f.
-			
-			magePathExaming,imagePathExaming_f,
+
+			generateSurroundView,generateSurroundView_f,
+
+			imagePathExaming,imagePathExaming_f,
 			featureExtraction,featureExtraction_f,
 			markingPointClassification,markingPointClassification_f,
 			markingPointfinish,markingPointFinish_f,
-			
+
 			parkingLineCandidate,parkingLineCandidate_f,
 			findPotentialLine,findPotentialLine_f,
 			linePatternExaming,linePatternExaming_f,
-			
+
 			removeInvalidLine,removeInvalidLine_f,
-			
+
 			verifyParkingLine,verifyParkingLine_f,
 			invalidLineDel,invalidLineDel_f,
-			
+
 			validSlot,validSlot_f,
 			parkingSlotsInfo,parkingSlotsInfo_f};
 		simulate:simulate();
@@ -67,15 +67,15 @@ MODULE comp_around()
 			(currentState=waiting)&(simulate.viewPhotos=1):{generateSurroundView,generateSurroundView_f};
 			(currentState=generateSurroundView):{imagePathExaming,imagePathExaming_f};
 			(currentState=imagePathExaming):{featureExtraction,featureExtraction_f};
-			(currentState=featureExtraction):(markingPointClassification,markingPointClassification_f);
+			(currentState=featureExtraction):{markingPointClassification,markingPointClassification_f};
 			(currentState=markingPointClassification):{markingPointfinish,markingPointFinish_f};
-			(currentState=markingPointfinish)&(simulate.validPoints>=2):{ParkingLineCandidate,ParkingLineCandidate_f};
-			(currentState=ParkingLineCandidate):{findPotentialLine,findPotentialLine_f};
+			(currentState=markingPointfinish)&(simulate.validPoints>=2):{parkingLineCandidate,parkingLineCandidate_f};
+			(currentState=parkingLineCandidate):{findPotentialLine,findPotentialLine_f};
 			(currentState=findPotentialLine):{linePatternExaming,linePatternExaming_f};
 			(currentState=linePatternExaming):{removeInvalidLine,removeInvalidLine_f};
 			(currentState=removeInvalidLine)&(simulate.validLines>=1):{verifyParkingLine,verifyParkingLine_f};
 			(currentState=verifyParkingLine):{validSlot,validSlot_f};
-			(currentState=validSlots):{parkingSlotsInfo,parkingSlotsInfo_f};
+			(currentState=validSlot):{parkingSlotsInfo,parkingSlotsInfo_f};
 			(currentState=parkingSlotsInfo)&(simulate.totalDetectTime<30):done;
 
 			/--(currentState=waiting_f)|((currentState=waiting)&(simulate.svphoto!=1)):end;

@@ -1,0 +1,51 @@
+MODULE main
+  VAR
+    around:comp_around();
+  --LTLSPEC
+    --F(around.currentState=done);
+    INVARSPEC
+      around.currentState=done|around.currentState!=end;
+
+MODULE faultLib(states)
+  VAR
+    v:{normal,fault,unknown};
+	
+  DEFINE
+	out:=
+	case	
+		v=normal:states[0];
+		v=fault:states[1];
+		TRUE:states[0];
+	esac;
+		
+  ASSIGN
+    init(v):=unknown;
+    next(v):=
+    case
+      v=unknown:{fault,normal};
+      TRUE:v;
+    esac;
+	
+	
+	
+MODULE comp_around()
+  VAR
+	
+	viewPhotos:faultLib(0,1);
+    totalDetectTime:faultLib(29,30);
+
+    currentState:{start,done,end,waiting,waiting_f,generateSurroundView,generateSurroundView_f,};
+		i:integer;
+
+  ASSIGN
+		init(currentState):=start;
+		init(i):=0;
+		next(i):=(currentState=end)?i:i+1;
+
+		next(currentState):=
+		case
+			(currentState=start):{waiting,waiting_f};
+			(currentState=waiting)&(viewPhotos.out=1):{generateSurroundView,generateSurroundView_f};
+			(currentState=generateSurroundView)&(totalDetectTime.out<30):done;
+			TRUE:end;
+		esac;

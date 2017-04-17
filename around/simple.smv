@@ -6,35 +6,35 @@ MODULE main
     INVARSPEC
       around.currentState=done|around.currentState!=end;
 
-MODULE faultLib(states)
+MODULE faultLib(states1,states0)
   VAR
-    v:{normal,fault,unknown};
-	
+    v:{normal,fault};
+
   DEFINE
 	out:=
-	case	
-		v=normal:states[0];
-		v=fault:states[1];
-		TRUE:states[0];
+	case
+		v=normal:states0;
+		v=fault:states1;
+		TRUE:states1;
 	esac;
-		
+
   ASSIGN
-    init(v):=unknown;
+    init(v):=normal;
     next(v):=
     case
-      v=unknown:{fault,normal};
+      v=normal:{fault,normal};
       TRUE:v;
     esac;
-	
-	
-	
+
+
+
 MODULE comp_around()
   VAR
-	
-	viewPhotos:faultLib(0,1);
-    totalDetectTime:faultLib(29,30);
 
-    currentState:{start,done,end,waiting,waiting_f,generateSurroundView,generateSurroundView_f,};
+	viewPhotos:faultLib(0,1);
+    --totalDetectTime:faultLib(29,30);
+
+    currentState:{start,done,end,waiting,waiting_f,generateSurroundView,generateSurroundView_f};
 		i:integer;
 
   ASSIGN
@@ -46,6 +46,7 @@ MODULE comp_around()
 		case
 			(currentState=start):{waiting,waiting_f};
 			(currentState=waiting)&(viewPhotos.out=1):{generateSurroundView,generateSurroundView_f};
-			(currentState=generateSurroundView)&(totalDetectTime.out<30):done;
-			TRUE:end;
+			(currentState=generateSurroundView):done;--&(totalDetectTime.out<30)
+      (currentState=done):done;
+      TRUE:end;
 		esac;
